@@ -1,0 +1,721 @@
+<?xml version="1.0"?>
+<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
+<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+	<id>jaybachatero:member_awards</id>
+	<version>2.5</version>
+
+	<file name="$sourcedir/Admin.php">
+		<operation>
+			<search position="before"><![CDATA[
+	// You have to be able to do at least one of the below to see this page.
+	isAllowedTo(array('admin_forum', 'manage_permissions', 'moderate_forum',]]></search>
+			<add><![CDATA[ 'manage_awards',]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Load.php">
+		<operation>
+			<search position="before"><![CDATA[
+		'permissions' => array(),]]></search>
+			<add><![CDATA[
+		'awards' => isset($user_settings['awards']) ? $user_settings['awards'] : array(),]]></add>
+		</operation>
+
+		<operation>
+			<search position="before"><![CDATA[
+			$user_profile[$row['id_member']] = $row;]]></search>
+			<add><![CDATA[
+			$user_profile[$row['id_member']]['awards'] = array();
+			$user_profile[$row['id_member']]['awardlist'] = array();]]></add>
+		</operation>
+
+		<operation>
+			<search position="after"><![CDATA[
+	}
+
+	if (!empty($new_loaded_ids) && $set !== 'minimal')]]></search>
+			<add><![CDATA[
+
+		// I'm sorry, but I've got to stick this award somewhere ...
+		if ($modSettings['awards_in_post'] > 0 && !empty($new_loaded_ids))
+		{
+			global $sourcedir;
+			require_once($sourcedir . '/AwardsManage.php');
+			AwardsLoad($new_loaded_ids);
+			AwardsAutoCheck($new_loaded_ids);
+		}]]></add>
+		</operation>
+
+		<operation>
+			<search position="before"><![CDATA[
+		'local_time' => timeformat(time() + ($profile['time_offset'] - $user_info['time_offset']) * 3600, false),]]></search>
+			<add><![CDATA[
+		'awards' => &$profile['awards'],]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/ManagePermissions.php">
+		<operation>
+			<search position="before"><![CDATA[
+		'manage_bans',]]></search>
+			<add><![CDATA[
+		'manage_awards',]]></add>
+		</operation>
+
+		<operation>
+			<search position="before"><![CDATA[
+		'manage_smileys',
+		'edit_news',]]></search>
+			<add><![CDATA[
+		'manage_awards',]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Profile-View.php">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+function showAwards($memID)
+{
+	global $context, $db_prefix, $txt, $scripturl, $modSettings, $settings, $smcFunc, $user_info;
+
+	// Do they want to make a favorite?
+	if (isset($_GET['makeFavorite']) && allowedTo(array('profile_extra_any', 'profile_extra_own')))
+	{
+		// Check session
+		checkSession('get');
+
+		// Do they only allow one fav?
+		if (empty($modSettings['awards_favorites']))
+			$smcFunc['db_query']('', '
+				UPDATE {db_prefix}awards_members
+				SET favorite = 0
+				WHERE id_member = {int:mem}',
+				array(
+					'mem' => $memID,
+				)
+			);
+
+		// Now make this one a fav.
+		$smcFunc['db_query']('', '
+			UPDATE {db_prefix}awards_members
+			SET favorite = {int:make_favorite}
+			WHERE id_award = {int:award}
+				AND id_member = {int:mem}
+			LIMIT 1',
+			array(
+				'award' => $_GET['id'],
+				'mem' => $memID,
+				'make_favorite' => ($_GET['makeFavorite'] > 0) ? 1 : 0,
+			)
+		);
+
+		// To make changes appear redirect back to that page
+		redirectexit('action=profile;area=showAwards;u=' . $memID);
+	}
+
+	// Load language
+	loadLanguage('AwardsManage');
+
+	// Count the number of items in the database for create index
+	$request = $smcFunc['db_query']('', '
+		SELECT COUNT(*)
+		FROM {db_prefix}awards_members
+		WHERE (id_member = {int:mem}
+			OR (id_member = -1 AND id_group IN({array_int:groups})))
+			AND active = {int:active}',
+		array(
+			'mem' => $memID,
+			'groups' => $user_info['groups'],
+			'active' => 1
+		)
+	);
+	list ($context['count_awards']) = $smcFunc['db_fetch_row']($request);
+	$smcFunc['db_free_result']($request);
+
+	// Calculate the number of results to pull up.
+	$max_awards = 25;
+
+	// Construct the page index
+	$context['page_index'] = constructPageIndex($scripturl . '?action=profile;area=showAwards;u=' . $memID, $_REQUEST['start'], $context['count_awards'], $max_awards);
+	$context['start'] = isset($_REQUEST['start']) ? (int) $_REQUEST['start'] : 0;
+
+	// Load the individual and group awards
+	$request = $smcFunc['db_query']('', '
+		SELECT
+			aw.id_award, aw.award_name, aw.description, aw.filename, aw.minifile,
+			am.id_member, am.date_received, am.favorite, am.id_group,
+			c.category_name, c.id_category
+		FROM {db_prefix}awards AS aw
+			LEFT JOIN {db_prefix}awards_members AS am ON (am.id_award = aw.id_award)
+			LEFT JOIN {db_prefix}awards_categories AS c ON (c.id_category = aw.id_category)
+		WHERE (am.id_member = {int:member}
+			OR (am.id_member = -1 AND am.id_group IN({array_int:groups})))
+			AND am.active = {int:active}
+		ORDER BY am.favorite DESC, c.category_name DESC, aw.award_name DESC
+		LIMIT {int:start}, {int:end}',
+		array(
+			'start' => $context['start'],
+			'end' => $max_awards,
+			'member' => $memID,
+			'groups' => $user_info['groups'],
+			'active' => 1
+		)
+	);
+
+	$context['categories'] = array();
+
+	// Fetch the award info just once
+	while ($row = $smcFunc['db_fetch_assoc']($request))
+	{
+		if(!isset($context['categories'][$row['id_category']]['name']))
+			$context['categories'][$row['id_category']] = array(
+				'name' => $row['category_name'],
+				'view' => $scripturl . '?action=admin;area=awards;sa=viewcategory;id=' . $row['id_category'],
+				'awards' => array(),
+			);
+
+		$context['categories'][$row['id_category']]['awards'][$row['id_award']] = array(
+			'id' => $row['id_award'],
+			'award_name' => $row['award_name'],
+			'description' => $row['description'],
+			'more' => $scripturl . '?action=profile;area=membersAwards;a_id=' . $row['id_award'],
+			'favorite' => array(
+				'fav' => $row['favorite'],
+				'href' => $scripturl . '?action=profile;area=showAwards;id=' . $row['id_award'] . ';makeFavorite=' . ($row['favorite'] == 1 ? '0' : '1') . (isset($_REQUEST['u']) ? ';u=' . $_REQUEST['u'] : ''),
+				'img' => '<img src="' . $settings['images_url'] . '/awards/' . ($row['favorite'] == 1 ? 'delete' : 'add') . '.png" alt="' . $txt['awards_favorite'] . '" title="' . $txt['awards_favorite'] . '" />',
+			),
+			'filename' => $row['filename'],
+			'time' => list ($year, $month, $day) = sscanf($row['date_received'], '%d-%d-%d'),
+			'img' => dirname($scripturl) . '/' . $modSettings['awards_dir'] . '/' . $row['filename'],
+			'mini' => dirname($scripturl) . '/' . $modSettings['awards_dir'] . '/' . $row['minifile'],
+		);
+	}
+	$smcFunc['db_free_result']($request);
+
+	$context['page_title'] = $txt['profile'] . ' - ' . $txt['awards_title'];
+	$context['sub_template'] = 'awards';
+	$context['allowed_fav'] = ($context['user']['is_owner'] && allowedTo('profile_view_own')) || allowedTo('profile_extra_any');
+}
+
+function membersAwards()
+{
+	global $context, $db_prefix, $modSettings, $scripturl, $txt, $smcFunc, $sourcedir;
+	
+	// Are they allowed to see the memberlist at all?
+	isAllowedTo('view_mlist');
+
+	// Load language
+	loadLanguage('AwardsManage');
+	
+	// Load in our helper functions
+	require_once($sourcedir . '/AwardsSubs.php');
+	require_once($sourcedir . '/Subs-List.php');
+
+	// Load this awards details
+	$id = (int) $_REQUEST['a_id'];
+	AwardsLoadAward($id);
+	
+	// build the listoption array to display the data
+	$listOptions = array(
+		'id' => 'view_assigned',
+		'title' => $txt['awards_showmembers'] . ': ' . $context['award']['name'],
+		'items_per_page' => 25,
+		'no_items_label' => $txt['awards_no_assigned_members2'],
+		'base_href' => $scripturl . '?action=profile;area=membersAwards;a_id=' . $id,
+		'default_sort_col' => 'username',
+		'get_items' => array(
+			'function' => 'AwardsGetMembers',
+			'params' => array(
+				$id,
+			),
+		),
+		'get_count' => array(
+			'function' => 'AwardsGetMembersCount',
+			'params' => array(
+				$id,
+			),
+		),
+		'columns' => array(
+			'username' => array(
+				'header' => array(
+					'value' => $txt['username'],
+				),
+				'data' => array(
+					'db' => 'link',
+				),
+				'sort' => array(
+					'default' => 'm.real_name ',
+					'reverse' => 'm.real_name DESC',
+				),
+			),
+			'date' => array(
+				'header' => array(
+					'value' => $txt['awards_date'],
+				),
+				'data' => array(
+					'db' => 'date',
+				),
+				'sort' => array(
+					'default' => 'a.date_received DESC',
+					'reverse' => 'a.date_received',
+				),
+			),
+		),
+		'additional_rows' => array(
+			array(
+				'position' => 'top_of_list',
+				'value' => '<br class="clear" />',
+			),
+		),
+	);
+
+	// Set the context values
+	$context['page_title'] = $txt['awards_title'] . ' - ' . $context['award']['name'];
+	$context['sub_template'] = 'awards_members';
+	
+	// Create the list.
+	createList($listOptions);
+}
+
+function listAwards()
+{
+	global $context, $txt, $scripturl, $modSettings, $settings, $smcFunc, $user_info, $user_profile;
+
+	loadLanguage('AwardsManage');
+
+	// Count the number of items in the database for create index
+	$request = $smcFunc['db_query']('', '
+		SELECT COUNT(*)
+		FROM {db_prefix}awards',
+		array()
+	);
+
+	list($countAwards) = $smcFunc['db_fetch_row']($request);
+	$smcFunc['db_free_result']($request);
+
+	// Calculate the number of results to pull up.
+	$maxAwards = 20;
+
+	// Construct the page index
+	$context['page_index'] = constructPageIndex($scripturl . '?action=profile;area=listAwards', $_REQUEST['start'], $countAwards, $maxAwards);
+	$context['start'] = isset($_REQUEST['start']) ? (int) $_REQUEST['start'] : 0;
+
+	// Select the awards and their categories.
+	$request = $smcFunc['db_query']('', '
+		SELECT a.*, c.category_name
+		FROM {db_prefix}awards AS a
+			LEFT JOIN {db_prefix}awards_categories AS c ON (c.id_category = a.id_category)
+		ORDER BY c.category_name DESC, a.award_name DESC
+		LIMIT {int:start}, {int:end}',
+		array(
+			'start' => $context['start'],
+			'end' => $maxAwards
+		)
+	);
+
+	// array of this members awards to prevent a request for something they have
+	$awardcheck = array();
+	$awards = $user_profile[$user_info['id']]['awards'];
+	foreach ($awards as $award)
+		$awardcheck[$award['id']] = 1;
+	
+	// Loop through the results.
+	$context['categories'] = array();
+	while ($row = $smcFunc['db_fetch_assoc']($request))
+	{
+		if(!isset($context['categories'][$row['id_category']]['name']))
+			$context['categories'][$row['id_category']] = array(
+				'name' => $row['category_name'],
+				'view' => $scripturl . '?action=admin;area=awards;sa=viewcategory;id=' . $row['id_category'],
+				'awards' => array(),
+			);
+		$context['categories'][$row['id_category']]['awards'][] = array(
+			'id' => $row['id_award'],
+			'award_name' => $row['award_name'],
+			'description' => $row['description'],
+			'time' => timeformat($row['time_added']),
+			'filename' => $row['filename'],
+			'minifile' => $row['minifile'],
+			'img' => dirname($scripturl) . '/' . (empty($modSettings['awards_dir']) ? '' : $modSettings['awards_dir'] . '/') . $row['filename'],
+			'miniimg' => dirname($scripturl) . '/' . (empty($modSettings['awards_dir']) ? '' : $modSettings['awards_dir'] . '/') . $row['minifile'],
+			'view_assigned' => $scripturl . '?action=profile;area=membersAwards;a_id=' . $row['id_award'],
+			'trigger' => $row['award_trigger'],
+			'award_type' => $row['award_type'],
+			'requestable' => (!empty($row['award_requestable']) && empty($awardcheck[$row['id_award']])),
+			'requestable_link' => ((!empty($row['award_requestable']) && empty($awardcheck[$row['id_award']])) ? $scripturl . '?action=profile;area=requestAwards;a_id=' . $row['id_award'] : ''),
+			'members' => array(),
+		);
+	}
+	$smcFunc['db_free_result']($request);
+
+	$context['page_title'] = $txt['profile'] . ' - ' . $txt['awards_title'];
+	$context['sub_template'] = 'awards_list';
+}
+
+function requestAwards()
+{
+	global $context, $modSettings, $txt, $smcFunc, $sourcedir, $user_info, $user_profile;
+	
+	// Load language
+	loadLanguage('AwardsManage');
+	
+	// Load in our helper functions
+	require_once($sourcedir . '/AwardsSubs.php');
+	
+	// First step, load the details of the requested award
+	if (!isset($_GET['step']) || $_GET['step'] != 2)
+	{
+		// Load this awards details for the form
+		$id = (int) $_REQUEST['a_id'];
+		AwardsLoadAward($id);
+		
+		// Not requestable, how did we get here?
+		if (empty($context['award']['requestable']))
+			fatal_lang_error('awards_error_not_requestable');
+		
+		// Dude allready has this one?
+		foreach ($user_profile[$user_info['id']]['awards'] as $award)
+			if ($award['id'] == $id)
+				fatal_lang_error('awards_error_have_already');
+				
+		// Set the context values
+		$context['step'] = 1;
+		$context['page_title'] = $txt['awards_request_award'] . ' - ' . $context['award']['name'];
+		$context['sub_template'] = 'awards_request';
+	}
+	// step '2', they have actually demanded an award!
+	elseif (isset($_GET['step']) && (int) $_GET['step'] == 2)
+	{
+		// Check session.
+		checkSession('post');
+		
+		// Clean those dirty pigs.
+		$id = (int) $_POST['id_award'];
+		$comments = strtr($smcFunc['htmlspecialchars']($_POST['comments'], ENT_QUOTES), array("\n" => '<br />', '"' => '&quot;', '<' => '&lt;', '>' => '&gt;', '  ' => ' &nbsp;'));
+		censorText($comments);
+		$date = date('Y-m-d');
+
+		// let's see if the award exists, silly hackers
+		AwardsLoadAward($id);
+		
+		// Not requestable, how did we get here?
+		if (empty($context['award']['requestable']))
+			fatal_lang_error('awards_error_not_requestable');
+		
+		// cant ask for what you have
+		foreach ($user_profile[$user_info['id']]['awards'] as $award)
+			if ($award['id'] == $id)
+				fatal_lang_error('awards_error_have_already');
+
+		// If we made it this far insert /replace it so it can be reviewed.
+		$request = $smcFunc['db_insert']('replace', '
+			{db_prefix}awards_members',
+			array('id_award' => 'int', 'id_member' => 'int', 'id_group' => 'int', 'date_received' => 'string', 'favorite' => 'int', 'award_type' => 'int', 'active' => 'int', 'comments' => 'string'),
+			array ($id, $user_info['id'], 0, $date, 0, 1, 0, $comments),
+			array('id_member', 'id_award')
+		);
+
+		// Get the number of unapproved requests so the awards team knows about it.
+		$request = $smcFunc['db_query']('', '
+			SELECT COUNT(*)
+			FROM {db_prefix}awards_members
+			WHERE active = {int:active}',
+			array(
+				'active' => 0
+			)
+		);
+		list($modSettings['awards_request']) = $smcFunc['db_fetch_row']($request);
+		$smcFunc['db_free_result']($request);
+	
+		updateSettings(array(
+			'awards_request' => $modSettings['awards_request'],
+		));
+
+		// Redirect to their awards page.
+		redirectexit('action=profile;area=showAwards;u=' . $user_info['id']);
+	}
+}
+
+]]></add>
+		</operation>
+	</file>
+
+	<file name="$sourcedir/Who.php">
+		<operation>
+			<search position="before"><![CDATA[
+		'viewmembers' => array('moderate_forum'),]]></search>
+			<add><![CDATA[
+		'awards' => array('manage_awards'),]]></add>
+		</operation>
+	</file>
+
+	<file name="$themedir/Profile.template.php">
+		<operation>
+			<search position="end" />
+			<add><![CDATA[
+// This is the template for the awards
+function template_awards()
+{
+	global $context, $modSettings, $txt, $settings;
+
+	echo '
+					<div class="cat_bar">
+						<h3 class="catbg">
+							' ,$txt['awards'], '
+						</h3>
+					</div>';
+
+	// Show the amount of awards that a member has
+	if (!empty($context['count_awards']))
+		echo '
+					<p class="description">',
+						sprintf($txt['awards_count_badges'], $context['count_awards']), '
+					</p>';
+
+	// Check if this member has any awards
+	if (empty($context['categories']))
+		echo '
+					<span class="upperframe"><span></span></span>
+					<div class="roundframe">
+						<div id="noawardsforyou">', 
+							$txt['awards_no_badges_member'], '
+						</div>
+					</div>
+					<span class="lowerframe"><span></span></span>';
+	else
+	{
+		// there be awards !!, output them by category for viewing
+		foreach($context['categories'] as $category)
+		{
+			echo '
+						<div class="cat_bar">
+							<h3 class="catbg">
+								<img class="icon" src="' . $settings['images_url'] . '/awards/category.png" alt="" />&nbsp;', $txt['awards_category'], ': ', $category['name'], '
+							</h3>
+						</div>
+						<table class="table_grid" width="100%">
+						<thead>
+							<tr class="catbg">
+								<th scope="col" class="first_th smalltext" width="15%">', $txt['awards_image'], '</th>
+								<th scope="col" class="smalltext" width="15%">', $txt['awards_mini'], '</th>
+								<th scope="col" class="smalltext" width="15%">', $txt['awards_name'], '</th>
+								<th scope="col" class="smalltext" width="15%">', $txt['awards_date'], '</th>
+								<th scope="col" class="smalltext" width="35%">', $txt['awards_details'], '</th>
+								<th scope="col" class="last_th smalltext" align="center" width="5%">', $txt['awards_favorite2'], '</th>
+							</tr>
+						</thead>
+						<tbody>';
+
+			$which = true;
+			
+			// ouput the awards for this category
+			foreach ($category['awards'] as $award)
+			{
+				$which = !$which;
+				echo '
+						<tr class="windowbg', $which ? '2' : '', '">
+							<td align="center"><a href="', $award['more'], '"><img src="', $award['img'], '" alt="', $award['award_name'], '" /></a></td>
+							<td align="center"><a href="', $award['more'], '"><img src="', $award['mini'], '" alt="', $award['award_name'], '" /></a></td>
+							<td><strong>', $award['award_name'], '</strong></td>
+							<td><em>', $txt['months'][$award['time'][1]], ' ', $award['time'][2], ', ', $award['time'][0], '</em></td>
+							<td>', $award['description'], '</td>
+							<td align="center">', $context['allowed_fav'] ? '<a href="' . $award['favorite']['href'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $award['favorite']['img'] . '</a>' : '', '', ($award['favorite']['fav'] == 1 ? ' <img src="' . $settings['images_url'] . '/star.gif" alt="' . $txt['awards_favorite']. '" />' : ''), '</td>
+						</tr>';
+			}
+
+			echo '
+					</tbody>
+					</table>
+				<br class="clear" />';
+		}
+			
+		// Show the pages
+		echo '
+					<span class="smalltext">', $txt['pages'], ': ', $context['page_index'], '</span>';
+	}
+}
+
+function template_awards_members()
+{
+	global $context, $scripturl, $txt, $settings;
+
+	// Open the Div
+	echo '
+		<div class="title_bar">
+			<h3 class="titlebg">
+				<img class="icon" src="' . $settings['images_url'] . '/awards/award.png" alt="" />&nbsp;', $txt['viewingAwards'] . ' ' . $context['award']['name'], '
+			</h3>
+		</div>
+		
+		<div class="windowbg">
+			<span class="topslice"><span></span></span>
+			<div class="content" align="center">
+				<img style="padding:0 0 5px 0" src="', $context['award']['img'], '" alt="', $context['award']['name'], '" /><br />';
+	if ($context['award']['img'] != $context['award']['miniimg'])
+		echo '
+				<img style="vertical-align:middle" src="', $context['award']['miniimg'], '" alt="', $context['award']['name'], '" /> ';
+	echo '
+				<strong>', $context['award']['name'], '</strong><br />', $context['award']['description'], '
+			</div>
+			<span class="botslice"><span></span></span>
+		</div>
+		<br class="clear" />';
+	
+	// Show the list output
+	template_show_list('view_assigned');
+	echo '
+		<br class="clear" />';
+
+}
+
+function template_awards_list()
+{
+	global $context, $modSettings, $txt, $settings;
+
+	echo '
+				<div class="cat_bar">
+					<h3 class="catbg">
+						', $txt['awards_title'], '
+					</h3>
+				</div>
+				<br class="clear" />';
+
+	// Check if there are any awards
+	if (empty($context['categories']))
+		echo '
+				<span class="upperframe"><span></span></span>
+				<div class="roundframe">
+					<div id="nostinkinbadges">', 
+						$txt['awards_error_no_badges'], '
+					</div>
+				</div>
+				<span class="lowerframe"><span></span></span>';
+	else
+	{
+		foreach($context['categories'] as $key => $category)
+		{
+			echo '
+					<div class="title_bar">
+						<h3 class="titlebg">
+							<img class="icon" src="' . $settings['images_url'] . '/awards/category.png" alt="" />&nbsp;', '<a href="', $category['view'], '">', $txt['awards_category'], ': ', $category['name'], '</a>
+						</h3>
+					</div>
+					<table class="table_grid" width="100%">
+					<thead>
+						<tr class="catbg">
+							<th scope="col" class="first_th smalltext" width="15%">', $txt['awards_image'], '</th>
+							<th scope="col" class="smalltext" width="15%">', $txt['awards_mini'], '</th>
+							<th scope="col" class="smalltext" width="25%">', $txt['awards_name'], '</th>
+							<th scope="col" class="smalltext" width="40%">', $txt['awards_details'], '</th>
+							<th scope="col" class="last_th smalltext" width="5%">', $txt['awards_actions'], '</th>
+						</tr>
+					</thead>
+					<tbody>';
+
+			$which = false;
+
+			foreach ($category['awards'] as $award)
+			{
+				$which = !$which;
+				echo '
+						<tr class="windowbg', $which ? '2' : '', '">
+							<td align="center"><img src="', $award['img'], '" alt="', $award['award_name'], '" /></td>
+							<td align="center"><img src="', $award['miniimg'], '" alt="', $award['award_name'], '" /></td>
+							<td>', $award['award_name'], '</td>
+							<td>', $award['description'], '</td>
+							<td align="center" class="smalltext">
+								<a href="', $award['view_assigned'], '"><img src="', $settings['images_url'], '/awards/user.png" title="', $txt['awards_button_members'], '" alt="" /></a>';
+				if (!empty($award['requestable']))
+					echo '
+								<a href="', $award['requestable_link'], '"><img src="', $settings['images_url'], '/awards/award_request.png" title="', $txt['awards_request_award'], '" alt="" /></a>';
+				echo '
+							</td>
+						</tr>';
+			}
+
+			echo '
+					</tbody>
+					</table>
+				<br class="clear" />';
+		}
+		
+		// Show the pages
+		echo '
+				<span class="smalltext">', $txt['pages'], ': ', $context['page_index'], '</span>';
+	}
+}
+
+function template_awards_request()
+{
+	global $context, $scripturl, $txt, $settings;
+
+	// Open the Header 
+	echo '
+		<div class="title_bar">
+			<h3 class="titlebg">
+				<img class="icon" src="' . $settings['images_url'] . '/awards/award.png" alt="" />&nbsp;', $txt['awards_requesting_award'] . ' ' . $context['award']['name'], '
+			</h3>
+		</div>
+		
+		<div class="windowbg">
+			<span class="topslice"><span></span></span>
+			<div class="content" align="center">
+				<img style="padding:0 0 5px 0" src="', $context['award']['img'], '" alt="', $context['award']['name'], '" /><br />';
+	if ($context['award']['img'] != $context['award']['miniimg'])
+		echo '
+				<img style="vertical-align:middle" src="', $context['award']['miniimg'], '" alt="', $context['award']['name'], '" /> ';
+	echo '
+				<strong>', $context['award']['name'], '</strong><br />', $context['award']['description'], '
+			</div>
+			<span class="botslice"><span></span></span>
+		</div>
+		<br class="clear" />';
+	
+	// Start with the form.
+	echo '
+		<form action="', $scripturl, '?action=profile;area=requestAwards;step=2" method="post" name="request" id="request" accept-charset="', $context['character_set'], '" enctype="multipart/form-data">';
+
+	// Enter a reason why you want this award.
+	echo '
+			<table width="100%" class="table_grid">
+				<thead>
+					<tr class="titlebg">
+						<th scope="col" class="first_th smalltext" >', $txt['awards_request_comments'], '</th>
+						<th scope="col" class="last_th smalltext" ></th>
+					</tr>
+				</thead>
+				<tbody>
+					<tr class="windowbg2">
+						<td colspan="2" align="center">
+							<div style="margin-bottom: 2ex;">
+								<textarea cols="75" rows="7" style="', $context['browser']['is_ie8'] ? 'max-width: 100%; min-width: 100%' : 'width: 100%', '; height: 100px;" name="comments" tabindex="', $context['tabindex']++, '"></textarea><br />
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>';
+		
+	// add in a submit button and close the form	
+	echo '
+			<div class="floatright padding">
+				<input class="button_submit" type="submit" name="request" value="', $txt['awards_request_award'], '" />
+			</div>
+			<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
+			<input type="hidden" name="id_award" value="', $context['award']['id'], '" />
+		</form>
+		<br class="clear" />';
+}
+
+]]></add>
+		</operation>
+
+		<operation>
+			<search position="before"><![CDATA[					<a href="', $scripturl, '?action=profile;area=showposts;u=', $context['id_member'], '">', $txt['showPosts'], '</a><br />
+					<a href="', $scripturl, '?action=profile;area=statistics;u=', $context['id_member'], '">', $txt['statPanel'], '</a>]]></search>
+			<add><![CDATA[
+					<br /><a href="', $scripturl, '?action=profile;area=showAwards;u=', $context['member']['id'], '">', $txt['awards_view_album'], '</a>]]></add>
+		</operation>
+	</file>	
+
+</modification>
