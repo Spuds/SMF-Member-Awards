@@ -1,9 +1,6 @@
 [hr]
 [center]
 [size=16pt][b]Member Awards v2.5[/b][/size]
-Current Author: Spuds
-Original Author: JayBachatero
-Former Authors: JBlaze, Fustrate
 [/center]
 [hr]
 
