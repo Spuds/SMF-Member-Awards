@@ -1,45 +1,34 @@
 <?php
-/********************************************************************************
-* AwardsHookss.php                                                              *
-* ----------------------------------------------------------------------------- *
-* This file handles the admin side of Awards.                                   *
-*********************************************************************************
-* Software version:               2.5                                           *
-* Original Software by:           Juan "JayBachatero" Hernandez                 *
-* Copyright (c) 2006-2009:        YodaOfDarkness (Fustrate)                     *
-* Copyright (c) 2010:             Jason "JBlaze" Clemons                        *
-* Copyright (c) 2011:             Spuds                                         *
-* ============================================================================= *
-********************************************************************************/
+
+/**
+ * @name      Awards Modification
+ * @license   Mozilla Public License version 2.0 http://mozilla.org/MPL/2.0/.
+ *
+ * @version   3.0 Alpha
+ *
+ * This file handles the admin side of Awards.
+ *
+ * Original Software by:           Juan "JayBachatero" Hernandez
+ * Copyright (c) 2006-2009:        YodaOfDarkness (Fustrate)
+ * Copyright (c) 2010:             Jason "JBlaze" Clemons
+ *
+ */
 
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
-/*
-	void member_awards_profile_areas(&$profile_areas)
-		- profile menu hook
-		- adds show my & view award options
-
-	void member_awards_admin_areas(&$admin_areas)
-		- admin hook
-		- adds the admin menu and all award sub actions as a sub menu
-		- hidden to all but admin, accessable via manage_award permission
-		
-	void member_awards_load_permissions(&$permissionGroups, &$permissionList, &$leftPermissionGroups, &$hiddenPermissions, &$relabelPermissions)
-		- Permission hook, adds manage_awards permission to the member admin area
-
-	void member_awards_menu_buttons(&$buttons)
-		- menu button hook
-		- adds awards menu item below members button
-		- visable to anyone with manage_awards permission
-*/
-
+/**
+ * profile menu hook
+ * adds show my & view award options
+ *
+ * @param array $profile_areas
+ */
 function member_awards_profile_areas(&$profile_areas)
 {
 	// Profile Menu Hook, integrate_profile_areas, called from profile.php
 	// used to add menu items to the profile area
-	global $scripturl, $txt;
-	
+	global $txt;
+
 	$profile_areas['info']['areas'] = array_merge($profile_areas['info']['areas'],array(
 		'showAwards' => array(
 			'label' => $txt['showAwards'],
@@ -80,16 +69,23 @@ function member_awards_profile_areas(&$profile_areas)
 	));
 }
 
+/**
+ * admin hook
+ * adds the admin menu and all award sub actions as a sub menu
+ * hidden to all but admin, accessable via manage_award permission
+
+ * @param array $admin_areas
+ */
 function member_awards_admin_areas(&$admin_areas)
 {
 	// Admin Hook, integrate_admin_areas, called from Admin.php
 	// used to add/modify admin menu areas
 	global $txt, $modSettings;
-	
+
 	// allow members with this permission to access the menu :P
 	$admin_areas['members']['permission'][] = 'manage_awards';
 	$admin_areas['members']['permission'][] = 'assign_awards';
-	
+
 	// our main awards menu area, under the members tab
 	$admin_areas['members']['areas']['awards'] = array(
 		'label' => $txt['awards'],
@@ -110,6 +106,15 @@ function member_awards_admin_areas(&$admin_areas)
 	);
 }
 
+/**
+ * Permission hook, adds manage_awards permission to the member admin area
+ *
+ * @param array $permissionGroups
+ * @param array $permissionList
+ * @param array $leftPermissionGroups
+ * @param array $hiddenPermissions
+ * @param array $relabelPermissions
+ */
 function member_awards_load_permissions(&$permissionGroups, &$permissionList, &$leftPermissionGroups, &$hiddenPermissions, &$relabelPermissions)
 {
 	// Permissions hook, integrate_load_permissions, called from ManagePermissions.php
@@ -118,12 +123,19 @@ function member_awards_load_permissions(&$permissionGroups, &$permissionList, &$
 	$permissionList['membergroup']['assign_awards'] = array(false, 'member_admin', 'administrate');
 }
 
+/**
+ * menu button hook
+ * adds awards menu item below members button
+ * visable to anyone with manage_awards permission
+ *
+ * @param type $buttons
+ */
 function member_awards_menu_buttons(&$buttons)
-{ 
+{
 	// Menu Button hook, integrate_menu_buttons, called from subs.php
-	// used to add top menu buttons 
+	// used to add top menu buttons
 
-	global $txt, $modSettings, $scripturl;
+	global $txt, $scripturl;
 
 	// allows members with manage_awards permission to see a menu item since the admin menu is hidden for them
 	$buttons['mlist']['sub_buttons']['awards'] = array(
