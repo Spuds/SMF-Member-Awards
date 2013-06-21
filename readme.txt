@@ -1,6 +1,6 @@
 [hr]
 [center]
-[size=16pt][b]Member Awards v2.5[/b][/size]
+[size=16pt][b]Member Awards v3.0[/b][/size]
 [/center]
 [hr]
 
@@ -36,8 +36,8 @@ If you have any translations for any other languages, I would be grateful if you
 > Comment
 + Addition
 ! Error/bug fix
-[i][b]Version 2.5, August ??th, 2011[/b][/i]
-! Complete update for V2.0
+[i][b]Version 2.5, ??? ??th, 2013[/b][/i]
+! Complete update
 + Too numerous to mention
 
 [i][b]Version 2.2.4, April ??th, 2011[/b][/i]
