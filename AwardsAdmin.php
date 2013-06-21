@@ -186,7 +186,7 @@ function AwardsModify()
 	global $smcFunc, $context, $scripturl, $txt, $modSettings, $boarddir, $sourcedir;
 
 	// Load in our helper functions
-	include_once($sourcedir . '/AwardsSubs.php');
+	require_once($sourcedir . '/AwardsSubs.php');
 
 	// Check if they are saving the changes
 	if (isset($_POST['award_save']))
@@ -445,7 +445,7 @@ function AwardsUpload($id_award)
 	global $smcFunc, $modSettings, $boarddir, $sourcedir;
 
 	// Load in our helper functions
-	include_once($sourcedir . '/AwardsSubs.php');
+	require_once($sourcedir . '/AwardsSubs.php');
 
 	// Lets try to CHMOD the awards dir if needed.
 	if (!is_writable($boarddir . '/' . $modSettings['awards_dir']))
@@ -574,7 +574,7 @@ function AwardsAssign()
 	global $smcFunc, $context, $sourcedir, $txt, $user_info;
 
 	// Load in our helper functions
-	include_once($sourcedir . '/AwardsSubs.php');
+	require_once($sourcedir . '/AwardsSubs.php');
 
 	// First step, select the awards that can be assigned by this member
 	if (!isset($_GET['step']) || $_GET['step'] == 1)
@@ -661,7 +661,7 @@ function AwardsAssignMemberGroup()
 	global $smcFunc, $context, $sourcedir, $txt;
 
 	// Load in our helper functions
-	include_once($sourcedir . '/AwardsSubs.php');
+	require_once($sourcedir . '/AwardsSubs.php');
 
 	// First step, select the memebrgroups and awards
 	if (!isset($_REQUEST['step']) || (int) $_REQUEST['step'] == 1)
@@ -739,7 +739,7 @@ function AwardsAssignMass()
 	global $smcFunc, $context, $sourcedir, $txt;
 
 	// Load in our helper functions
-	include_once($sourcedir . '/AwardsSubs.php');
+	require_once($sourcedir . '/AwardsSubs.php');
 
 	// First step, select the memebrgroups and awards
 	if (!isset($_REQUEST['step']) || (int) $_REQUEST['step'] < 3)
@@ -941,7 +941,7 @@ function AwardsViewAssigned()
 	}
 
 	// Load in our helper functions
-	include_once($sourcedir . '/AwardsSubs.php');
+	require_once($sourcedir . '/AwardsSubs.php');
 
 	// Load the awards info for this award
 	AwardsLoadAward($id);
@@ -1480,58 +1480,4 @@ function AwardsRequests2()
 
 	// Redirect.
 	redirectexit('action=admin;area=awards;sa=requests');
-}
-
-/**
- * Converts a php array to a JS object
- *
- * @param type $array
- * @param type $objName
- * @return type
- */
-function AwardsBuildJavascriptObject($array, $objName)
-{
-    return 'var ' . $objName . ' = ' . AwardsBuildJavascriptObject_Recurse($array) . ";\n";
-}
-
-/**
- * Main function to do the array to JS object conversion
- *
- * @param type $array
- * @return string
- */
-function AwardsBuildJavascriptObject_Recurse($array)
-{
-	// Not an array so just output it.
-	if (!is_array($array))
-	{
-		// Handle null correctly
-		if ($array === null)
-			return 'null';
-
-		return '"' . $array . '"';
-	}
-
-	// Start of this JS object.
-	$retVal = "{";
-
-	// Output all key/value pairs as "$key" : $value
-	$first = true;
-	foreach ($array as $key => $value)
-	{
-		// Add a comma before all but the first pair.
-		if (!$first)
-			$retVal .= ', ';
-
-		$first = false;
-
-		// Quote $key if it's a string.
-		if (is_string($key))
-			$key = '"' . $key . '"';
-
-		$retVal .= $key . ' : ' . AwardsBuildJavascriptObject_Recurse($value);
-	}
-
-	// Close and return the JS object.
-	return $retVal . "}";
 }
