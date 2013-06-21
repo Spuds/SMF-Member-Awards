@@ -563,7 +563,8 @@ function AwardsDelete()
  * This is where you assign awards to members.
  * Step 1
  *   - This is where you select the award that you want to assign
- *   - Uses AwardsBuildJavascriptArray to build the form so the correct image displays with the award
+ *   - Uses AwardsBuildJavascriptObject to build the form so the correct image displays with the award
+ *
  * - Step 2
  *   - Select the members that you want to give this award to.
  *   - Enter the date that the award was given.
@@ -603,7 +604,7 @@ function AwardsAssign()
 			);
 		}
 		$smcFunc['db_free_result']($request);
-		$context['awardsjavasciptarray'] = AwardsBuildJavascriptArray($context['awards'], 'awards');
+		$context['awardsjavasciptarray'] = AwardsBuildJavascriptObject($context['awards'], 'awards');
 
 		// Quick check for mischievous users ;)
 		if (!allowedTo('manage_awards') && isset($_REQUEST['a_id']) && empty($context['awards'][$_REQUEST['a_id']]['assignable']))
@@ -690,7 +691,7 @@ function AwardsAssignMemberGroup()
 			);
 		}
 		$smcFunc['db_free_result']($request);
-		$context['awardsjavasciptarray'] = AwardsBuildJavascriptArray($context['awards'], 'awards');
+		$context['awardsjavasciptarray'] = AwardsBuildJavascriptObject($context['awards'], 'awards');
 
 		// Set the template details
 		$context['step'] = 1;
@@ -768,7 +769,7 @@ function AwardsAssignMass()
 			);
 		}
 		$smcFunc['db_free_result']($request);
-		$context['awardsjavasciptarray'] = AwardsBuildJavascriptArray($context['awards'], 'awards');
+		$context['awardsjavasciptarray'] = AwardsBuildJavascriptObject($context['awards'], 'awards');
 
 		// Set the template details
 		$context['step'] = 1;
@@ -1479,4 +1480,58 @@ function AwardsRequests2()
 
 	// Redirect.
 	redirectexit('action=admin;area=awards;sa=requests');
+}
+
+/**
+ * Converts a php array to a JS object
+ *
+ * @param type $array
+ * @param type $objName
+ * @return type
+ */
+function AwardsBuildJavascriptObject($array, $objName)
+{
+    return 'var ' . $objName . ' = ' . AwardsBuildJavascriptObject_Recurse($array) . ";\n";
+}
+
+/**
+ * Main function to do the array to JS object conversion
+ *
+ * @param type $array
+ * @return string
+ */
+function AwardsBuildJavascriptObject_Recurse($array)
+{
+	// Not an array so just output it.
+	if (!is_array($array))
+	{
+		// Handle null correctly
+		if ($array === null)
+			return 'null';
+
+		return '"' . $array . '"';
+	}
+
+	// Start of this JS object.
+	$retVal = "{";
+
+	// Output all key/value pairs as "$key" : $value
+	$first = true;
+	foreach ($array as $key => $value)
+	{
+		// Add a comma before all but the first pair.
+		if (!$first)
+			$retVal .= ', ';
+
+		$first = false;
+
+		// Quote $key if it's a string.
+		if (is_string($key))
+			$key = '"' . $key . '"';
+
+		$retVal .= $key . ' : ' . AwardsBuildJavascriptObject_Recurse($value);
+	}
+
+	// Close and return the JS object.
+	return $retVal . "}";
 }
