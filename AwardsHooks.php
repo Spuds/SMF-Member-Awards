@@ -144,4 +144,3 @@ function member_awards_menu_buttons(&$buttons)
 		'show' => (allowedTo('manage_awards') || allowedto('assign_awards')),
 	);
 }
-?>

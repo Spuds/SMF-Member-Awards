@@ -23,10 +23,6 @@ if (!defined('SMF'))
  * Requires awards_admin permission
  * Uses Awards template and language
  *
- * @global type $context
- * @global type $txt
- * @global type $scripturl
- * @global type $sourcedir
  */
 function Awards()
 {
@@ -35,20 +31,20 @@ function Awards()
 
 	// subaction array ... function to call, permissions needed (array or permissions)
 	$subActions = array(
-		'main' => array('AwardsMain',array('manage_awards','assign_awards')),
-		'assign' => array('AwardsAssign',array('manage_awards','assign_awards')),
-		'assigngroup' => array('AwardsAssignMemberGroup',array('manage_awards')),
-		'assignmass' => array('AwardsAssignMass',array('manage_awards')),
-		'modify' => array('AwardsModify',array('manage_awards')),
-		'delete' => array('AwardsDelete',array('manage_awards')),
-		'edit' => array('AwardsModify',array('manage_awards')),
-		'settings' => array('AwardsSettings',array('manage_awards')),
-		'viewassigned' => array('AwardsViewAssigned',array('manage_awards','assign_awards')),
-		'categories' => array('AwardsListCategories',array('manage_awards')),
-		'editcategory' => array('AwardsEditCategory',array('manage_awards')),
-		'deletecategory' => array('AwardsDeleteCategory',array('manage_awards')),
-		'viewcategory' => array('AwardsViewCategory',array('manage_awards')),
-		'requests' => array('AwardsRequests',array('manage_awards','assign_awards')),
+		'main' => array('AwardsMain', array('manage_awards','assign_awards')),
+		'assign' => array('AwardsAssign', array('manage_awards','assign_awards')),
+		'assigngroup' => array('AwardsAssignMemberGroup', array('manage_awards')),
+		'assignmass' => array('AwardsAssignMass', array('manage_awards')),
+		'modify' => array('AwardsModify', array('manage_awards')),
+		'delete' => array('AwardsDelete', array('manage_awards')),
+		'edit' => array('AwardsModify', array('manage_awards')),
+		'settings' => array('AwardsSettings', array('manage_awards')),
+		'viewassigned' => array('AwardsViewAssigned', array('manage_awards','assign_awards')),
+		'categories' => array('AwardsListCategories', array('manage_awards')),
+		'editcategory' => array('AwardsEditCategory', array('manage_awards')),
+		'deletecategory' => array('AwardsDeleteCategory', array('manage_awards')),
+		'viewcategory' => array('AwardsViewCategory', array('manage_awards')),
+		'requests' => array('AwardsRequests', array('manage_awards','assign_awards')),
 	);
 
 	// Default to sub action main if nothing else was provided
@@ -200,6 +196,7 @@ function AwardsModify()
 		// Check if any of the key values where left empty, and if so tell them
 		if (empty($_POST['award_name']))
 			fatal_lang_error('awards_error_empty_badge_name');
+
 		if (empty($_FILES['awardFile']['name']) && $_POST['a_id'] == 0)
 			fatal_lang_error('awards_error_no_file');
 
@@ -231,7 +228,9 @@ function AwardsModify()
 
 			// Now upload the file(s) associated with the award
 			AwardsUpload($id);
-		} else {
+		}
+		else
+		{
 			// Not a new award so lets edit an existing one
 			$trigger = empty($_POST['awardTrigger']) ? 0 : (int) $_POST['awardTrigger'];
 
@@ -294,8 +293,11 @@ function AwardsModify()
 
 				// Delete the old file(s) first.
 				if ($_FILES['awardFile']['error'] == 0)
+				{
 					if (file_exists($boarddir . '/' . (empty($modSettings['awards_dir']) ? '' : $modSettings['awards_dir'] . '/') . $filename))
 						@unlink($boarddir . '/' . (empty($modSettings['awards_dir']) ? '' : $modSettings['awards_dir'] . '/') . $filename);
+				}
+
 				if (file_exists($boarddir . '/' . (empty($modSettings['awards_dir']) ? '' : $modSettings['awards_dir'] . '/') . $minifile))
 					@unlink($boarddir . '/' . (empty($modSettings['awards_dir']) ? '' : $modSettings['awards_dir'] . '/') . $minifile);
 
@@ -348,6 +350,7 @@ function AwardsModify()
 						control.attachEvent(\'on\'+ev, fn);
 					}
 				}
+
 				function toggleAwardTrigger()
 				{
 					var select_elem = document.getElementById(\'awardTrigger\');
@@ -406,7 +409,9 @@ function AwardsModify()
 
 		// Set the page title
 		$context['page_title'] = $txt['awards_title'] . ' - ' . $txt['awards_edit_award'];
-	} else {
+	}
+	else
+	{
 		// Setup some default blank values as we are adding a new award
 		$context['editing'] = false;
 		$context['award'] = array(
@@ -696,8 +701,10 @@ function AwardsAssignMemberGroup()
 	{
 		// Make sure that they picked an award and group to assign it to...
 		if (isset($_POST['who']))
+		{
 			foreach($_POST['who'] as $group)
 				$membergroups[] = (int) $group;
+		}
 
 		if (empty($membergroups) || empty($_POST['award']))
 			fatal_lang_error('awards_error_no_groups');
@@ -714,7 +721,7 @@ function AwardsAssignMemberGroup()
 		// Insert the data
 		$smcFunc['db_insert']('ignore',
 			'{db_prefix}awards_members',
-			array('id_member' => int, 'id_award' => 'int', 'id_group' => 'int', 'date_received' => 'string', 'active' => 'int'),
+			array('id_member' => 'int', 'id_award' => 'int', 'id_group' => 'int', 'date_received' => 'string', 'active' => 'int'),
 			$values,
 			array('id_member', 'id_award')
 		);
@@ -778,7 +785,9 @@ function AwardsAssignMass()
 				// Set the template details
 				$context['step'] = 3;
 				$context['page_title'] = $txt['awards_title'] . ' - ' . $txt['awards_select_member'];
-			} else {
+			}
+			else
+			{
 				// they made a mistake, back to step 1 they go!
 				$context['step'] = 1;
 				$context['page_title'] = $txt['awards_title'] . ' - ' . $txt['awards_select_group'];
@@ -888,13 +897,13 @@ function AwardsGetGroupMembers()
 
 		$smcFunc['db_free_result']($request);
 	}
+
 	$_POST['who'] = $postsave;
 }
 
 /**
  * This is where you see the members that have been assigned a certain award.
  * Can unassign the award for selected members.
- *
  */
 function AwardsViewAssigned()
 {
@@ -911,6 +920,7 @@ function AwardsViewAssigned()
 		checkSession('post');
 
 		$members = array();
+
 		// Get all the member id's ....
 		foreach ($_POST['member'] as $removeID => $dummy)
 			$members[] = (int) $removeID;
@@ -1111,7 +1121,9 @@ function AwardsEditCategory()
 		$smcFunc['db_free_result']($request);
 
 		$context['page_title'] = $txt['awards_title'] . ' - ' . $txt['awards_edit_category'];
-	} else {
+	}
+	else
+	{
 		// Setup place holders.
 		$context['editing'] = false;
 		$context['category'] = array(
@@ -1142,7 +1154,9 @@ function AwardsEditCategory()
 				array($name),
 				array('id_category')
 			);
-		} else {
+		}
+		else
+		{
 			// Set $id_award
 			$id_category = (int) $_POST['id_category'];
 
@@ -1209,7 +1223,7 @@ function AwardsListCategories()
 	$context['page_title'] = $txt['awards_title'] . ' - ' . $txt['awards_list_categories'];
 	$context['sub_template'] = 'list_categories';
 
-	return ;
+	return;
 }
 
 /**
@@ -1326,13 +1340,13 @@ function AwardsViewCategory()
 /**
  * Shows all the awards that members have requested
  * Groups the requests by category
- * Call request_award template
+ * Calls request_award template
  */
 function AwardsRequests()
 {
 	global $context, $txt, $scripturl, $modSettings, $settings, $smcFunc;
 
-	// Select all the member requested awards awards to populate the menu.
+	// Select all the member requestable awards to populate the menu.
 	$request = $smcFunc['db_query']('', '
 		SELECT a.id_award, a.award_name, a.filename, a.minifile, a.description
 		FROM {db_prefix}awards as a
@@ -1389,7 +1403,7 @@ function AwardsRequests()
 	}
 	$smcFunc['db_free_result']($request);
 
-	// Place them in $context for the template
+	// Place them in context for the template
 	$context['awards'] = $awards;
 	$context['sub_template'] = 'request_award';
 	$context['page_title'] =  $txt['awards_requests'];
@@ -1451,11 +1465,11 @@ function AwardsRequests2()
 				DELETE FROM {db_prefix}awards_members
 				WHERE id_award = {int:id_award}
 					AND id_member IN ({array_int:members})',
-			array(
-				'id_award' => $id_award,
-				'members' => $awards[$id_award],
-			)
-		);
+				array(
+					'id_award' => $id_award,
+					'members' => $awards[$id_award],
+				)
+			);
 	}
 
 	// We need to update the requests amount.

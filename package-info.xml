@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
 <package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
-	<id>jaybachatero:member_awards</id>
+	<id>spuds:member_awards</id>
 	<name>Member Awards</name>
 	<version>3.0</version>
 	<type>modification</type>
@@ -18,7 +18,9 @@
 		<require-file name="AwardsManage.php" destination="$sourcedir" />
 		<require-file name="AwardsAdmin.php" destination="$sourcedir" />
 		<require-file name="AwardsHooks.php" destination="$sourcedir" />
+		<require-file name="AwardsProfile.php" destination="$sourcedir" />
 		<require-file name="AwardsManage.template.php" destination="$themedir" />
+		<require-file name="AwardsProfile.template.php" destination="$themedir" />
 		<require-file name="AwardsManage.english.php" destination="$languagedir" />
 		<require-file name="AwardsManage.english-utf8.php" destination="$languagedir" />
 		<require-file name="award.gif" destination="$imagesdir" />

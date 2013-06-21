@@ -11,7 +11,6 @@
  * Original Software by:           Juan "JayBachatero" Hernandez
  * Copyright (c) 2006-2009:        YodaOfDarkness (Fustrate)
  * Copyright (c) 2010:             Jason "JBlaze" Clemons
- *
  */
 
 if (!defined('SMF'))
@@ -25,7 +24,7 @@ if (!defined('SMF'))
  */
 function AwardsLoad($new_loaded_ids)
 {
-	global $context, $user_profile, $modSettings, $smcFunc;
+	global $user_profile, $modSettings, $smcFunc;
 
 	// add in the group member -1
 	$new_loaded_ids[] = -1;
@@ -68,7 +67,9 @@ function AwardsLoad($new_loaded_ids)
 				'location' => $row['award_location'],
 				'active' => $row['active']
 			);
-		} else {
+		}
+		else
+		{
 			$user_profile[$row['id_member']]['awards'][] = array(
 				'id' => $row['id_award'],
 				'id_group' => $row['id_group'],
@@ -129,7 +130,7 @@ function AwardsLoad($new_loaded_ids)
  */
 function AwardsAutoCheck($new_loaded_ids)
 {
-	global $context, $smcFunc, $user_profile;
+	global $smcFunc;
 
 	// See if we already have this in the cache
 	$autoawards = cache_get_data('awards:autoawards', 4 * 3600);
@@ -304,7 +305,7 @@ function AwardsAutoAssignMembers($awardids, $new_loaded_ids, $area, $one_to_n = 
  */
 function AwardsAutoAssign($members, $award_type, $awardids)
 {
-	global $smcFunc, $user_profile, $modSettings;
+	global $smcFunc, $user_profile;
 
 	// init
 	$values = array();
@@ -542,7 +543,7 @@ function AwardsTopTopicStarter_1_N($limit = 10)
  */
 function AwardsTopTimeon_1_N($limit = 10)
 {
-	global $user_profile, $context, $smcFunc;
+	global $user_profile, $smcFunc;
 
 	// The time on line 1-N list will not change that often, so cache it for a bit
 	$temp = cache_get_data('awards_total_time_members', 600);
