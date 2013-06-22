@@ -4,7 +4,7 @@
  * @name      Awards Modification
  * @license   Mozilla Public License version 2.0 http://mozilla.org/MPL/2.0/.
  *
- * @version   3.0 Alpha
+ * @version   3.0
  *
  * This file handles the admin side of Awards.
  *
@@ -32,7 +32,7 @@ function member_awards_profile_areas(&$profile_areas)
 	$profile_areas['info']['areas'] = array_merge($profile_areas['info']['areas'],array(
 		'showAwards' => array(
 			'label' => $txt['showAwards'],
-			'file' => 'Profile-View.php',
+			'file' => 'AwardsProfile.php',
 			'function' => 'showAwards',
 			'permission' => array(
 				'own' => 'profile_view_own',
@@ -40,7 +40,7 @@ function member_awards_profile_areas(&$profile_areas)
 			),
 		),
 		'membersAwards' => array(
-			'file' => 'Profile-View.php',
+			'file' => 'AwardsProfile.php',
 			'function' => 'membersAwards',
 			'hidden' => (isset($_GET['area']) && $_GET['area'] != "membersAwards"),
 			'permission' => array(
@@ -50,7 +50,7 @@ function member_awards_profile_areas(&$profile_areas)
 		),
 		'listAwards' => array(
 			'label' => $txt['listAwards'],
-			'file' => 'Profile-View.php',
+			'file' => 'AwardsProfile.php',
 			'function' => 'listAwards',
 			'permission' => array(
 				'own' => 'profile_view_own',
@@ -58,7 +58,7 @@ function member_awards_profile_areas(&$profile_areas)
 			),
 		),
 		'requestAwards' => array(
-			'file' => 'Profile-View.php',
+			'file' => 'AwardsProfile.php',
 			'hidden' => true,
 			'function' => 'requestAwards',
 			'permission' => array(
