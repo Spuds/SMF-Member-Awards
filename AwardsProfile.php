@@ -4,7 +4,7 @@
  * @name      Awards Modification
  * @license   Mozilla Public License version 2.0 http://mozilla.org/MPL/2.0/.
  *
- * @version   3.0 Alpha
+ * @version   3.0
  *
  * Original Software by:           Juan "JayBachatero" Hernandez
  * Copyright (c) 2006-2009:        YodaOfDarkness (Fustrate)
@@ -54,8 +54,9 @@ function showAwards($memID)
 		redirectexit('action=profile;area=showAwards;u=' . $memID);
 	}
 
-	// Load language
+	// Load language & template
 	loadLanguage('AwardsManage');
+	loadTemplate('AwardsProfile');
 
 	// Count the number of items in the database for create index
 	$request = $smcFunc['db_query']('', '
@@ -145,8 +146,9 @@ function membersAwards()
 	// Are they allowed to see the memberlist at all?
 	isAllowedTo('view_mlist');
 
-	// Load language
+	// Load language & template
 	loadLanguage('AwardsManage');
+	loadTemplate('AwardsProfile');
 
 	// Load in our helper functions
 	require_once($sourcedir . '/AwardsSubs.php');
@@ -223,6 +225,7 @@ function listAwards()
 	global $context, $txt, $scripturl, $modSettings, $smcFunc, $user_info, $user_profile;
 
 	loadLanguage('AwardsManage');
+	loadTemplate('AwardsProfile');
 
 	// Count the number of items in the database for create index
 	$request = $smcFunc['db_query']('', '
@@ -300,6 +303,7 @@ function requestAwards()
 
 	// Load language
 	loadLanguage('AwardsManage');
+	loadTemplate('AwardsProfile');
 
 	// Load in our helper functions
 	require_once($sourcedir . '/AwardsSubs.php');
