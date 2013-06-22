@@ -63,6 +63,13 @@ $tables[] = array(
 			'default' => 0
 		),
 		array(
+			'name' => 'id_group', 
+			'type' => 'smallint', 
+			'size' => 5, 
+			'null' => false, 
+			'default' => 0
+		),
+		array(
 			'name' => 'date_received', 
 			'type' => 'date', 
 			'null' => false, 
