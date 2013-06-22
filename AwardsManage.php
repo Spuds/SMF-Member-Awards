@@ -4,7 +4,7 @@
  * @name      Awards Modification
  * @license   Mozilla Public License version 2.0 http://mozilla.org/MPL/2.0/.
  *
- * @version   3.0 Alpha
+ * @version   3.0
  *
  * This file handles the loading side of Awards.
  *
@@ -135,14 +135,16 @@ function AwardsAutoCheck($new_loaded_ids)
 	// See if we already have this in the cache
 	$autoawards = cache_get_data('awards:autoawards', 4 * 3600);
 	$autoawardsid = cache_get_data('awards:autoawardsid', 4 * 3600);
-	if ($autoawards == null || $autoawardsid == null)
+	if ($autoawards === null || $autoawardsid === null)
 	{
 		// init
 		$autoawards = array();
 		$autoawardsid = array();
 
-		// Load all the defined auto awards .. uses a filesort, but how many auto award definitions are there, <100? php sort instead?
-		// The key is the trigger desc sort, this allows us to use 1 query for that auto award 'type', all others will a subset of that
+		// Load all the defined auto awards .. uses a filesort,
+		// but how many auto award definitions are there, <100? php sort instead?
+		// The key is the trigger desc sort, this allows us to use 1 query for that auto award 'type',
+		// all others will be a subset of that
 		$request = $smcFunc['db_query']('', '
 			SELECT
 				id_award, award_name, award_trigger, award_type

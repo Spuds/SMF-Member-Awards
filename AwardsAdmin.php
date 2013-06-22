@@ -4,7 +4,7 @@
  * @name      Awards Modification
  * @license   Mozilla Public License version 2.0 http://mozilla.org/MPL/2.0/.
  *
- * @version   3.0 Alpha
+ * @version   3.0
  *
  * This file handles the admin side of Awards.
  *
@@ -680,7 +680,7 @@ function AwardsAssignMemberGroup()
 				'type' => 1,
 			)
 		);
-
+		// Place them in context for the menu
 		while ($row = $smcFunc['db_fetch_assoc']($request))
 		{
 			$context['awards'][$row['id_award']] = array(
@@ -698,7 +698,7 @@ function AwardsAssignMemberGroup()
 		$context['page_title'] = $txt['awards_title'] . ' - ' . $txt['awards_mem_group'];
 	}
 	// Ah step 'duo', they selected some ungrateful group(s) to get an award :P
-	elseif (isset($_REQUEST['step']) && (int) $_REQUEST['step'] == 2)
+	elseif (isset($_REQUEST['step']) && (int) $_REQUEST['step'] === 2)
 	{
 		// Make sure that they picked an award and group to assign it to...
 		if (isset($_POST['who']))
