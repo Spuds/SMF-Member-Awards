@@ -102,21 +102,21 @@ function template_awards_members()
 	echo '
 		<div class="title_bar">
 			<h3 class="titlebg">
-				<img class="icon" src="' . $settings['images_url'] . '/awards/award.png" alt="" />&nbsp;', $txt['viewingAwards'] . ' ' . $context['award']['name'], '
+				<img class="icon" src="' . $settings['images_url'] . '/awards/award.png" alt="" />&nbsp;', $txt['viewingAwards'] . ' ' . $context['award']['award_name'], '
 			</h3>
 		</div>
 
 		<div class="windowbg">
 			<span class="topslice"><span></span></span>
 			<div class="content" align="center">
-				<img style="padding:0 0 5px 0" src="', $context['award']['img'], '" alt="', $context['award']['name'], '" /><br />';
+				<img style="padding:0 0 5px 0" src="', $context['award']['img'], '" alt="', $context['award']['award_name'], '" /><br />';
 
 	if ($context['award']['img'] != $context['award']['miniimg'])
 		echo '
-				<img style="vertical-align:middle" src="', $context['award']['miniimg'], '" alt="', $context['award']['name'], '" /> ';
+				<img style="vertical-align:middle" src="', $context['award']['miniimg'], '" alt="', $context['award']['award_name'], '" /> ';
 
 	echo '
-				<strong>', $context['award']['name'], '</strong><br />', $context['award']['description'], '
+				<strong>', $context['award']['award_name'], '</strong><br />', $context['award']['description'], '
 			</div>
 			<span class="botslice"><span></span></span>
 		</div>
@@ -214,21 +214,21 @@ function template_awards_request()
 	echo '
 		<div class="title_bar">
 			<h3 class="titlebg">
-				<img class="icon" src="' . $settings['images_url'] . '/awards/award.png" alt="" />&nbsp;', $txt['awards_requesting_award'] . ' ' . $context['award']['name'], '
+				<img class="icon" src="' . $settings['images_url'] . '/awards/award.png" alt="" />&nbsp;', $txt['awards_requesting_award'] . ' ' . $context['award']['award_name'], '
 			</h3>
 		</div>
 
 		<div class="windowbg">
 			<span class="topslice"><span></span></span>
 			<div class="content" align="center">
-				<img style="padding:0 0 5px 0" src="', $context['award']['img'], '" alt="', $context['award']['name'], '" /><br />';
+				<img style="padding:0 0 5px 0" src="', $context['award']['img'], '" alt="', $context['award']['award_name'], '" /><br />';
 
 	if ($context['award']['img'] != $context['award']['miniimg'])
 		echo '
-				<img style="vertical-align:middle" src="', $context['award']['miniimg'], '" alt="', $context['award']['name'], '" /> ';
+				<img style="vertical-align:middle" src="', $context['award']['miniimg'], '" alt="', $context['award']['award_name'], '" /> ';
 
 	echo '
-				<strong>', $context['award']['name'], '</strong><br />', $context['award']['description'], '
+				<strong>', $context['award']['award_name'], '</strong><br />', $context['award']['description'], '
 			</div>
 			<span class="botslice"><span></span></span>
 		</div>

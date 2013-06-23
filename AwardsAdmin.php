@@ -74,7 +74,7 @@ function Awards()
 		array('id' => 8, 'name' => $txt['awards_karma_level'], 'desc' => $txt['awards_karma_level_desc']),
 	);
 
-	// And our placement array
+	// Our placement array
 	$context['award_placements'] = array(
 		array('id' => 1, 'name' => $txt['awards_image_placement_below']),
 		array('id' => 2, 'name' => $txt['awards_image_placement_above']),
@@ -107,7 +107,6 @@ function AwardsMain()
 		SELECT COUNT(id_award)
 		FROM {db_prefix}awards'
 	);
-
 	list($countAwards) = $smcFunc['db_fetch_row']($request);
 	$smcFunc['db_free_result']($request);
 
@@ -132,13 +131,11 @@ function AwardsMain()
 			'end' => $maxAwards
 		)
 	);
-
 	$context['categories'] = array();
-
 	// Loop through the results.
 	while ($row = $smcFunc['db_fetch_assoc']($request))
 	{
-		// Group our categories
+		// Group awards based on categories
 		if (!isset($context['categories'][$row['id_category']]['name']))
 			$context['categories'][$row['id_category']] = array(
 				'name' => $row['category_name'],
@@ -177,9 +174,9 @@ function AwardsMain()
 
 /**
  * Sets up the $context['award'] array for the add/edit page.
- * If it's a new award, inserts a new row if not it updated an existing one.
+ * If it's a new award, inserts a new row if not it updates an existing one.
  * Uses AwardsUpload for files upload.
- * If a new image is uploaded for an existing mod, deletes the old images.
+ * If a new image is uploaded for an existing award, deletes the old images.
  */
 function AwardsModify()
 {
@@ -239,7 +236,7 @@ function AwardsModify()
 			if (($context['award']['type'] > 1) && ($context['award']['trigger'] != $trigger))
 			{
 				// Trigger value changed, this invalidates all (auto) awards earned with this award ID, so remove them
-				// From the members to which it is assigned
+				// From the members to which it *is* assigned
 				$smcFunc['db_query']('', '
 					DELETE FROM {db_prefix}awards_members
 					WHERE id_award = {int:award}',
@@ -276,7 +273,7 @@ function AwardsModify()
 			);
 
 			// Are we uploading new images for this award?
-			if ($editAward === true && ((isset($_FILES['awardFile']) && $_FILES['awardFile']['error'] == 0) || (isset($_FILES['awardFileMini']) && $_FILES['awardFileMini']['error'] == 0)))
+			if ($editAward == true && ((isset($_FILES['awardFile']) && $_FILES['awardFile']['error'] == 0) || (isset($_FILES['awardFileMini']) && $_FILES['awardFileMini']['error'] == 0)))
 			{
 				// Lets make sure that we delete the file that we are supposed to and not something harmful
 				$request = $smcFunc['db_query']('', '
@@ -287,7 +284,6 @@ function AwardsModify()
 						'id' => $id
 					)
 				);
-
 				list ($filename, $minifile) = $smcFunc['db_fetch_row']($request);
 				$smcFunc['db_free_result']($request);
 
@@ -321,13 +317,11 @@ function AwardsModify()
 		ORDER BY category_name ASC',
 		array()
 	);
-
 	while($row = $smcFunc['db_fetch_assoc']($request))
 		$context['categories'][] = array(
 			'id' => $row['id_category'],
 			'name' => $row['category_name'],
 		);
-
 	$smcFunc['db_free_result']($request);
 
 	if (empty($context['settings_post_javascript']))
@@ -509,7 +503,6 @@ function AwardsUpload($id_award)
  * This function handles deleting an award
  * If the image exists delete it then deletes the row from the database
  * Deletes any trace of the award from the awards_members table.
- *
  */
 function AwardsDelete()
 {
@@ -562,7 +555,7 @@ function AwardsDelete()
 /**
  * This is where you assign awards to members.
  * Step 1
- *   - This is where you select the award that you want to assign
+ *   - Select the award that you want to assign
  *   - Uses AwardsBuildJavascriptObject to build the form so the correct image displays with the award
  *
  * - Step 2
@@ -590,9 +583,7 @@ function AwardsAssign()
 				'assign' => 1,
 			)
 		);
-
 		$context['awards'] = array();
-
 		while ($row = $smcFunc['db_fetch_assoc']($request))
 		{
 			$context['awards'][$row['id_award']] = array(
@@ -604,6 +595,7 @@ function AwardsAssign()
 			);
 		}
 		$smcFunc['db_free_result']($request);
+
 		$context['awardsjavasciptarray'] = AwardsBuildJavascriptObject($context['awards'], 'awards');
 
 		// Quick check for mischievous users ;)
@@ -617,7 +609,7 @@ function AwardsAssign()
 		$context['page_title'] = $txt['awards_title'] . ' - ' . $txt['awards_select_badge'];
 	}
 	// Ah step '2', they selected some bum(s) to get an award :)
-	elseif (isset($_GET['step']) && (int) $_GET['step'] == 2)
+	elseif (isset($_GET['step']) && $_GET['step'] == 2)
 	{
 		// Check session.
 		checkSession('post');
@@ -625,7 +617,7 @@ function AwardsAssign()
 		// Make sure that they picked an award and members to assign it to... but not themselfs, that would be wrong
 		foreach($_POST['recipient_to'] as $recipient)
 		{
-			if ($recipient != $user_info['id'])
+			if ($recipient != $user_info['id'] || $user_info['is_admin'])
 				$members[] = (int) $recipient;
 		}
 
@@ -908,14 +900,14 @@ function AwardsGetGroupMembers()
  */
 function AwardsViewAssigned()
 {
-	global $smcFunc, $context, $scripturl, $txt, $sourcedir;
+	global $smcFunc, $context, $scripturl, $txt, $sourcedir, $modSettings;
 
 	// An award must be selected.
 	$id = (int) $_REQUEST['a_id'];
 	if (empty($id) || $id <= 0)
 		fatal_lang_error('awards_error_no_award');
 
-	// Removing the award from these members?
+	// Removing the award from some members?
 	if (isset($_POST['unassign']))
 	{
 		checkSession('post');
@@ -923,8 +915,8 @@ function AwardsViewAssigned()
 		$members = array();
 
 		// Get all the member id's ....
-		foreach ($_POST['member'] as $removeID => $dummy)
-			$members[] = (int) $removeID;
+		foreach ($_POST['member'] as $remove_id => $dummy)
+			$members[] = (int) $remove_id;
 
 		// Delete the rows from the database for the members selected.
 		$smcFunc['db_query']('', '
@@ -949,10 +941,10 @@ function AwardsViewAssigned()
 	// build the listoption array to display the data
 	$listOptions = array(
 		'id' => 'view_assigned',
-		'title' => $txt['awards_showmembers'] . ': ' . $context['award']['name'],
-		'items_per_page' => 40,
+		'title' => $txt['awards_showmembers'] . ': ' . $context['award']['award_name'],
+		'items_per_page' => $modSettings['defaultMaxMessages'],
 		'no_items_label' => $txt['awards_no_assigned_members2'],
-		'base_href' => $scripturl . '?action=admin;area=awards;sa=viewassigned;a_id='.$id,
+		'base_href' => $scripturl . '?action=admin;area=awards;sa=viewassigned;a_id=' . $id,
 		'default_sort_col' => 'username',
 		'get_items' => array(
 			'function' => 'AwardsGetMembers',
@@ -972,7 +964,7 @@ function AwardsViewAssigned()
 					'value' => $txt['members'],
 				),
 				'data' => array(
-					'db' => 'name',
+					'db' => 'member_name',
 				),
 				'sort' => array(
 					'default' => 'm.member_name ',
@@ -984,7 +976,7 @@ function AwardsViewAssigned()
 					'value' => $txt['username'],
 				),
 				'data' => array(
-					'db' => 'link',
+					'db' => 'real_name',
 				),
 				'sort' => array(
 					'default' => 'm.real_name ',
@@ -996,7 +988,7 @@ function AwardsViewAssigned()
 					'value' => $txt['awards_date'],
 				),
 				'data' => array(
-					'db' => 'date',
+					'db' => 'date_received',
 				),
 				'sort' => array(
 					'default' => 'a.date_received DESC',
@@ -1026,14 +1018,14 @@ function AwardsViewAssigned()
 		'additional_rows' => array(
 			array(
 				'position' => 'below_table_data',
-				'value' => '<input type="submit" name="unassign" class="button_submit" value="' . $txt['awards_unassign'] . '" accesskey="s" onclick="return confirm(\'' . $txt['awards_removemember_yn'] . '\');" />',
+				'value' => '<input type="submit" name="unassign" class="button_submit" value="' . $txt['awards_unassign'] . '" accesskey="u" onclick="return confirm(\'' . $txt['awards_removemember_yn'] . '\');" />',
 				'style' => 'text-align: right;',
 			),
 		),
 	);
 
 	// Set the context values
-	$context['page_title'] = $txt['awards_title'] . ' - ' . $context['award']['name'];
+	$context['page_title'] = $txt['awards_title'] . ' - ' . $context['award']['award_name'];
 	$context['sub_template'] = 'view_assigned';
 
 	// Create the list.

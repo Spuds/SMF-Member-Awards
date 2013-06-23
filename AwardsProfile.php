@@ -161,7 +161,7 @@ function membersAwards()
 	// build the listoption array to display the data
 	$listOptions = array(
 		'id' => 'view_assigned',
-		'title' => $txt['awards_showmembers'] . ': ' . $context['award']['name'],
+		'title' => $txt['awards_showmembers'] . ': ' . $context['award']['award_name'],
 		'items_per_page' => 25,
 		'no_items_label' => $txt['awards_no_assigned_members2'],
 		'base_href' => $scripturl . '?action=profile;area=membersAwards;a_id=' . $id,
@@ -213,7 +213,7 @@ function membersAwards()
 	);
 
 	// Set the context values
-	$context['page_title'] = $txt['awards_title'] . ' - ' . $context['award']['name'];
+	$context['page_title'] = $txt['awards_title'] . ' - ' . $context['award']['award_name'];
 	$context['sub_template'] = 'awards_members';
 
 	// Create the list.
@@ -326,7 +326,7 @@ function requestAwards()
 
 		// Set the context values
 		$context['step'] = 1;
-		$context['page_title'] = $txt['awards_request_award'] . ' - ' . $context['award']['name'];
+		$context['page_title'] = $txt['awards_request_award'] . ' - ' . $context['award']['award_name'];
 		$context['sub_template'] = 'awards_request';
 	}
 	// step '2', they have actually demanded an award!

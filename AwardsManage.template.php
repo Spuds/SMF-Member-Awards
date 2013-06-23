@@ -849,9 +849,9 @@ function template_view_assigned()
 	<span class="upperframe"><span></span></span>
 	<div class="roundframe">
 		<div id="award">
-			<img style="vertical-align:middle;padding:0 5px" src="', $context['award']['img'], '" alt="', $context['award']['name'], '" />
-			<img style="vertical-align:middle;padding:0 5px" src="', $context['award']['miniimg'], '" alt="', $context['award']['name'], '" />
-			- <strong>', $context['award']['name'], '</strong> - ', $context['award']['description'], '
+			<img style="vertical-align:middle;padding:0 5px" src="', $context['award']['img'], '" alt="', $context['award']['award_name'], '" />
+			<img style="vertical-align:middle;padding:0 5px" src="', $context['award']['miniimg'], '" alt="', $context['award']['award_name'], '" />
+			- <strong>', $context['award']['award_name'], '</strong> - ', $context['award']['description'], '
 		</div>
 	</div>
 	<span class="lowerframe"><span></span></span>
