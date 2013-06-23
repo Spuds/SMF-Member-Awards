@@ -72,7 +72,7 @@ function AwardsBuildJavascriptObject_Recurse($array)
  */
 function AwardsLoadAward($id = -1)
 {
-	global $context, $smcFunc, $modSettings;
+	global $context, $smcFunc, $modSettings, $scripturl;
 
 	// Load single award
 	$request = $smcFunc['db_query']('', '
