@@ -1003,7 +1003,7 @@ function AwardsViewAssigned()
 					'sprintf' => array(
 						'format' => '<input type="checkbox" name="member[%1$d]" id="member%1$d" class="input_check" />',
 						'params' => array(
-							'id' => false,
+							'id_member' => false,
 						),
 					),
 					'style' => 'text-align: center',
