@@ -111,10 +111,26 @@ function AwardsLoadAward($id = -1)
 	$smcFunc['db_free_result']($request);
 };
 
-function AwardsValidateImage()
+function AwardsValidateImage($name, $id)
 {
+	$award = $_FILES[$name];
+
+	// Check if file was uploaded.
+	if ($award['error'] === 1 || $award['error'] === 2)
+		fatal_lang_error('awards_error_upload_size');
+	elseif ($award['error'] !== 0)
+		fatal_lang_error('awards_error_upload_failed');
+
+	// Check the extensions
+	$goodExtensions = array('jpg', 'jpeg', 'gif', 'png');
+	if (!in_array(strtolower(substr(strrchr($award['name'], '.'), 1)), $goodExtensions))
+		fatal_lang_error('awards_error_wrong_extension');
+
 	// @todo
-};
+	// awards_error_upload_size
+	// AwardsValidateImage('awardFile', $id_award);
+	// AwardsValidateImage('awardFileMini', $id_award);
+}
 
 /**
  * Get the list of groups that this member can see
