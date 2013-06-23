@@ -241,4 +241,58 @@ function AwardsGetGroups()
 			$context['groups'][$row['id_group']]['member_count'] += $row['num_members'];
 		$smcFunc['db_free_result']($query);
 	}
-};
+}
+
+function AwardsGetMembers($start, $items_per_page, $sort, $id)
+{
+	global $smcFunc;
+
+	// All the members with this award
+	$request = $smcFunc['db_query']('', '
+		SELECT
+			m.real_name, m.member_name,
+			a.id_member, a.date_received
+		FROM {db_prefix}awards_members AS a
+			LEFT JOIN {db_prefix}members AS m ON (m.id_member = a.id_member)
+		WHERE a.id_award = {int:award}
+			AND a.active = {int:active}
+		ORDER BY {raw:sort}
+		LIMIT {int:start}, {int:per_page}',
+		array(
+			'award' => (int) $id,
+			'active' => 1,
+			'sort' => $sort,
+			'start' => $start,
+			'per_page' => $items_per_page,
+		)
+	);
+
+	$members = array();
+	while ($row = $smcFunc['db_fetch_assoc']($request))
+		$members[] = $row;
+	$smcFunc['db_free_result']($request);
+
+	return $members;
+}
+
+function AwardsGetMembersCount($id)
+{
+	global $smcFunc;
+
+	// Count the number of items in the database for create index
+	$request = $smcFunc['db_query']('', '
+		SELECT COUNT(*)
+		FROM {db_prefix}awards_members
+		WHERE id_award = {int:award}
+			AND active = {int:active}',
+		array(
+			'award' => (int) $id,
+			'active' => 1
+		)
+	);
+
+	list ($num_members) = $smcFunc['db_fetch_row']($request);
+	$smcFunc['db_free_result']($request);
+
+	return $num_members;
+}
