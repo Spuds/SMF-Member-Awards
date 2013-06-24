@@ -109,8 +109,15 @@ function AwardsLoadAward($id = -1)
 
 	// Free results
 	$smcFunc['db_free_result']($request);
-};
+}
 
+/**
+ * Used to validate images uploaded are valid for the system
+ * @todo incomplete
+ *
+ * @param string $name
+ * @param int $id
+ */
 function AwardsValidateImage($name, $id)
 {
 	$award = $_FILES[$name];
@@ -243,17 +250,28 @@ function AwardsGetGroups()
 	}
 }
 
+/**
+ * Callback for createlist
+ * List all members and groups who have recived an award
+ *
+ * @param int $start
+ * @param int $items_per_page
+ * @param string $sort
+ * @param int $id
+ */
 function AwardsGetMembers($start, $items_per_page, $sort, $id)
 {
-	global $smcFunc;
+	global $smcFunc, $txt;
 
 	// All the members with this award
 	$request = $smcFunc['db_query']('', '
 		SELECT
 			m.real_name, m.member_name,
-			a.id_member, a.date_received
+			a.id_member, a.date_received, a.id_group, a.uniq_id,
+			g.group_name
 		FROM {db_prefix}awards_members AS a
 			LEFT JOIN {db_prefix}members AS m ON (m.id_member = a.id_member)
+			LEFT JOIN {db_prefix}membergroups AS g ON (a.id_group = g.id_group)
 		WHERE a.id_award = {int:award}
 			AND a.active = {int:active}
 		ORDER BY {raw:sort}
@@ -269,12 +287,26 @@ function AwardsGetMembers($start, $items_per_page, $sort, $id)
 
 	$members = array();
 	while ($row = $smcFunc['db_fetch_assoc']($request))
+	{
+		// Group award?
+		if ($row['id_member'] == -1)
+		{
+			$row['member_name'] = $row['group_name'];
+			$row['real_name'] = $txt['awards_assign_membergroup'];
+		}
 		$members[] = $row;
+	}
 	$smcFunc['db_free_result']($request);
 
 	return $members;
 }
 
+/**
+ * Callback for createlist
+ * Used to get the total number of members/groups who have recived a specific award
+ *
+ * @param type $id
+ */
 function AwardsGetMembersCount($id)
 {
 	global $smcFunc;

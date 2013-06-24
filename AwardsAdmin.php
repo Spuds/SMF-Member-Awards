@@ -912,17 +912,16 @@ function AwardsViewAssigned()
 	{
 		checkSession('post');
 
-		$members = array();
-
-		// Get all the member id's ....
+		// Get all the id's selected in the form
+		$ids = array();
 		foreach ($_POST['member'] as $remove_id => $dummy)
-			$members[] = (int) $remove_id;
+			$ids[] = (int) $remove_id;
 
-		// Delete the rows from the database for the members selected.
+		// Delete the rows from the database for the ids selected.
 		$smcFunc['db_query']('', '
 			DELETE FROM {db_prefix}awards_members
 			WHERE id_award = {int:id}
-				AND id_member IN (' . implode(', ', $members) . ')',
+				AND uniq_id IN (' . implode(', ', $ids) . ')',
 			array(
 				'id' => $id
 			)
@@ -1003,7 +1002,7 @@ function AwardsViewAssigned()
 					'sprintf' => array(
 						'format' => '<input type="checkbox" name="member[%1$d]" id="member%1$d" class="input_check" />',
 						'params' => array(
-							'id_member' => false,
+							'uniq_id' => false,
 						),
 					),
 					'style' => 'text-align: center',
