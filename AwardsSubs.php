@@ -328,3 +328,86 @@ function AwardsGetMembersCount($id)
 
 	return $num_members;
 }
+
+/**
+ * Helper function to load the number of awards in a given category
+ * Used by createlist in awardsmain
+ *
+ * @param int $cat
+ */
+function AwardsCountAwards($cat)
+{
+	global $smcFunc;
+
+	// Count the number of items in the database for create index
+	$request = $smcFunc['db_query']('', '
+		SELECT COUNT(id_award)
+		FROM {db_prefix}awards
+		WHERE id_category = {int:cat}',
+		array(
+			'cat' => (int) $cat,
+		)
+	);
+	list($countAwards) = $smcFunc['db_fetch_row']($request);
+	$smcFunc['db_free_result']($request);
+
+	return $countAwards;
+}
+
+/**
+ * Helper function to load the awards in a given category
+ * Used by createlist in awardsmain
+ *
+ * @param int $start
+ * @param int $items_per_page
+ * @param string $sort
+ * @param int $cat
+ */
+function AwardsGetAwards($start, $items_per_page, $sort, $cat)
+{
+	global $smcFunc, $context, $scripturl, $modSettings;
+
+	// Select the awards and their categories.
+	$request = $smcFunc['db_query']('', '
+		SELECT
+			a.id_category, a.id_award, a.award_name, a.description, a.time_added, a.filename, a.minifile, a.award_type, a.award_requestable, a.award_assignable,
+			c.category_name
+		FROM {db_prefix}awards AS a
+			LEFT JOIN {db_prefix}awards_categories AS c ON (c.id_category = a.id_category)
+		WHERE a.id_category = {int:cat}
+		ORDER BY {raw:sort}
+		LIMIT {int:start}, {int:end}',
+		array(
+			'start' => $start,
+			'end' => $items_per_page,
+			'sort' => $sort,
+			'cat' => (int) $cat,
+		)
+	);
+	$categories = array();
+	// Loop through the results.
+	while ($row = $smcFunc['db_fetch_assoc']($request))
+	{
+		// load up the award details
+		$categories[] =	array(
+			'id' => $row['id_award'],
+			'award_name' => $row['award_name'],
+			'award_type' => $row['award_type'],
+			'description' => $row['description'],
+			'time' => timeformat($row['time_added']),
+			'requestable' => $row['award_requestable'],
+			'assignable' => $row['award_assignable'],
+			'filename' => $row['filename'],
+			'minifile' => $row['minifile'],
+			'img' => dirname($scripturl) . '/' . (empty($modSettings['awards_dir']) ? '' : $modSettings['awards_dir'] . '/') . $row['filename'],
+			'small' => dirname($scripturl) . '/' . (empty($modSettings['awards_dir']) ? '' : $modSettings['awards_dir'] . '/') . $row['minifile'],
+			'edit' => ((allowedTo('manage_awards')) ? $scripturl . '?action=admin;area=awards;sa=modify;a_id=' . $row['id_award'] : ''),
+			'delete' =>  ((allowedTo('manage_awards')) ? $scripturl . '?action=admin;area=awards;sa=delete;a_id=' . $row['id_award'] . ';' . $context['session_var'] . '=' . $context['session_id'] : ''),
+			'assign' => ((allowedTo('manage_awards') || !empty($row['award_assignable'])) ? $scripturl . '?action=admin;area=awards;sa=assign;step=1;a_id=' . $row['id_award'] : ''),
+			'view_assigned' => $scripturl . '?action=admin;area=awards;sa=viewassigned;a_id=' . $row['id_award'],
+		);
+	}
+	$smcFunc['db_free_result']($request);
+
+	return $categories;
+}
