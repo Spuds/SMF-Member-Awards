@@ -3,76 +3,13 @@
 
 function template_main()
 {
-	global $context, $txt, $settings;
+	global $context;
 
-	// Check if there are any awards
-	if (empty($context['categories']))
-		echo '
-			<div class="cat_bar">
-				<h3 class="catbg">
-						<span class="error">', $txt['awards_error_no_badges'], '</span>
-				</h3>
-			</div>
-			<br class="clear" />';
-	else
+	for ($i = 0; $i < $context['count']; $i++)
 	{
-		foreach($context['categories'] as $key => $category)
-		{
-			echo '
-			<div class="cat_bar">
-				<h3 class="catbg">
-					<a href="', $category['view'], '">', $category['name'], '</a>','
-					<a class="smalltext floatright" href="', $category['edit'], '" title="', $txt['awards_button_edit'], '"> [' ,$txt['awards_button_edit'], '] <img src="', $settings['images_url'], '/awards/modify.png" class="icon" alt="', $txt['awards_button_edit'], '" /></a>',
-					($key != 1) ? '<a class="smalltext floatright" href="' . $category['delete'] . '" onclick="return confirm(\'' . $txt['awards_confirm_delete_category'] . '\');" title="' . $txt['awards_button_delete'] . '">[' . $txt['awards_button_delete'] . '] <img src="' . $settings['images_url'] . '/awards/delete.png" class="icon" alt="' . $txt['awards_button_delete'] . '" /></a> ' : '', '
-				</h3>
-			</div>
-
-			<table class="table_grid" width="100%">
-			<thead>
-				<tr class="titlebg">
-					<th scope="col" class="first_th smalltext" width="15%">', $txt['awards_image'], '</th>
-					<th scope="col" class="smalltext" width="15%">', $txt['awards_mini'], '</th>
-					<th scope="col" class="smalltext" width="25%">', $txt['awards_name'], '</th>
-					<th scope="col" class="smalltext" width="35%">', $txt['awards_desc'], '</th>
-					<th scope="col" class="last_th smalltext" width="10%">', $txt['awards_actions'], '</th>
-				</tr>
-			</thead>
-			<tbody>';
-
-			$which = false;
-			foreach ($category['awards'] as $award)
-			{
-				$which = !$which;
-
-				echo '
-					<tr class="windowbg', $which ? '2' : '', '">
-						<td align="center"><img src="', $award['img'], '" alt="', $award['award_name'], '" /></td>
-						<td align="center"><img src="', $award['small'], '" alt="', $award['award_name'], '" /></td>
-						<td>', $award['award_name'], '</td>
-						<td>', $award['description'], '</td>
-						<td class="smalltext" align="center">' . ((allowedTo('manage_awards')) ? '<a href="' . $award['edit'] . '" title="' . $txt['awards_button_edit'] . '"><img src="' . $settings['images_url'] . '/awards/modify.png" alt="" /></a>
-							<a href="'  . $award['delete'] . '" onclick="return confirm(\'' . $txt['awards_confirm_delete_award'] . '\');" title="' . $txt['awards_button_delete'] . '"><img src="' . $settings['images_url'] . '/awards/delete.png" alt="" /></a>
-							<br />' : '');
-
-				if (($award['award_type'] <= 1) &&  (allowedTo('manage_awards') || (allowedTo('assign_awards') && !empty($award['assignable']))))
-					echo '
-							<a href="', $award['assign'], '" title="', $txt['awards_button_assign'], '"><img src="', $settings['images_url'], '/awards/assign.png" alt="" /></a>';
-
-				echo '
-							<a href="', $award['view_assigned'], '" title="', $txt['awards_button_members'], '"><img src="', $settings['images_url'], '/awards/user.png" alt="" /></a>
-						</td>
-					</tr>';
-			}
-
-			echo '
-				</tbody>
-				</table>
-				<br class="clear" />';
-		}
-
-		// Show the pages
-		echo '
-			<div class="floatleft pagesection">', $txt['pages'], ': ', $context['page_index'], '</div>';
+		template_show_list('awards_cat_list_' . $i);
+		echo '<br /><br />';
+		$count++;
 	}
 }
 
