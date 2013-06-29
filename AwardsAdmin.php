@@ -100,76 +100,146 @@ function Awards()
  */
 function AwardsMain()
 {
-	global $context, $scripturl, $modSettings, $txt, $smcFunc;
+	global $context, $scripturl, $txt, $smcFunc;
 
-	// Count the number of items in the database for create index
+	require_once($sourcedir . '/Subs-List.php');
+
+	// Load all the categories.
 	$request = $smcFunc['db_query']('', '
-		SELECT COUNT(id_award)
-		FROM {db_prefix}awards'
-	);
-	list($countAwards) = $smcFunc['db_fetch_row']($request);
-	$smcFunc['db_free_result']($request);
-
-	// Calculate the number of results to show per page.
-	$maxAwards = 25;
-
-	// Construct the page index
-	$context['page_index'] = constructPageIndex($scripturl . '?action=admin;area=awards', $_REQUEST['start'], $countAwards, $maxAwards);
-	$context['start'] = isset($_REQUEST['start']) ? (int) $_REQUEST['start'] : 0;
-
-	// Select the awards and their categories.
-	$request = $smcFunc['db_query']('', '
-		SELECT
-			a.id_category, a.id_award, a.award_name, a.description, a.time_added, a.filename, a.minifile, a.award_type, a.award_requestable, a.award_assignable,
-			c.category_name
-		FROM {db_prefix}awards AS a
-			LEFT JOIN {db_prefix}awards_categories AS c ON (c.id_category = a.id_category)
-		ORDER BY c.category_name DESC, a.award_name DESC
-		LIMIT {int:start}, {int:end}',
+		SELECT id_category, category_name
+		FROM {db_prefix}awards_categories
+		ORDER BY category_name DESC',
 		array(
-			'start' => $context['start'],
-			'end' => $maxAwards
 		)
 	);
-	$context['categories'] = array();
-	// Loop through the results.
 	while ($row = $smcFunc['db_fetch_assoc']($request))
-	{
-		// Group awards based on categories
-		if (!isset($context['categories'][$row['id_category']]['name']))
-			$context['categories'][$row['id_category']] = array(
-				'name' => $row['category_name'],
-				'view' => $scripturl . '?action=admin;area=awards;sa=viewcategory;a_id=' . $row['id_category'],
-				'edit' => $scripturl . '?action=admin;area=awards;sa=editcategory;a_id=' . $row['id_category'],
-				'delete' => $scripturl . '?action=admin;area=awards;sa=deletecategory;a_id=' . $row['id_category'] . ';' . $context['session_var'] . '=' . $context['session_id'],
-				'awards' => array(),
-			);
-
-		// load up the award details
-		$context['categories'][$row['id_category']]['awards'][] = array(
-			'id' => $row['id_award'],
-			'award_name' => $row['award_name'],
-			'award_type' => $row['award_type'],
-			'description' => $row['description'],
-			'time' => timeformat($row['time_added']),
-			'requestable' => $row['award_requestable'],
-			'assignable' => $row['award_assignable'],
-			'filename' => $row['filename'],
-			'minifile' => $row['minifile'],
-			'img' => dirname($scripturl) . '/' . (empty($modSettings['awards_dir']) ? '' : $modSettings['awards_dir'] . '/') . $row['filename'],
-			'small' => dirname($scripturl) . '/' . (empty($modSettings['awards_dir']) ? '' : $modSettings['awards_dir'] . '/') . $row['minifile'],
-			'edit' => ((allowedTo('manage_awards')) ? $scripturl . '?action=admin;area=awards;sa=modify;a_id=' . $row['id_award'] : ''),
-			'delete' =>  ((allowedTo('manage_awards')) ? $scripturl . '?action=admin;area=awards;sa=delete;a_id=' . $row['id_award'] . ';' . $context['session_var'] . '=' . $context['session_id'] : ''),
-			'assign' => ((allowedTo('manage_awards') || !empty($row['award_assignable'])) ? $scripturl . '?action=admin;area=awards;sa=assign;step=1;a_id=' . $row['id_award'] : ''),
-			'view_assigned' => $scripturl . '?action=admin;area=awards;sa=viewassigned;a_id=' . $row['id_award'],
-		);
-	}
-
+		$categories[$row['category_name']] = $row['id_category'];
 	$smcFunc['db_free_result']($request);
 
-	// Setup the title and template.
+	// Now build an award list for each category
+	$count = 0;
+	foreach ($categories as $name => $cat)
+	{
+		$listOptions = array(
+			'id' => 'awards_cat_list_' . $count,
+			'title' => $name,
+			'items_per_page' => 25,
+			'default_sort_col' => 'award_name',
+			'no_items_label' => $txt['awards_error_no_badges'],
+			'base_href' => $scripturl . '?action=admin;area=awards' . (isset($_REQUEST['sort'. $count]) ? ';sort'.$count.'=' . urlencode($_REQUEST['sort'. $count]) : ''),
+			'request_vars' => array(
+				'sort' => 'sort' . $count,
+				'desc' => 'desc' . $count,
+			),
+			'get_items' => array(
+				'file' => 'AwardsSubs.php',
+				'function' => 'AwardsGetAwards',
+				'params' => array(
+					$cat,
+				),
+			),
+			'get_count' => array(
+				'file' => 'AwardsSubs.php',
+				'function' => 'AwardsCountAwards',
+				'params' => array(
+					$cat,
+				),
+			),
+			'columns' => array(
+				'img' => array(
+					'header' => array(
+						'value' => $txt['awards_image'],
+					),
+					'data' => array(
+						'sprintf' => array(
+							'format' => '<img src="%1$s" alt="%2$s" />',
+							'params' => array(
+								'img' => false,
+								'awards_name' => false,
+							),
+						),
+						'style' => "width: 15%",
+						'class' => "centertext",
+					),
+				),
+				'small' => array(
+					'header' => array(
+						'value' => $txt['awards_mini'],
+					),
+					'data' => array(
+						'sprintf' => array(
+							'format' => '<img src="%1$s" alt="%2$s" />',
+							'params' => array(
+								'small' => false,
+								'awards_name' => false,
+							),
+						),
+						'style' => "width: 15%",
+						'class' => "centertext",
+					),
+				),
+				'award_name' => array(
+					'header' => array(
+						'value' => $txt['awards_name'],
+					),
+					'data' => array(
+						'db' => 'award_name',
+						'style' => "width: 25%",
+					),
+					'sort' => array(
+						'default' => 'award_name',
+						'reverse' => 'award_name DESC',
+					),
+
+				),
+				'description' => array(
+					'header' => array(
+						'value' => $txt['awards_desc'],
+					),
+					'data' => array(
+						'db' => 'description',
+						'style' => "width: 35%",
+					),
+					'sort' => array(
+						'default' => 'description',
+						'reverse' => 'description DESC',
+					),
+				),
+				'action' => array(
+					'header' => array(
+						'value' => $txt['awards_actions'],
+					),
+					'data' => array(
+						'function' => create_function('$row', '
+							global $txt, $settings;
+
+							$result = ((allowedTo(\'manage_awards\')) ? \'<a href="\' . $row[\'edit\'] . \'" title="\' . $txt[\'awards_button_edit\'] . \'"><img src="\' . $settings[\'images_url\'] . \'/awards/modify.png" alt="" /></a>
+										<a href="\'  . $row[\'delete\'] . \'" onclick="return confirm(\\\'\' . $txt[\'awards_confirm_delete_award\'] . \'\\\');" title="\' . $txt[\'awards_button_delete\'] . \'"><img src="\' . $settings[\'images_url\'] . \'/awards/delete.png" alt="" /></a>
+										<br />\' : \'\');
+
+							if (($row[\'award_type\'] <= 1) && (allowedTo(\'manage_awards\') || (allowedTo(\'assign_awards\') && !empty($row[\'assignable\']))))
+								$result .= \'
+										<a href="\' . $row[\'assign\'] . \'" title="\' . $txt[\'awards_button_assign\'] . \'"><img src="\' . $settings[\'images_url\'] . \'/awards/assign.png" alt="" /></a>\';
+
+							$result .= \'
+										<a href="\' . $row[\'view_assigned\'] . \'" title="\' . $txt[\'awards_button_members\'] . \'"><img src="\' . $settings[\'images_url\'] . \'/awards/user.png" alt="" /></a>\';
+
+							return $result;'
+						),
+						'class' => "centertext",
+						'style' => "width: 10%",
+					),
+				),
+			),
+		);
+
+		createList($listOptions);
+		$count++;
+	}
+
+	// Set up for the template display
+	$context['count'] = $count;
 	$context['page_title'] = $txt['awards_title'] . ' - ' . $txt['awards_main'];
-	$context['sub_template'] = 'main';
 }
 
 /**
