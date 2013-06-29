@@ -54,23 +54,6 @@
 		</operation>
 	</file>
 
-	<file name="$sourcedir/ManagePermissions.php">
-		<operation>
-			<search position="before"><![CDATA[
-		'manage_bans',]]></search>
-			<add><![CDATA[
-		'manage_awards',]]></add>
-		</operation>
-
-		<operation>
-			<search position="before"><![CDATA[
-		'manage_smileys',
-		'edit_news',]]></search>
-			<add><![CDATA[
-		'manage_awards',]]></add>
-		</operation>
-	</file>
-
 	<file name="$sourcedir/Who.php">
 		<operation>
 			<search position="before"><![CDATA[
@@ -79,14 +62,5 @@
 		'awards' => array('manage_awards'),]]></add>
 		</operation>
 	</file>
-
-	<file name="$themedir/Profile.template.php">
-		<operation>
-			<search position="before"><![CDATA[					<a href="', $scripturl, '?action=profile;area=showposts;u=', $context['id_member'], '">', $txt['showPosts'], '</a><br />
-					<a href="', $scripturl, '?action=profile;area=statistics;u=', $context['id_member'], '">', $txt['statPanel'], '</a>]]></search>
-			<add><![CDATA[
-					<br /><a href="', $scripturl, '?action=profile;area=showAwards;u=', $context['member']['id'], '">', $txt['awards_view_album'], '</a>]]></add>
-		</operation>
-	</file>	
 
 </modification>

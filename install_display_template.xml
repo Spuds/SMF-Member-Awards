@@ -1,8 +1,8 @@
 <?xml version="1.0"?>
 <!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
 <modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
-	<id>jaybachatero:member_awards</id>
-	<version>2.5</version>
+	<id>spuds:member_awards</id>
+	<version>3.0</version>
 
 <file name="$themedir/Display.template.php">
 	<!-- These are the edits to the display template.  If you are using a custom theme they might not work at all! -->
