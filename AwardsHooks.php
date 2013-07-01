@@ -18,15 +18,14 @@ if (!defined('SMF'))
 	die('Hacking attempt...');
 
 /**
- * profile menu hook
- * adds show my & view award options
+ * Profile Menu Hook, integrate_profile_areas, called from profile.php
+ * Used to add menu items to the profile area
+ * Adds show my & view award options
  *
  * @param array $profile_areas
  */
 function member_awards_profile_areas(&$profile_areas)
 {
-	// Profile Menu Hook, integrate_profile_areas, called from profile.php
-	// used to add menu items to the profile area
 	global $txt, $user_info;
 
 	// No need to show these profile option to guests, perhaps a view_awards permissions should be added?
@@ -79,16 +78,13 @@ function member_awards_profile_areas(&$profile_areas)
 }
 
 /**
- * admin hook
+ * Admin hook, integrate_admin_areas, called from Admin.php
  * adds the admin menu and all award sub actions as a sub menu
  * hidden to all but admin, accessable via manage_award permission
-
  * @param array $admin_areas
  */
 function member_awards_admin_areas(&$admin_areas)
 {
-	// Admin Hook, integrate_admin_areas, called from Admin.php
-	// used to add/modify admin menu areas
 	global $txt, $modSettings;
 
 	// allow members with this permission to access the menu :P
@@ -137,7 +133,8 @@ function member_awards_load_permissions(&$permissionGroups, &$permissionList, &$
 }
 
 /**
- * menu button hook
+ * Menu Button hook, integrate_menu_buttons, called from subs.php
+ * used to add top menu buttons
  * adds awards menu item below members button
  * visable to anyone with manage_awards permission
  *
@@ -145,9 +142,6 @@ function member_awards_load_permissions(&$permissionGroups, &$permissionList, &$
  */
 function member_awards_menu_buttons(&$buttons)
 {
-	// Menu Button hook, integrate_menu_buttons, called from subs.php
-	// used to add top menu buttons
-
 	global $txt, $scripturl;
 
 	// allows members with manage_awards permission to see a menu item since the admin menu is hidden for them
@@ -171,7 +165,7 @@ function member_awards_array_insert(&$input, $key, $insert, $where = 'before', $
 {
 	$position = array_search($key, array_keys($input), $strict);
 
-	// If the key is not found, just insert as last
+	// If the key is not found, just insert it at the end
 	if ($position === false)
 	{
 		$input = array_merge($input, $insert);
