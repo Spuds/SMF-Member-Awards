@@ -26,7 +26,7 @@ function AwardsLoad($new_loaded_ids)
 {
 	global $user_profile, $modSettings, $smcFunc;
 
-	// add in the group member -1
+	// add in the "group member" -1
 	$new_loaded_ids[] = -1;
 	$group_awards = array();
 	$group_awards_details = array();
@@ -50,7 +50,7 @@ function AwardsLoad($new_loaded_ids)
 	// Fetch the award info just once
 	while ($row = $smcFunc['db_fetch_assoc']($request))
 	{
-		// Track the group awards separately
+		// Track group awards separately
 		if ($row['id_member'] == -1)
 		{
 			$group_awards[] = $row['id_group'];
@@ -96,7 +96,7 @@ function AwardsLoad($new_loaded_ids)
 	if (isset($group_awards))
 	{
 		// remove the -1 we added, thats just to group awards
-		$junk = array_pop($new_loaded_ids);
+		array_pop($new_loaded_ids);
 
 		// check each member to see if they are a member of a group that has a group awards
 		foreach ($new_loaded_ids as $member_id)
@@ -113,7 +113,6 @@ function AwardsLoad($new_loaded_ids)
 				// Woohoo ... a group award for you!
 				foreach ($give_group_awards as $groupaward_id)
 					$user_profile[$member_id]['awards'][] = $group_awards_details[$groupaward_id];
-
 			}
 		}
 	}
@@ -334,7 +333,7 @@ function AwardsAutoAssign($members, $award_type, $awardids)
 	foreach ($members as $member => $dummy)
 	{
 		if (!empty($remove[$member]))
-			$request = $smcFunc['db_query']('', '
+			$smcFunc['db_query']('', '
 				DELETE FROM {db_prefix}awards_members
 				WHERE id_award IN ({array_int:award_list})
 					AND id_member = {int:id_member}',
