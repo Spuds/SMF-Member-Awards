@@ -120,6 +120,8 @@ function AwardsLoadAward($id = -1)
  */
 function AwardsValidateImage($name, $id)
 {
+	global $sourcedir, $modSettings;
+
 	$award = $_FILES[$name];
 
 	// Check if file was uploaded.
@@ -133,10 +135,15 @@ function AwardsValidateImage($name, $id)
 	if (!in_array(strtolower(substr(strrchr($award['name'], '.'), 1)), $goodExtensions))
 		fatal_lang_error('awards_error_wrong_extension');
 
-	// @todo
-	// awards_error_upload_size
-	// AwardsValidateImage('awardFile', $id_award);
-	// AwardsValidateImage('awardFileMini', $id_award);
+	// Generally a valid image file?
+	$sizes = @getimagesize($award['tmp_name']);
+	if ($sizes === false)
+		fatal_lang_error('awards_error_upload_failed');
+
+	// Now check if it has a potential virus etc.
+	require_once($sourcedir . '/Subs-Graphics.php');
+	if (!checkImageContents($award['tmp_name'], !empty($modSettings['avatar_paranoid'])))
+		fatal_lang_error('awards_error_upload_security_failed');
 }
 
 /**
