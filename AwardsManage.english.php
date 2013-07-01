@@ -30,6 +30,7 @@ $txt['awards_requests'] = 'Requested Awards';
 // Errors
 $txt['awards_error_wrong_extension'] = 'The file you are trying to upload is not allowed.  Please upload a valid file.';
 $txt['awards_error_upload_size'] = 'The file you tried to upload exceeds the maximum upload size. Please try again with a smaller file.';
+$txt['awards_error_upload_security_failed'] = 'The file could not be processed by the system (bad or incomplete file).';
 $txt['awards_error_no_file'] = 'You must select a file to upload!';
 $txt['awards_error_upload_failed'] = 'There was an error uploading the file.  Please check the file and try again.';
 $txt['awards_error_no_id'] = 'You must select an award to edit.';
@@ -116,7 +117,7 @@ $txt['awards_assigngroup_intro'] = 'From here, you can assign awards to specific
 $txt['awards_assignmass_intro'] = 'From here, you can quickly assign awards to large groups of members.  Start by selecting one or more of the groups to generate a list of all members in those groups. You can then choose all of those members or a subset of them to assign awards.';
 $txt['awards_error_no_groups'] = 'No groups were selected, you must select a membergroup to assign the award to.';
 $txt['awards_error_no_members'] = 'No members were selected, you must select some members to assign the award to.';
-	
+
 // Add/edit category
 $txt['awards_add_category'] = 'Add Category';
 $txt['awards_edit_category'] = 'Edit Category';
@@ -191,4 +192,3 @@ $txt['awards_button_edit'] = 'Edit';
 $txt['awards_button_delete'] = 'Delete';
 $txt['awards_button_assign'] = 'Assign';
 $txt['awards_button_members'] = 'Members';
-?>
