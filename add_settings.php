@@ -13,9 +13,10 @@
 // If we have found SSI.php and we are outside of SMF, then we are running standalone.
 if (file_exists(dirname(__FILE__) . '/SSI.php') && !defined('SMF'))
 	require_once(dirname(__FILE__) . '/SSI.php');
-elseif (!defined('SMF')) // If we are outside SMF and can't find SSI.php, then throw an error
+elseif (!defined('SMF'))
 	die('<b>Error:</b> Cannot install - please verify you put this file in the same place as SMF\'s SSI.php.');
-if((SMF == 'SSI') && !$user_info['is_admin'])
+
+if ((SMF == 'SSI') && !$user_info['is_admin'])
 	die('Admin priveleges required.');
 
 if (SMF == 'SSI')
@@ -44,14 +45,14 @@ $tables[] = array(
 		array(
 			'name' => 'uniq_id', 
 			'type' => 'mediumint', 
-			'size' => 5,
+			'size' => 8,
 			'null' => false, 
 			'auto' => true
 		),
 		array(
 			'name' => 'id_award', 
 			'type' => 'mediumint', 
-			'size' => 5, 
+			'size' => 8, 
 			'null' => false, 
 			'default' => 0
 		),
@@ -64,8 +65,8 @@ $tables[] = array(
 		),
 		array(
 			'name' => 'id_group', 
-			'type' => 'smallint', 
-			'size' => 5, 
+			'type' => 'int', 
+			'size' => 8, 
 			'null' => false, 
 			'default' => 0
 		),
@@ -228,14 +229,14 @@ $tables[] = array(
 		array(
 			'name' => 'id_category', 
 			'type' => 'mediumint', 
-			'size' => 5, 
+			'size' => 8, 
 			'null' => false, 
 			'auto' => true
 		),
 		array(
 			'name' => 'category_name', 
 			'type' => 'varchar', 
-			'size' => 80, 
+			'size' => 255, 
 			'null' => false
 		),
 	),
@@ -258,14 +259,14 @@ $tables[] = array(
 $columns = array();
 
 // Now on to the tables ... if they don't exist create them and if they do exist update them if required.
-$current_tables = $smcFunc['db_list_tables'](false, '%awards%');
+$current_tables = $smcFunc['db_list_tables'](false, '%awards_%');
 $real_prefix = preg_match('~^(`?)(.+?)\\1\\.(.*?)$~', $db_prefix, $match) === 1 ? $match[3] : $db_prefix;
 
 // Loop through each defined table and do whats needed, update existing or add as new
 foreach ($tables as $table)
 {
 	// Does the table exist?
-	if (in_array($real_prefix . $table['table_name'], $current_tables))
+	if (in_array($real_prefix . $table['table_name'], array_map('strtolower', $current_tables)))
 	{
 		foreach ($table['columns'] as $column) 
 			$smcFunc['db_add_column']($db_prefix . $table['table_name'], $column);
@@ -291,19 +292,20 @@ $rows[] = array(
 		1
 	),
 	'keys' => array(
-		'id_category')
+		'id_category'
+	)
 );
 
-// First update/add mod settings if applicable
+// Add rows to any existing tables
+foreach ($rows as $row)
+	$smcFunc['db_insert']($row['method'], $row['table_name'], $row['columns'], $row['data'], $row['keys']);
+
+// Update/add mod settings if applicable
 foreach ($mod_settings as $new_setting => $new_value)
 {
 	if (!isset($modSettings[$new_setting]))
 		updateSettings(array($new_setting => $new_value));
 }
-
-// Add rows to any existing tables
-foreach ($rows as $row)
-	$smcFunc['db_insert']($row['method'], $row['table_name'], $row['columns'], $row['data'], $row['keys']);
 
 // Done
 if(SMF == 'SSI')
