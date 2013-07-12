@@ -1,8 +1,11 @@
 ---
 ##Member Awards v2.2.3
 By: JBlaze
+
 Former Author: Fustrate
+
 Original Author: JayBachatero
+
 ---
 
 ###Introduction
@@ -25,7 +28,7 @@ o English UTF-8
 If you have any translations for any other languages, I would be grateful if you would send them to me via PM or in the Mods topic.
 
 ###Changelog
-> Comment
+] Comment
 + Addition
 - Error/bug fix
 
@@ -33,21 +36,21 @@ Version 2.2.3, November 8th, 2010
 ! Minor bugfixes
 
 Version 2.2.2, November 4th, 2010
-> Compatibility update for 2.0 RC4
+] Compatibility update for 2.0 RC4
 
 Version 2.2.1, May 29th, 2010
 - Fixed profile awards view bug. (Thanks to C4G-TK)
 - Fixed assign error for members with less than 3 characters.
 
 Version 2.2 May 11th, 2010
-> Mod taken over by JBlaze
+] Mod taken over by JBlaze
 - Fixed pagination error in profile
 - Fixed auto-suggest feature in admin
 - Fixed other small errors
 + Rewrote admin and profile templates to be more "curvy"
 
 Version 2.1.7 August 23rd, 2009
-> This is the first "landmark" release. The upgrades were getting too big, so you'll now need to update to 2.1.6 before updating any further.
+] This is the first "landmark" release. The upgrades were getting too big, so you'll now need to update to 2.1.6 before updating any further.
 - Fixed admin area pagination bug
 - Can now favorite multiple awards (finally!)
 + Added an "Awards List" in the member profile
