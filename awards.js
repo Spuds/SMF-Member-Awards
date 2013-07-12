@@ -1,7 +1,5 @@
 // Had to make another file for this, because the PM one wants a BCC field
 // This is just a stripped-down version of PersonalMessage.js
-
-// Handle the JavaScript surrounding awards send form.
 function smf_AwardSend(oOptions)
 {
 	this.opt = oOptions;
@@ -21,7 +19,6 @@ smf_AwardSend.prototype.init = function()
 		sControlId: this.opt.sToControlId,
 		sSearchType: 'member',
 		sPostName: 'recipient_to',
-		iMinimumSearchChars: 2,
 		sURLMask: 'action=profile;u=%item_id%',
 		sTextDeleteItem: this.opt.sTextDeleteItem,
 		bItemList: true,
@@ -31,9 +28,10 @@ smf_AwardSend.prototype.init = function()
 	this.oToAutoSuggest.registerCallback('onBeforeAddItem', this.opt.sSelf + '.callbackAddItem');
 }
 
-// Prevent items to be added twice or to both the 'To'.
+// Prevent items to be added twice or to both the 'To' and 'Bcc'.
 smf_AwardSend.prototype.callbackAddItem = function(oAutoSuggestInstance, sSuggestId)
 {
 	this.oToAutoSuggest.deleteAddedItem(sSuggestId);
+
 	return true;
 }
