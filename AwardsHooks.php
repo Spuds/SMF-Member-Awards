@@ -2,7 +2,7 @@
 
 /**
  * @name      Awards Modification
- * @license   Mozilla Public License version 2.0 http://mozilla.org/MPL/2.0/.
+ * @license   Mozilla Public License version 1.1 http://www.mozilla.org/MPL/1.1/.
  *
  * @version   3.0
  *
