@@ -19,6 +19,7 @@
 		<require-file name="AwardsAdmin.php" destination="$sourcedir" />
 		<require-file name="AwardsHooks.php" destination="$sourcedir" />
 		<require-file name="AwardsProfile.php" destination="$sourcedir" />
+		<require-file name="AwardsSubs.php" destination="$sourcedir" />
 		<require-file name="AwardsManage.template.php" destination="$themedir" />
 		<require-file name="AwardsProfile.template.php" destination="$themedir" />
 		<require-file name="AwardsManage.english.php" destination="$languagedir" />
@@ -39,7 +40,10 @@
 		<remove-file name="$sourcedir/AwardsManage.php" />
 		<remove-file name="$sourcedir/AwardsAdmin.php" />
 		<remove-file name="$sourcedir/AwardsHooks.php" />
+		<remove-file name="$sourcedir/AwardsProfile.php" />
+		<remove-file name="$sourcedir/AwardsSubs.php" />
 		<remove-file name="$themedir/AwardsManage.template.php" />
+		<remove-file name="$themedir/AwardsProfile.template.php" />
 		<remove-file name="$languagedir/AwardsManage.english.php" />
 		<remove-file name="$languagedir/AwardsManage.english-utf8.php" />
 		<remove-file name="$imagesdir/award.gif" />
