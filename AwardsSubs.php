@@ -72,7 +72,7 @@ function AwardsBuildJavascriptObject_Recurse($array)
  */
 function AwardsLoadAward($id = -1)
 {
-	global $context, $smcFunc, $modSettings, $scripturl;
+	global $smcFunc, $modSettings, $scripturl;
 
 	// Load single award
 	$request = $smcFunc['db_query']('', '
@@ -84,13 +84,14 @@ function AwardsLoadAward($id = -1)
 			'id' => $id
 		)
 	);
+	$award = array();
 	$row = $smcFunc['db_fetch_assoc']($request);
 
 	// Check if that award actually exists
 	if (count($row['id_award']) != 1)
 		fatal_lang_error('awards_error_no_award');
 
-	$context['award'] = array(
+	$award = array(
 		'id' => $row['id_award'],
 		'award_name' => $row['award_name'],
 		'description' => $row['description'],
@@ -109,6 +110,8 @@ function AwardsLoadAward($id = -1)
 
 	// Free results
 	$smcFunc['db_free_result']($request);
+
+	return $award;
 }
 
 /**

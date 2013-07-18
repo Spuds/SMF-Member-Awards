@@ -302,7 +302,7 @@ function AwardsModify()
 			$trigger = empty($_POST['awardTrigger']) ? 0 : (int) $_POST['awardTrigger'];
 
 			// Load the existing award info and see if they changed the trigger value
-			AwardsLoadAward($id);
+			$context['award'] = AwardsLoadAward($id);
 			if (($context['award']['type'] > 1) && ($context['award']['trigger'] != $trigger))
 			{
 				// Trigger value changed, this invalidates all (auto) awards earned with this award ID, so remove them
@@ -428,28 +428,7 @@ function AwardsModify()
 	// Load the data for editing/viewing an existing award
 	if (isset($_REQUEST['a_id']))
 	{
-		// Check that awards id is clean.
-		$id = (int) $_REQUEST['a_id'];
-		if (empty($id) || $id <= 0)
-			fatal_lang_error('awards_error_no_id');
-
-		// Load single award info for editing.
-		$request = $smcFunc['db_query']('', '
-			SELECT
-				id_award, award_name, description, id_category, time_added, filename, minifile, award_trigger, award_type, award_location, award_requestable, award_assignable
-			FROM {db_prefix}awards
-			WHERE id_award = {int:id}
-			LIMIT 1',
-			array(
-				'id' => $id
-			)
-		);
-		$row = $smcFunc['db_fetch_assoc']($request);
-
-		// Check if that award exists
-		if (count($row['id_award']) != 1)
-			fatal_lang_error('awards_error_no_award');
-
+		$context['award'] = AwardsLoadAward($id);
 		$context['editing'] = true;
 		$context['award'] = array(
 			'id' => $row['id_award'],
@@ -1005,7 +984,7 @@ function AwardsViewAssigned()
 	require_once($sourcedir . '/AwardsSubs.php');
 
 	// Load the awards info for this award
-	AwardsLoadAward($id);
+	$context['award'] = AwardsLoadAward($id);
 
 	// build the listoption array to display the data
 	$listOptions = array(

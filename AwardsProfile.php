@@ -156,7 +156,7 @@ function membersAwards()
 
 	// Load this awards details
 	$id = (int) $_REQUEST['a_id'];
-	AwardsLoadAward($id);
+	$context['award'] = AwardsLoadAward($id);
 
 	// build the listoption array to display the data
 	$listOptions = array(
@@ -313,7 +313,7 @@ function requestAwards()
 	{
 		// Load this awards details for the form
 		$id = (int) $_REQUEST['a_id'];
-		AwardsLoadAward($id);
+		$context['award'] = AwardsLoadAward($id);
 
 		// Not requestable, how did we get here?
 		if (empty($context['award']['requestable']))
@@ -342,7 +342,7 @@ function requestAwards()
 		$date = date('Y-m-d');
 
 		// let's see if the award exists, silly hackers
-		AwardsLoadAward($id);
+		$context['award'] = AwardsLoadAward($id);
 
 		// Not requestable, how did we get here?
 		if (empty($context['award']['requestable']))
