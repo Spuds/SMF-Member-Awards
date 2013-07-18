@@ -330,15 +330,15 @@ function AwardsModify()
 					award_assignable = {int:awardassignable}
 				WHERE id_award = {int:id_award}',
 				array(
-					'awardname' => $_POST['award_name'],
-					'award_desc' => $_POST['description'],
+					'awardname' => $award_name,
+					'award_desc' => $description,
 					'id_award' => $id,
 					'category' => $category,
-					'awardtype' => $_POST['id_type'],
+					'awardtype' => $award_type,
 					'trigger' => $trigger,
-					'awardlocation' => $_POST['award_location'],
-					'awardrequestable' => (isset($_POST['award_requestable']) ? 1 : 0),
-					'awardassignable' => (isset($_POST['award_assignable']) ? 1 : 0),
+					'awardlocation' => $award_location,
+					'awardrequestable' => $award_requestable,
+					'awardassignable' => $award_assignable,
 				)
 			);
 
