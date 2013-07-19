@@ -839,7 +839,7 @@ function AwardsAssignMass()
 	// Ah step 3, they selected mass quantities of members to get a special award
 	elseif (isset($_REQUEST['step']) && (int) $_REQUEST['step'] == 3)
 	{
-		checksession();
+		checkSession();
 
 		// no members no awards
 		if (empty($_POST['member']) || empty($_POST['award']))
