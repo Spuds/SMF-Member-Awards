@@ -103,7 +103,7 @@ function Awards()
  */
 function AwardsMain()
 {
-	global $context, $scripturl, $txt, $smcFunc;
+	global $context, $scripturl, $txt;
 
 	require_once($sourcedir . '/Subs-List.php');
 
@@ -244,7 +244,7 @@ function AwardsMain()
  */
 function AwardsModify()
 {
-	global $smcFunc, $context, $scripturl, $txt, $modSettings, $boarddir, $sourcedir;
+	global $smcFunc, $context, $scripturl, $txt, $modSettings, $boarddir;
 
 	// Check if they are saving the changes
 	if (isset($_POST['award_save']))
@@ -286,7 +286,7 @@ function AwardsModify()
 
 			// Load the existing award info and see if they changed the trigger value
 			$context['award'] = AwardsLoadAward($id);
-			
+
 			// Trigger value changed on an auto award, this invalidates all (auto) awards earned with this award ID
 			if (($context['award']['type'] > 1) && ($context['award']['trigger'] != $trigger))
 				AwardsRemoveMembers($id);
@@ -415,7 +415,7 @@ function AwardsModify()
  */
 function AwardsDelete()
 {
-	global $smcFunc, $boarddir, $modSettings;
+	global $boarddir, $modSettings;
 
 	// Check the session
 	checkSession('get');
@@ -449,7 +449,7 @@ function AwardsDelete()
  */
 function AwardsAssign()
 {
-	global $smcFunc, $context, $sourcedir, $txt, $user_info;
+	global $context, $txt, $user_info;
 
 	// First step, select the awards that can be assigned by this member
 	if (!isset($_GET['step']) || $_GET['step'] == 1)
@@ -504,7 +504,7 @@ function AwardsAssign()
 
 function AwardsAssignMemberGroup()
 {
-	global $smcFunc, $context, $sourcedir, $txt;
+	global $context, $txt;
 
 	// First step, select the memebrgroups and awards
 	if (!isset($_REQUEST['step']) || (int) $_REQUEST['step'] == 1)
@@ -553,7 +553,7 @@ function AwardsAssignMemberGroup()
 
 function AwardsAssignMass()
 {
-	global $smcFunc, $context, $sourcedir, $txt;
+	global $context, $txt;
 
 	// First step, select the memebrgroups and awards
 	if (!isset($_REQUEST['step']) || (int) $_REQUEST['step'] < 3)
@@ -629,7 +629,7 @@ function AwardsAssignMass()
  */
 function AwardsViewAssigned()
 {
-	global $smcFunc, $context, $scripturl, $txt, $sourcedir, $modSettings;
+	global $context, $scripturl, $txt, $sourcedir, $modSettings;
 
 	// An award must be selected.
 	$id = (int) $_REQUEST['a_id'];
@@ -859,7 +859,7 @@ function AwardsEditCategory()
  */
 function AwardsListCategories()
 {
-	global $context, $scripturl, $smcFunc, $txt;
+	global $context, $txt;
 
 	// Define $categories
 	$context['categories'] = AwardsLoadAllCategories();
@@ -883,8 +883,6 @@ function AwardsListCategories()
  */
 function AwardsRemoveCategory()
 {
-	global $smcFunc;
-
 	// Before doing anything check the session
 	checkSession('get');
 
@@ -904,7 +902,7 @@ function AwardsRemoveCategory()
  */
 function AwardsViewCategory()
 {
-	global $context, $scripturl, $modSettings, $txt, $smcFunc;
+	global $context, $scripturl, $txt;
 
 	// Clean up!
 	$id_category = (int) $_REQUEST['a_id'];
@@ -933,7 +931,7 @@ function AwardsViewCategory()
  */
 function AwardsRequests()
 {
-	global $context, $txt, $scripturl, $modSettings, $settings, $smcFunc;
+	global $context, $txt;
 
 	// Get just the members awaiting approval so we can reject them >:D
 	$awards = AwardsLoadRequestedAwards();
@@ -955,7 +953,7 @@ function AwardsRequests()
  */
 function AwardsRequests2()
 {
-	global $smcFunc, $modSettings;
+	global $modSettings;
 
 	// Check session.
 	checkSession('post');
