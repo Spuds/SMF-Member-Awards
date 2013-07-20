@@ -510,7 +510,7 @@ function AwardsAssignMemberGroup()
 	if (!isset($_REQUEST['step']) || (int) $_REQUEST['step'] == 1)
 	{
 		// Load all the member groups
-		AwardsLoadGroups();
+		$context['groups'] = AwardsLoadGroups();
 
 		// Done with groups, now on to selecting the non auto awards to populate the menu.
 		$context['awards'] = AwardsLoadAssignableAwards();
