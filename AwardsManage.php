@@ -2,7 +2,7 @@
 
 /**
  * @name      Awards Modification
- * @license   Mozilla Public License version 1.1 http://www.mozilla.org/MPL/1.1/.
+ * @license   Mozilla Public License version 2.0 http://mozilla.org/MPL/2.0/.
  *
  * @version   3.0
  *
@@ -11,6 +11,7 @@
  * Original Software by:           Juan "JayBachatero" Hernandez
  * Copyright (c) 2006-2009:        YodaOfDarkness (Fustrate)
  * Copyright (c) 2010:             Jason "JBlaze" Clemons
+ *
  */
 
 if (!defined('SMF'))
