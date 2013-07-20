@@ -570,7 +570,7 @@ function AwardsAssignMass()
 		$context['page_title'] = $txt['awards_title'] . ' - ' . $txt['awards_select_group'];
 
 		// Something to check
-		$_SESSION['allowed_groups'] = array_keys($group);
+		$_SESSION['allowed_groups'] = array_keys($context['groups']);
 
 		// Good old number 2 ... they have selected some groups, we need to load the members for them
 		if (isset($_REQUEST['step']) && (int) $_REQUEST['step'] == 2)

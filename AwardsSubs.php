@@ -185,7 +185,7 @@ function AwardsLoadAssignableAwards()
 }
 
 /**
- * Loads all of the member reqestable awards that have active requests against them
+ * Loads all of the member requestable awards that have active requests against them
  * Finds members that have requested these awards for approval display
  */
 function AwardsLoadRequestedAwards()
@@ -487,7 +487,7 @@ function AwardsLoadGroupMembers()
 
 	$members = array();
 
-	// Stop any monkey bussiness
+	// Stop any monkey business
 	$allowed_groups = $_SESSION['allowed_groups'];
 	$_POST['who'] = array_intersect_key($_POST['who'], $allowed_groups);
 	$postsave = $_POST['who'];
@@ -555,7 +555,7 @@ function AwardsLoadGroupMembers()
 
 /**
  * Callback for createlist
- * List all members and groups who have recived an award
+ * List all members and groups who have received an award
  *
  * @param int $start
  * @param int $items_per_page
@@ -605,7 +605,7 @@ function AwardsLoadMembers($start, $items_per_page, $sort, $id)
 
 /**
  * Callback for createlist
- * Used to get the total number of members/groups who have recived a specific award
+ * Used to get the total number of members/groups who have received a specific award
  *
  * @param type $id
  */
@@ -672,7 +672,7 @@ function AwardsApproveDenyRequests($awards, $approve = true)
 }
 
 /**
- * Loads all of the categoies in the system
+ * Loads all of the categories in the system
  * Returns array of categories with key of name and value of id
  *
  * @param string $sort order to return the categories
@@ -746,7 +746,7 @@ function AwardsLoadCategory($id)
 
 /**
  * Loads all the categories in the system
- * Returns an array of categorys and links
+ * Returns an array of categories and links
  */
 function AwardsLoadAllCategories()
 {
