@@ -73,10 +73,18 @@ function template_awards()
 				$which = !$which;
 				echo '
 						<tr class="windowbg', $which ? '2' : '', '">
-							<td align="center"><a href="', $award['more'], '"><img src="', $award['img'], '" alt="', $award['award_name'], '" /></a></td>
-							<td align="center"><a href="', $award['more'], '"><img src="', $award['mini'], '" alt="', $award['award_name'], '" /></a></td>
-							<td><strong>', $award['award_name'], '</strong></td>
-							<td><em>', $txt['months'][$award['time'][1]], ' ', $award['time'][2], ', ', $award['time'][0], '</em></td>
+							<td align="center"><a href="', $award['more'], '">
+								<img src="', $award['img'], '" alt="', $award['award_name'], '" /></a>
+							</td>
+							<td align="center">
+								<a href="', $award['more'], '"><img src="', $award['mini'], '" alt="', $award['award_name'], '" /></a>
+							</td>
+							<td>
+								<strong>', $award['award_name'], '</strong>
+							</td>
+							<td>
+								<em>', $txt['months'][$award['time'][1]], ' ', $award['time'][2], ', ', $award['time'][0], '</em>
+							</td>
 							<td>', $award['description'], '</td>
 							<td align="center">', $context['allowed_fav'] ? '<a href="' . $award['favorite']['href'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $award['favorite']['img'] . '</a>' : '', '', ($award['favorite']['fav'] == 1 ? ' <img src="' . $settings['images_url'] . '/star.gif" alt="' . $txt['awards_favorite']. '" />' : ''), '</td>
 						</tr>';

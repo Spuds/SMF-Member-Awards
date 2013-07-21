@@ -185,7 +185,7 @@ function AwardsCountMembersAwards($memID)
   */
 function AwardsLoadMembersAwards($start, $end, $memID)
 {
-	global $smcFunc, $user_info, $scripturl, $settings;
+	global $smcFunc, $user_info, $scripturl, $settings, $modSettings;
 
 	// Load the individual and group awards
 	$request = $smcFunc['db_query']('', '
@@ -1375,4 +1375,44 @@ function AwardsBuildJavascriptObject_Recurse($array)
 
 	// Close and return the JS object.
 	return $retVal . "}";
+}
+
+/**
+ * Sets a members award of choice as a favorite
+ *
+ * @param int $memID
+ * @param int $award_id
+ * @param int $makefav
+ * @param boolean $single
+ */
+function AwardsSetFavorite($memID, $award_id, $makefav)
+{
+	global $smcFunc, $modSettings;
+
+	// Only one allowed, we clear first
+	if (empty($modSettings['awards_favorites']))
+		$smcFunc['db_query']('', '
+			UPDATE {db_prefix}awards_members
+			SET favorite = 0
+			WHERE id_member = {int:mem}',
+			array(
+				'mem' => $memID,
+			)
+		);
+
+	// Now make this one a fav.
+	$smcFunc['db_query']('', '
+		UPDATE {db_prefix}awards_members
+		SET favorite = {int:make_favorite}
+		WHERE id_award = {int:award}
+			AND id_member = {int:mem}
+		LIMIT 1',
+		array(
+			'award' => $award_id,
+			'mem' => $memID,
+			'make_favorite' => $makefav,
+		)
+	);
+
+	return;
 }
