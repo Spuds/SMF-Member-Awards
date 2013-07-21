@@ -2,7 +2,7 @@
 
 /**
  * @name      Awards Modification
- * @license   Mozilla Public License version 1.1 http://www.mozilla.org/MPL/1.1/.
+ * @license   Mozilla Public License version 2.0 http://mozilla.org/MPL/2.0/.
  *
  * @version   3.0
  *
@@ -17,7 +17,9 @@ if (!defined('SMF'))
 
 function showAwards($memID)
 {
-	global $context, $txt, $scripturl, $modSettings, $settings, $smcFunc, $user_info;
+	global $context, $txt, $scripturl, $sourcedir;
+
+	require_once($sourcedir . '/AwardsSubs.php');
 
 	// Do they want to make a favorite?
 	if (isset($_GET['makeFavorite']) && allowedTo(array('profile_extra_any', 'profile_extra_own')))
@@ -25,30 +27,12 @@ function showAwards($memID)
 		// Check session
 		checkSession('get');
 
-		// Do they only allow one fav?
-		if (empty($modSettings['awards_favorites']))
-			$smcFunc['db_query']('', '
-				UPDATE {db_prefix}awards_members
-				SET favorite = 0
-				WHERE id_member = {int:mem}',
-				array(
-					'mem' => $memID,
-				)
-			);
+		// Clean
+		$award_id = (int) $_GET['id'];
+		$makefav = $_GET['makeFavorite'] > 0 ? 1 : 0;
 
-		// Now make this one a fav.
-		$smcFunc['db_query']('', '
-			UPDATE {db_prefix}awards_members
-			SET favorite = {int:make_favorite}
-			WHERE id_award = {int:award}
-				AND id_member = {int:mem}
-			LIMIT 1',
-			array(
-				'award' => (int) $_GET['id'],
-				'mem' => $memID,
-				'make_favorite' => ((int) $_GET['makeFavorite'] > 0) ? 1 : 0,
-			)
-		);
+		// Make it a favorite
+		AwardsSetFavorite($memID, $award_id, $makefav);
 
 		// To make changes appear redirect back to that page
 		redirectexit('action=profile;area=showAwards;u=' . $memID);
@@ -59,86 +43,27 @@ function showAwards($memID)
 	loadTemplate('AwardsProfile');
 
 	// Count the number of items in the database for create index
-	$request = $smcFunc['db_query']('', '
-		SELECT COUNT(*)
-		FROM {db_prefix}awards_members
-		WHERE (id_member = {int:mem}
-			OR (id_member = -1 AND id_group IN({array_int:groups})))
-			AND active = {int:active}',
-		array(
-			'mem' => $memID,
-			'groups' => $user_info['groups'],
-			'active' => 1
-		)
-	);
-	list ($context['count_awards']) = $smcFunc['db_fetch_row']($request);
-	$smcFunc['db_free_result']($request);
+	$context['count_awards'] = AwardsCountMembersAwards($memID);
 
 	// Calculate the number of results to pull up.
 	$max_awards = 25;
 
 	// Construct the page index
 	$context['page_index'] = constructPageIndex($scripturl . '?action=profile;area=showAwards;u=' . $memID, $_REQUEST['start'], $context['count_awards'], $max_awards);
-	$context['start'] = isset($_REQUEST['start']) ? (int) $_REQUEST['start'] : 0;
+	$start = isset($_REQUEST['start']) ? (int) $_REQUEST['start'] : 0;
 
 	// Load the individual and group awards
-	$request = $smcFunc['db_query']('', '
-		SELECT
-			aw.id_award, aw.award_name, aw.description, aw.filename, aw.minifile,
-			am.id_member, am.date_received, am.favorite, am.id_group,
-			c.category_name, c.id_category
-		FROM {db_prefix}awards AS aw
-			LEFT JOIN {db_prefix}awards_members AS am ON (am.id_award = aw.id_award)
-			LEFT JOIN {db_prefix}awards_categories AS c ON (c.id_category = aw.id_category)
-		WHERE (am.id_member = {int:member}
-			OR (am.id_member = -1 AND am.id_group IN({array_int:groups})))
-			AND am.active = {int:active}
-		ORDER BY am.favorite DESC, c.category_name DESC, aw.award_name DESC
-		LIMIT {int:start}, {int:end}',
-		array(
-			'start' => $context['start'],
-			'end' => $max_awards,
-			'member' => $memID,
-			'groups' => $user_info['groups'],
-			'active' => 1
-		)
-	);
-
-	$context['categories'] = array();
-
-	// Fetch the award info just once
-	while ($row = $smcFunc['db_fetch_assoc']($request))
-	{
-		if (!isset($context['categories'][$row['id_category']]['name']))
-			$context['categories'][$row['id_category']] = array(
-				'name' => $row['category_name'],
-				'view' => $scripturl . '?action=admin;area=awards;sa=viewcategory;id=' . $row['id_category'],
-				'awards' => array(),
-			);
-
-		$context['categories'][$row['id_category']]['awards'][$row['id_award']] = array(
-			'id' => $row['id_award'],
-			'award_name' => $row['award_name'],
-			'description' => $row['description'],
-			'more' => $scripturl . '?action=profile;area=membersAwards;a_id=' . $row['id_award'],
-			'favorite' => array(
-				'fav' => $row['favorite'],
-				'href' => $scripturl . '?action=profile;area=showAwards;id=' . $row['id_award'] . ';makeFavorite=' . ($row['favorite'] == 1 ? '0' : '1') . (isset($_REQUEST['u']) ? ';u=' . $_REQUEST['u'] : ''),
-				'img' => '<img src="' . $settings['images_url'] . '/awards/' . ($row['favorite'] == 1 ? 'delete' : 'add') . '.png" alt="' . $txt['awards_favorite'] . '" title="' . $txt['awards_favorite'] . '" />',
-			),
-			'filename' => $row['filename'],
-			'time' => list ($year, $month, $day) = sscanf($row['date_received'], '%d-%d-%d'),
-			'img' => dirname($scripturl) . '/' . $modSettings['awards_dir'] . '/' . $row['filename'],
-			'mini' => dirname($scripturl) . '/' . $modSettings['awards_dir'] . '/' . $row['minifile'],
-		);
-	}
-	$smcFunc['db_free_result']($request);
+	$context['categories'] = AwardsLoadMembersAwards($start, $max_awards, $memID);
 
 	$context['page_title'] = $txt['profile'] . ' - ' . $txt['awards_title'];
 	$context['sub_template'] = 'awards';
 	$context['allowed_fav'] = ($context['user']['is_owner'] && allowedTo('profile_view_own')) || allowedTo('profile_extra_any');
 }
 
+/**
+ * Shows all members that have received an award
+ * Action from profile when viewing available user awards
+ */
 function membersAwards()
 {
 	global $context, $scripturl, $txt, $sourcedir;
@@ -156,7 +81,7 @@ function membersAwards()
 
 	// Load this awards details
 	$id = (int) $_REQUEST['a_id'];
-	$context['award'] = AwardsLoadAward($id);
+	AwardsLoadAward($id);
 
 	// build the listoption array to display the data
 	$listOptions = array(
@@ -167,13 +92,13 @@ function membersAwards()
 		'base_href' => $scripturl . '?action=profile;area=membersAwards;a_id=' . $id,
 		'default_sort_col' => 'username',
 		'get_items' => array(
-			'function' => 'AwardsGetMembers',
+			'function' => 'AwardsLoadMembers',
 			'params' => array(
 				$id,
 			),
 		),
 		'get_count' => array(
-			'function' => 'AwardsGetMembersCount',
+			'function' => 'AwardsLoadMembersCount',
 			'params' => array(
 				$id,
 			),
@@ -220,22 +145,19 @@ function membersAwards()
 	createList($listOptions);
 }
 
+/**
+ * Shows all available awards that they can acheive / request
+ */
 function listAwards()
 {
-	global $context, $txt, $scripturl, $modSettings, $smcFunc, $user_info, $user_profile;
+	global $context, $txt, $scripturl, $sourcedir, $user_info, $user_profile;
 
 	loadLanguage('AwardsManage');
 	loadTemplate('AwardsProfile');
+	require_once($sourcedir . '/AwardsSubs.php');
 
-	// Count the number of items in the database for create index
-	$request = $smcFunc['db_query']('', '
-		SELECT COUNT(*)
-		FROM {db_prefix}awards',
-		array()
-	);
-
-	list($countAwards) = $smcFunc['db_fetch_row']($request);
-	$smcFunc['db_free_result']($request);
+	// Number of awards in the system
+	$countAwards = AwardsCount();
 
 	// Calculate the number of results to pull up.
 	$maxAwards = 20;
@@ -244,62 +166,25 @@ function listAwards()
 	$context['page_index'] = constructPageIndex($scripturl . '?action=profile;area=listAwards', $_REQUEST['start'], $countAwards, $maxAwards);
 	$context['start'] = isset($_REQUEST['start']) ? (int) $_REQUEST['start'] : 0;
 
-	// Select the awards and their categories.
-	$request = $smcFunc['db_query']('', '
-		SELECT a.*, c.category_name
-		FROM {db_prefix}awards AS a
-			LEFT JOIN {db_prefix}awards_categories AS c ON (c.id_category = a.id_category)
-		ORDER BY c.category_name DESC, a.award_name DESC
-		LIMIT {int:start}, {int:end}',
-		array(
-			'start' => $context['start'],
-			'end' => $maxAwards
-		)
-	);
-
-	// array of this members awards to prevent a request for something they have
+	// Array of this members awards to prevent a request for something they have
 	$awardcheck = array();
 	$awards = $user_profile[$user_info['id']]['awards'];
 	foreach ($awards as $award)
 		$awardcheck[$award['id']] = 1;
 
-	// Loop through the results.
-	$context['categories'] = array();
-	while ($row = $smcFunc['db_fetch_assoc']($request))
-	{
-		if (!isset($context['categories'][$row['id_category']]['name']))
-			$context['categories'][$row['id_category']] = array(
-				'name' => $row['category_name'],
-				'view' => $scripturl . '?action=admin;area=awards;sa=viewcategory;id=' . $row['id_category'],
-				'awards' => array(),
-			);
-
-		$context['categories'][$row['id_category']]['awards'][] = array(
-			'id' => $row['id_award'],
-			'award_name' => $row['award_name'],
-			'description' => $row['description'],
-			'time' => timeformat($row['time_added']),
-			'filename' => $row['filename'],
-			'minifile' => $row['minifile'],
-			'img' => dirname($scripturl) . '/' . (empty($modSettings['awards_dir']) ? '' : $modSettings['awards_dir'] . '/') . $row['filename'],
-			'miniimg' => dirname($scripturl) . '/' . (empty($modSettings['awards_dir']) ? '' : $modSettings['awards_dir'] . '/') . $row['minifile'],
-			'view_assigned' => $scripturl . '?action=profile;area=membersAwards;a_id=' . $row['id_award'],
-			'trigger' => $row['award_trigger'],
-			'award_type' => $row['award_type'],
-			'requestable' => (!empty($row['award_requestable']) && empty($awardcheck[$row['id_award']])),
-			'requestable_link' => ((!empty($row['award_requestable']) && empty($awardcheck[$row['id_award']])) ? $scripturl . '?action=profile;area=requestAwards;a_id=' . $row['id_award'] : ''),
-			'members' => array(),
-		);
-	}
-	$smcFunc['db_free_result']($request);
+	// Select the awards and their categories.
+	$context['categories'] = AwardsListAll($start, $maxAwards, $awardcheck);
 
 	$context['page_title'] = $txt['profile'] . ' - ' . $txt['awards_title'];
 	$context['sub_template'] = 'awards_list';
 }
 
+/**
+ * Allow a member to request an award and add it to the approval queue
+ */
 function requestAwards()
 {
-	global $context, $modSettings, $txt, $smcFunc, $sourcedir, $user_info, $user_profile;
+	global $context, $txt, $smcFunc, $sourcedir, $user_info, $user_profile;
 
 	// Load language
 	loadLanguage('AwardsManage');
@@ -313,7 +198,7 @@ function requestAwards()
 	{
 		// Load this awards details for the form
 		$id = (int) $_REQUEST['a_id'];
-		$context['award'] = AwardsLoadAward($id);
+		AwardsLoadAward($id);
 
 		// Not requestable, how did we get here?
 		if (empty($context['award']['requestable']))
@@ -342,7 +227,7 @@ function requestAwards()
 		$date = date('Y-m-d');
 
 		// let's see if the award exists, silly hackers
-		$context['award'] = AwardsLoadAward($id);
+		AwardsLoadAward($id);
 
 		// Not requestable, how did we get here?
 		if (empty($context['award']['requestable']))
@@ -354,24 +239,7 @@ function requestAwards()
 				fatal_lang_error('awards_error_have_already');
 
 		// If we made it this far insert /replace it so it can be reviewed.
-		$request = $smcFunc['db_insert']('replace', '
-			{db_prefix}awards_members',
-			array('id_award' => 'int', 'id_member' => 'int', 'id_group' => 'int', 'date_received' => 'string', 'favorite' => 'int', 'award_type' => 'int', 'active' => 'int', 'comments' => 'string'),
-			array ($id, $user_info['id'], 0, $date, 0, 1, 0, $comments),
-			array('id_member', 'id_award')
-		);
-
-		// Get the number of unapproved requests so the awards team knows about it.
-		$request = $smcFunc['db_query']('', '
-			SELECT COUNT(*)
-			FROM {db_prefix}awards_members
-			WHERE active = {int:active}',
-			array(
-				'active' => 0
-			)
-		);
-		list($modSettings['awards_request']) = $smcFunc['db_fetch_row']($request);
-		$smcFunc['db_free_result']($request);
+		AwardsMakeRequest($id, $date, $comments, true);
 
 		updateSettings(array(
 			'awards_request' => $modSettings['awards_request'],
