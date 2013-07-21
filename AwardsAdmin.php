@@ -243,6 +243,8 @@ function AwardsModify()
 {
 	global $smcFunc, $context, $scripturl, $txt, $modSettings, $boarddir, $sourcedir;
 
+	require_once($sourcedir . '/AwardsSubs.php');
+
 	// Check if they are saving the changes
 	if (isset($_POST['award_save']))
 	{
@@ -357,27 +359,12 @@ function AwardsModify()
 	// Load the data for editing/viewing an existing award
 	if (isset($_REQUEST['a_id']))
 	{
+		// Check that awards id is clean.
+		$id = (int) $_REQUEST['a_id'];
+
+		// Load a single award in for for editing.
 		$context['award'] = AwardsLoadAward($id);
 		$context['editing'] = true;
-		$context['award'] = array(
-			'id' => $row['id_award'],
-			'award_name' => $row['award_name'],
-			'description' => $row['description'],
-			'category' => $row['id_category'],
-			'time' => timeformat($row['time_added']),
-			'filename' => $row['filename'],
-			'minifile' => $row['minifile'],
-			'trigger' => $row['award_trigger'],
-			'award_type' => $row['award_type'],
-			'award_location' => $row['award_location'],
-			'requestable' => $row['award_requestable'],
-			'assignable' => $row['award_assignable'],
-			'img' => dirname($scripturl) . '/' . (empty($modSettings['awards_dir']) ? '' : $modSettings['awards_dir'] . '/') . $row['filename'],
-			'small' => dirname($scripturl) . '/' . (empty($modSettings['awards_dir']) ? '' : $modSettings['awards_dir'] . '/') . $row['minifile'],
-		);
-
-		// Free results
-		$smcFunc['db_free_result']($request);
 
 		// Set the page title
 		$context['page_title'] = $txt['awards_title'] . ' - ' . $txt['awards_edit_award'];
