@@ -29,9 +29,6 @@ function Awards()
 	// The entrance point for all 'Awards' actions.
 	global $context, $txt;
 
-	// Load in our helper functions
-	require_once($sourcedir . '/AwardsSubs.php');
-
 	// subaction array ... function to call, permissions needed (array or permissions)
 	$subActions = array(
 		'main' => array('AwardsMain', array('manage_awards','assign_awards')),
@@ -103,9 +100,10 @@ function Awards()
  */
 function AwardsMain()
 {
-	global $context, $scripturl, $txt;
+	global $context, $scripturl, $txt, $sourcedir;
 
 	require_once($sourcedir . '/Subs-List.php');
+	require_once($sourcedir . '/AwardsSubs.php');
 
 	// Load all the categories.
 	$categories = AwardsLoadCategories();
@@ -120,7 +118,7 @@ function AwardsMain()
 			'items_per_page' => 25,
 			'default_sort_col' => 'award_name',
 			'no_items_label' => $txt['awards_error_no_badges'],
-			'base_href' => $scripturl . '?action=admin;area=awards' . (isset($_REQUEST['sort'. $count]) ? ';sort'.$count.'=' . urlencode($_REQUEST['sort'. $count]) : ''),
+			'base_href' => $scripturl . '?action=admin;area=awards' . (isset($_REQUEST['sort' . $count]) ? ';sort' . $count . '=' . urlencode($_REQUEST['sort' . $count]) : ''),
 			'request_vars' => array(
 				'sort' => 'sort' . $count,
 				'desc' => 'desc' . $count,
@@ -149,7 +147,7 @@ function AwardsMain()
 							'format' => '<img src="%1$s" alt="%2$s" />',
 							'params' => array(
 								'img' => false,
-								'awards_name' => false,
+								'award_name' => false,
 							),
 						),
 						'style' => "width: 15%",
@@ -165,7 +163,7 @@ function AwardsMain()
 							'format' => '<img src="%1$s" alt="%2$s" />',
 							'params' => array(
 								'small' => false,
-								'awards_name' => false,
+								'award_name' => false,
 							),
 						),
 						'style' => "width: 15%",
@@ -184,7 +182,6 @@ function AwardsMain()
 						'default' => 'award_name',
 						'reverse' => 'award_name DESC',
 					),
-
 				),
 				'description' => array(
 					'header' => array(
@@ -244,7 +241,7 @@ function AwardsMain()
  */
 function AwardsModify()
 {
-	global $smcFunc, $context, $scripturl, $txt, $modSettings, $boarddir;
+	global $smcFunc, $context, $scripturl, $txt, $modSettings, $boarddir, $sourcedir;
 
 	// Check if they are saving the changes
 	if (isset($_POST['award_save']))
@@ -415,7 +412,7 @@ function AwardsModify()
  */
 function AwardsDelete()
 {
-	global $boarddir, $modSettings;
+	global $smcFunc, $boarddir, $modSettings;
 
 	// Check the session
 	checkSession('get');
@@ -449,7 +446,7 @@ function AwardsDelete()
  */
 function AwardsAssign()
 {
-	global $context, $txt, $user_info;
+	global $smcFunc, $context, $sourcedir, $txt, $user_info;
 
 	// First step, select the awards that can be assigned by this member
 	if (!isset($_GET['step']) || $_GET['step'] == 1)
@@ -504,7 +501,7 @@ function AwardsAssign()
 
 function AwardsAssignMemberGroup()
 {
-	global $context, $txt;
+	global $smcFunc, $context, $sourcedir, $txt;
 
 	// First step, select the memebrgroups and awards
 	if (!isset($_REQUEST['step']) || (int) $_REQUEST['step'] == 1)
@@ -553,7 +550,7 @@ function AwardsAssignMemberGroup()
 
 function AwardsAssignMass()
 {
-	global $context, $txt;
+	global $smcFunc, $context, $sourcedir, $txt;
 
 	// First step, select the memebrgroups and awards
 	if (!isset($_REQUEST['step']) || (int) $_REQUEST['step'] < 3)
@@ -629,7 +626,7 @@ function AwardsAssignMass()
  */
 function AwardsViewAssigned()
 {
-	global $context, $scripturl, $txt, $sourcedir, $modSettings;
+	global $smcFunc, $context, $scripturl, $txt, $sourcedir, $modSettings;
 
 	// An award must be selected.
 	$id = (int) $_REQUEST['a_id'];
@@ -859,7 +856,7 @@ function AwardsEditCategory()
  */
 function AwardsListCategories()
 {
-	global $context, $txt;
+	global $context, $scripturl, $smcFunc, $txt;
 
 	// Define $categories
 	$context['categories'] = AwardsLoadAllCategories();
@@ -883,6 +880,8 @@ function AwardsListCategories()
  */
 function AwardsRemoveCategory()
 {
+	global $smcFunc;
+
 	// Before doing anything check the session
 	checkSession('get');
 
@@ -902,7 +901,7 @@ function AwardsRemoveCategory()
  */
 function AwardsViewCategory()
 {
-	global $context, $scripturl, $txt;
+	global $context, $scripturl, $modSettings, $txt, $smcFunc;
 
 	// Clean up!
 	$id_category = (int) $_REQUEST['a_id'];
@@ -931,7 +930,7 @@ function AwardsViewCategory()
  */
 function AwardsRequests()
 {
-	global $context, $txt;
+	global $context, $txt, $scripturl, $modSettings, $settings, $smcFunc;
 
 	// Get just the members awaiting approval so we can reject them >:D
 	$awards = AwardsLoadRequestedAwards();
@@ -953,7 +952,7 @@ function AwardsRequests()
  */
 function AwardsRequests2()
 {
-	global $modSettings;
+	global $smcFunc, $modSettings;
 
 	// Check session.
 	checkSession('post');
