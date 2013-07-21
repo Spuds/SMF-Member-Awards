@@ -404,7 +404,7 @@ function AwardsAddAward($award_name, $description, $time_added, $category, $awar
  * @param int $award_requestable
  * @param int $award_assignable
  */
-function AwardsUpdateAward($award_name, $description, $category, $award_type, $trigger, $award_location, $award_requestable, $award_assignable)
+function AwardsUpdateAward($id, $award_name, $description, $category, $award_type, $trigger, $award_location, $award_requestable, $award_assignable)
 {
 	global $smcFunc;
 
