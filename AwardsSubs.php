@@ -1001,7 +1001,7 @@ function AwardsListAll($start, $end, $awardcheck = array())
 	// Select the awards and their categories.
 	$request = $smcFunc['db_query']('', '
 		SELECT 	a.id_category, a.id_award, a.award_name, a.description, a.time_added, a.filename, a.minifile, a.award_type,
-			a.award_requestable, a.award_assignable, a.trigger,
+			a.award_requestable, a.award_assignable, a.award_trigger,
 			c.category_name
 		FROM {db_prefix}awards AS a
 			LEFT JOIN {db_prefix}awards_categories AS c ON (c.id_category = a.id_category)
