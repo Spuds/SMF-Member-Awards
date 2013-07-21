@@ -164,7 +164,7 @@ function listAwards()
 
 	// Construct the page index
 	$context['page_index'] = constructPageIndex($scripturl . '?action=profile;area=listAwards', $_REQUEST['start'], $countAwards, $maxAwards);
-	$context['start'] = isset($_REQUEST['start']) ? (int) $_REQUEST['start'] : 0;
+	$start = isset($_REQUEST['start']) ? (int) $_REQUEST['start'] : 0;
 
 	// Array of this members awards to prevent a request for something they have
 	$awardcheck = array();
