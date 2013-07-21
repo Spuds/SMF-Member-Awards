@@ -9,7 +9,6 @@ function template_main()
 	{
 		template_show_list('awards_cat_list_' . $i);
 		echo '<br /><br />';
-		$count++;
 	}
 }
 
