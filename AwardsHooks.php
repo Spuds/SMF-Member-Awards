@@ -101,7 +101,7 @@ function member_awards_admin_areas(&$admin_areas)
 		'subsections' => array(
 			'main' => array($txt['awards_main'],array('assign_awards','manage_awards')),
 			'categories' => array($txt['awards_categories'],'manage_awards'),
-			'modify' => array($txt['awards_modify'],'manage_awards'),
+			'modify' => array(isset($_REQUEST['a_id']) ? $txt['awards_modify'] : $txt['awards_add'], 'manage_awards'),
 			'assign' => array($txt['awards_assign'],array('assign_awards','manage_awards')),
 			'assigngroup' => array($txt['awards_assign_membergroup'],'manage_awards'),
 			'assignmass' => array($txt['awards_assign_mass'],'manage_awards'),
