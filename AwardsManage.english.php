@@ -60,6 +60,7 @@ $txt['awards_add_image'] = 'Award Images';
 $txt['awards_add_award'] = 'Add Award';
 $txt['awards_edit_award'] = 'Edit Award';
 $txt['awards_badge_name'] = 'Award Name<br /><span class="smalltext">e.g. Most Posts, Top Topic Starter</span>';
+$txt['awards_description'] = 'Award Description';
 $txt['awards_edit_description'] = 'Description<br /><span class="smalltext">Provide a description for this award to show when you hover over an award image</span>';
 $txt['awards_badge_upload'] = 'Normal Image';
 $txt['awards_badge_upload_mini'] = 'Miniature Image:<br /><span class="smalltext">Don\'t have a small image? Leave this empty, and it will use the normal one</span>';
