@@ -1141,15 +1141,16 @@ function AwardsRemoveMembers($id, $members = array())
 			WHERE id_award = {int:id}
 				AND uniq_id IN (' . implode(', ', $members) . ')',
 			array(
-				'id' => $id
+				'id' => $id,
 			)
 		);
 }
 
 /**
- * Adds an award to a group of members
+ * Adds an award to a membergroup or a group of individual members
  *
  * @param array $values
+ * @param bool $group if true does a membergroup assign
  */
 function AwardsAddMembers($values, $group = false)
 {

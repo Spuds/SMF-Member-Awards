@@ -486,6 +486,16 @@ function AwardsAssign()
 	$context['sub_template'] = 'assign';
 }
 
+/**
+ * This is where you assign awards to member groups.
+ * Step 1
+ *   - Select the award that you want to assign
+ *   - Uses AwardsBuildJavascriptObject to build the form so the correct image displays with the award
+ *
+ * - Step 2
+ *   - Select the members that you want to give this award to.
+ *   - Enter the date that the award was given.
+ */
 function AwardsAssignMemberGroup()
 {
 	global $context, $txt;
@@ -505,7 +515,7 @@ function AwardsAssignMemberGroup()
 		$context['page_title'] = $txt['awards_title'] . ' - ' . $txt['awards_mem_group'];
 	}
 	// Ah step 'duo', they selected some ungrateful group(s) to get an award :P
-	elseif (isset($_REQUEST['step']) && (int) $_REQUEST['step'] === 2)
+	elseif (isset($_REQUEST['step']) && (int) $_REQUEST['step'] == 2)
 	{
 		// Make sure that they picked an award and group to assign it to...
 		if (isset($_POST['who']))
@@ -519,13 +529,14 @@ function AwardsAssignMemberGroup()
 
 		// Set the award date
 		$date_received = (int) $_POST['year'] . '-' . (int) $_POST['month'] . '-' . (int) $_POST['day'];
-		$_POST['award'] = (int) $_POST['award'];
+		$award = (int) $_POST['award'];
 
 		// Prepare the values.
 		$values = array();
 		foreach ($membergroups as $group)
-			$values[] = array('-1', $_POST['award'], $group, $date_received, 1);
+			$values[] = array($award, '-1', $group, $date_received, 1);
 
+		// Add the awards, group style
 		AwardsAddMembers($values, true);
 
 		// Redirect to show the members with this award.
