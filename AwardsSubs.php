@@ -185,7 +185,7 @@ function AwardsCountMembersAwards($memID)
   */
 function AwardsLoadMembersAwards($start, $end, $memID)
 {
-	global $smcFunc, $user_info, $scripturl, $settings, $modSettings;
+	global $smcFunc, $user_info, $scripturl, $settings, $modSettings, $txt;
 
 	// Load the individual and group awards
 	$request = $smcFunc['db_query']('', '
@@ -905,7 +905,7 @@ function AwardsLoadCategory($id)
  */
 function AwardsLoadAllCategories()
 {
-	global $scripturl, $smcFunc;
+	global $scripturl, $smcFunc, $context;
 
 	// Load all the categories.
 	$request = $smcFunc['db_query']('', '

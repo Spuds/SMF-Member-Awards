@@ -891,7 +891,7 @@ function AwardsViewCategory()
 	// Clean up!
 	$id_category = (int) $_REQUEST['a_id'];
 	$max_awards = 15;
-	$context['start'] = isset($_REQUEST['start']) ? (int) $_REQUEST['start'] : 0;
+	$start = isset($_REQUEST['start']) ? (int) $_REQUEST['start'] : 0;
 
 	// Count the number of items in the database for create index
 	$count_awards = AwardsInCategories($id_category);
