@@ -1139,7 +1139,7 @@ function AwardsRemoveMembers($id, $members = array())
 		$smcFunc['db_query']('', '
 			DELETE FROM {db_prefix}awards_members
 			WHERE id_award = {int:id}
-				AND uniq_id IN (' . implode(', ', $ids) . ')',
+				AND uniq_id IN (' . implode(', ', $members) . ')',
 			array(
 				'id' => $id
 			)
