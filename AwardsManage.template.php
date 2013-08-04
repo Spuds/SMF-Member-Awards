@@ -85,7 +85,7 @@ function template_modify()
 	// our awards type list selection
 	foreach($context['award_types'] as $type)
 		echo '
-											<option value="', $type['id'], '"', ($type['id'] == $context['award']['type']) ? ' selected="selected"' : '', '>', $type['name'], '</option>';
+											<option value="', $type['id'], '"', (isset($context['award']['type']) && $type['id'] == $context['award']['type']) ? ' selected="selected"' : '', '>', $type['name'], '</option>';
 
 	echo '
 										</select>
