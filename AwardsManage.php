@@ -2,7 +2,7 @@
 
 /**
  * @name      Awards Modification
- * @license   Mozilla Public License version 2.0 http://mozilla.org/MPL/2.0/.
+ * @license   Mozilla Public License version 1.1 http://mozilla.org/MPL/1.1/
  *
  * @version   3.0
  *
@@ -27,19 +27,17 @@ function AwardsLoad($new_loaded_ids)
 {
 	global $user_profile, $modSettings, $smcFunc;
 
-	// add in the "group member" -1
-	$new_loaded_ids[] = -1;
 	$group_awards = array();
 	$group_awards_details = array();
 
-	// Build our database request to load all existing member awards for this group of members
+	// Build our database request to load all existing member awards for this group of members, including group awards
 	$request = $smcFunc['db_query']('', '
 		SELECT
 			am.id_member, am.active, am.id_group,
 			aw.id_award, aw.award_name, aw.description, aw.minifile, aw.award_trigger, aw.award_type, aw.award_location
 		FROM {db_prefix}awards_members AS am
 			INNER JOIN {db_prefix}awards AS aw ON (aw.id_award = am.id_award)
-		WHERE am.id_member IN({array_int:members})
+		WHERE (am.id_member IN({array_int:members}) OR am.id_member < 0)
 			AND am.active = {int:active}
 		ORDER BY am.favorite DESC, am.date_received DESC',
 		array(
@@ -52,7 +50,7 @@ function AwardsLoad($new_loaded_ids)
 	while ($row = $smcFunc['db_fetch_assoc']($request))
 	{
 		// Track group awards separately
-		if ($row['id_member'] == -1)
+		if ($row['id_member'] < 0)
 		{
 			$group_awards[] = $row['id_group'];
 			$group_awards_details[$row['id_group']] = array(
@@ -94,11 +92,8 @@ function AwardsLoad($new_loaded_ids)
 	$smcFunc['db_free_result']($request);
 
 	// Are any group awards?
-	if (isset($group_awards))
+	if (!empty($group_awards))
 	{
-		// remove the -1 we added, thats just to group awards
-		array_pop($new_loaded_ids);
-
 		// check each member to see if they are a member of a group that has a group awards
 		foreach ($new_loaded_ids as $member_id)
 		{
@@ -345,7 +340,7 @@ function AwardsAutoAssign($members, $award_type, $awardids)
 			);
 	}
 
-	// Now the adds, iInsert the award data
+	// Now the adds, Insert the award data
 	$smcFunc['db_insert']('insert',
 		'{db_prefix}awards_members',
 		array('id_award' => 'int', 'id_member' => 'int', 'date_received' => 'string', 'award_type' => 'int', 'active' => 'int'),

@@ -159,10 +159,10 @@ function AwardsCountMembersAwards($memID)
 
 	// Count the number of items in the database for create index
 	$request = $smcFunc['db_query']('', '
-		SELECT COUNT(*)
+		SELECT id_award
 		FROM {db_prefix}awards_members
 		WHERE (id_member = {int:mem}
-			OR (id_member = -1 AND id_group IN({array_int:groups})))
+			OR (id_member < 0 AND id_group IN({array_int:groups})))
 			AND active = {int:active}',
 		array(
 			'mem' => $memID,
@@ -170,8 +170,11 @@ function AwardsCountMembersAwards($memID)
 			'active' => 1
 		)
 	);
-	list ($count_awards) = $smcFunc['db_fetch_row']($request);
+	// load/count them this way as they may have been assinged an award individually or via group
+	while ($row = $smcFunc['db_fetch_assoc']($request))
+		$awards[$row['id_award']] = $row['id_award'];
 	$smcFunc['db_free_result']($request);
+	$count_awards = count($awards);
 
 	return $count_awards;
 }
@@ -197,7 +200,7 @@ function AwardsLoadMembersAwards($start, $end, $memID)
 			LEFT JOIN {db_prefix}awards_members AS am ON (am.id_award = aw.id_award)
 			LEFT JOIN {db_prefix}awards_categories AS c ON (c.id_category = aw.id_category)
 		WHERE (am.id_member = {int:member}
-			OR (am.id_member = -1 AND am.id_group IN({array_int:groups})))
+			OR (am.id_member < 0 AND am.id_group IN({array_int:groups})))
 			AND am.active = {int:active}
 		ORDER BY am.favorite DESC, c.category_name DESC, aw.award_name DESC
 		LIMIT {int:start}, {int:end}',
@@ -683,7 +686,7 @@ function AwardsLoadMembers($start, $items_per_page, $sort, $id)
 	while ($row = $smcFunc['db_fetch_assoc']($request))
 	{
 		// Group award?
-		if ($row['id_member'] == -1)
+		if ($row['id_member'] < 0)
 		{
 			$row['member_name'] = $row['group_name'];
 			$row['real_name'] = $txt['awards_assign_membergroup'];

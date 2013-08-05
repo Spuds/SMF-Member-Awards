@@ -534,7 +534,7 @@ function AwardsAssignMemberGroup()
 		// Prepare the values.
 		$values = array();
 		foreach ($membergroups as $group)
-			$values[] = array($award, '-1', $group, $date_received, 1);
+			$values[] = array($award, -$group, $group, $date_received, 1);
 
 		// Add the awards, group style
 		AwardsAddMembers($values, true);
