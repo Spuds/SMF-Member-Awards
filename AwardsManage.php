@@ -21,7 +21,6 @@ if (!defined('SMF'))
  * Loads all the awards for the members in the list
  *
  * @param array $new_loaded_ids
- * @return type
  */
 function AwardsLoad($new_loaded_ids)
 {
@@ -69,7 +68,7 @@ function AwardsLoad($new_loaded_ids)
 		}
 		else
 		{
-			$user_profile[$row['id_member']]['awards'][] = array(
+			$user_profile[$row['id_member']]['awards'][$row['id_award']] = array(
 				'id' => $row['id_award'],
 				'id_group' => $row['id_group'],
 				'award_name' => $row['award_name'],
@@ -106,12 +105,16 @@ function AwardsLoad($new_loaded_ids)
 			$give_group_awards = array_intersect($user_profile[$member_id]['groups'],$group_awards);
 			if (!empty($give_group_awards))
 			{
-				// Woohoo ... a group award for you!
+				// Woohoo ... a group award for you *IF* it was not assigned individually, you only get it once ;)
 				foreach ($give_group_awards as $groupaward_id)
-					$user_profile[$member_id]['awards'][] = $group_awards_details[$groupaward_id];
+				{
+					if (!isset($user_profile[$member_id]['awards'][$group_awards_details[$groupaward_id]['id']]))
+						$user_profile[$member_id]['awards'][$groupaward_id] = $group_awards_details[$groupaward_id];
+				}
 			}
 		}
 	}
+
 	return;
 }
 
@@ -150,7 +153,6 @@ function AwardsAutoCheck($new_loaded_ids)
 				'type' => 1,
 			)
 		);
-
 		// build up the auto awards array
 		while ($row = $smcFunc['db_fetch_assoc']($request))
 		{
@@ -199,7 +201,7 @@ function AwardsAutoCheck($new_loaded_ids)
 					AwardsAutoAssign($members, $award_type, $autoawardsid[$award_type]);
 				break;
 			case 5:
-				// Top topic staters 1-N
+				// Top topic starters 1-N
 				AwardsTopTopicStarter_1_N($awardids[0]['award_trigger']);
 				$members = AwardsAutoAssignMembers($awardids, $new_loaded_ids, 'top_topics', true);
 
@@ -241,13 +243,12 @@ function AwardsAutoCheck($new_loaded_ids)
 /**
  * Given the award limits, the members to check and the area, does the comparison
  * uses the data set in $user_profile by the various award querys (topic, post, timeon, etc)
- * Returns the memeber ids, from the supplied list, of any who have reached a threshold
+ * Returns the member ids, from the supplied list, of any who have reached a threshold
  *
  * @param type $awardids
  * @param type $new_loaded_ids
  * @param type $area
  * @param type $one_to_n
- * @return type
  */
 function AwardsAutoAssignMembers($awardids, $new_loaded_ids, $area, $one_to_n = false)
 {
@@ -288,17 +289,17 @@ function AwardsAutoAssignMembers($awardids, $new_loaded_ids, $area, $one_to_n = 
 			}
 		}
 	}
+
 	return $members;
 }
 
 /**
- * Does the database work of settign an autoaward to a member
+ * Does the database work of setting an autoaward to a member
  * Makes sure each member only has 1 of each award
  *
  * @param type $members
  * @param type $award_type
  * @param type $awardids
- * @return type
  */
 function AwardsAutoAssign($members, $award_type, $awardids)
 {
@@ -365,7 +366,7 @@ function AwardsTopicsStarted($memberlist, $ttl = 300)
 	// init with all members in the query
 	$temp = $memberlist;
 
-	// Lets see if this is cached in our cache in a cache
+	// Lets see if this is cached in our "cache in a cache"tm :P
 	if (($awards_topic_started = cache_get_data('awards:topic_started', $ttl)) != null)
 	{
 		// reset this since we have a cache, we will build it for only the members we need data on
@@ -598,7 +599,7 @@ function AwardsSeniority($memberlist)
  */
 function AwardsPopularity($memberlist)
 {
-	// Get members total positive karam, the values are set via loadusersettings for us
+	// Get members total positive karma, the values are set via loadusersettings for us
 	global $user_profile;
 	foreach ($memberlist as $member)
 	{
@@ -609,11 +610,10 @@ function AwardsPopularity($memberlist)
 }
 
 /**
- * utility function to get the x.y years between to dates e.g. 1.5 is 1year 6 months
+ * utility function to get the x.y years between to dates e.g. 1.5 is 1 year 6 months
  *
  * @param type $time1
  * @param type $time2
- * @return type
  */
 function AwardsDateDiff($time1, $time2)
 {
