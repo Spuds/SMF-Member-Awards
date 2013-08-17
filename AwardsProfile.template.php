@@ -12,7 +12,13 @@
  *
  */
 
-// This is the template for the awards
+/**
+ * This is the template for showing a members awards from the profile view
+ *
+ * @global type $context
+ * @global type $txt
+ * @global type $settings
+ */
 function template_awards()
 {
 	global $context, $txt, $settings;
@@ -102,6 +108,13 @@ function template_awards()
 	}
 }
 
+/**
+ * Template for showing all members that have a certain award
+ *
+ * @global type $context
+ * @global type $txt
+ * @global type $settings
+ */
 function template_awards_members()
 {
 	global $context, $txt, $settings;
@@ -137,6 +150,13 @@ function template_awards_members()
 
 }
 
+/**
+ * Template for showing the awards that a member has
+ *
+ * @global type $context
+ * @global type $txt
+ * @global type $settings
+ */
 function template_awards_list()
 {
 	global $context, $txt, $settings;
@@ -214,6 +234,14 @@ function template_awards_list()
 	}
 }
 
+/**
+ * Template for showing a list of requestable awards
+ *
+ * @global type $context
+ * @global type $scripturl
+ * @global type $txt
+ * @global type $settings
+ */
 function template_awards_request()
 {
 	global $context, $scripturl, $txt, $settings;

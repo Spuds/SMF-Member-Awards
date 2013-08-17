@@ -21,7 +21,7 @@ function showAwards($memID)
 
 	require_once($sourcedir . '/AwardsSubs.php');
 
-	// Do they want to make a favorite?
+	// Do they want to make a award thier favorite?
 	if (isset($_GET['makeFavorite']) && allowedTo(array('profile_extra_any', 'profile_extra_own')))
 	{
 		// Check session

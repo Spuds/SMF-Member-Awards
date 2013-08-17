@@ -5,9 +5,9 @@
 	<version>3.0</version>
 
 <file name="$themedir/Display.template.php">
-	<!-- These are the edits to the display template.  If you are using a custom theme they might not work at all! -->
+	<!-- These are the edits to the CURVE display template.  If you are using a CUSTOM THEME they might not work at all! -->
 	<!-- If that happens, find something closely resembling it the items in the search operation, and do the necessary -->
-	<!-- edits yourself.  These are the curve edits -->
+	<!-- edits yourself.  Again these are the CURVE edits -->
 	<operation error="ignore">
 		<search position="before"><![CDATA[		// Don't show these things for guests.
 		if (!$message['member']['is_guest'])
@@ -18,12 +18,14 @@
 								<li class="postgroup">', $message['member']['post_group'], '</li>';
 			echo '
 								<li class="stars">', $message['member']['group_stars'], '</li>';]]></search>
-		<add><![CDATA[							
+		<add><![CDATA[
+
 			// Show their above profile awards, like badges and stuff
 			if (!empty($message['member']['awards']) && $modSettings['awards_in_post'] > 0)
 			{
 				$awards = 0;
 				$award_output = '';
+
 				foreach ($message['member']['awards'] as $award)
 				{
 					if (($award['location'] == 2) && ($awards < $modSettings['awards_in_post']))
@@ -44,6 +46,7 @@
 					echo '
 						<li>
 							<fieldset ', $style , '>';
+
 					if (isset($modSettings['awards_aboveavatar_title']))
 						echo '
 								<legend><a href="' . $scripturl . '?action=profile;area=showAwards;u=' . $message['member']['id'] . '" title="' . $txt['awards'] . '">' . $modSettings['awards_aboveavatar_title'] . '</a></legend>';
@@ -54,8 +57,7 @@
 							</fieldset>
 						</li>';
 				}
-			}
-]]></add>
+			}]]></add>
 	</operation>
 
 	<operation error="ignore">
@@ -79,6 +81,7 @@
 				$awards_above = (empty($awards) ? 0 : $awards);
 				$awards = 0;
 				$award_output = '';
+
 				foreach ($message['member']['awards'] as $award)
 				{
 					if (($award['location'] == 1) && ($awards < $modSettings['awards_in_post']))
@@ -125,6 +128,7 @@
 		{
 			$awards = 0;
 			$award_output = '';
+
 			foreach ($message['member']['awards'] as $award)
 			{
 				if (($award['location'] == 3) && ($awards < $modSettings['awards_in_post']))
@@ -177,9 +181,9 @@
 
 	
 <file name="$themedir/Display.template.php">
-	<!-- These are the edits to the core display template.  If you are using a custom theme they might not work at all! -->
+	<!-- These are the edits to the CORE display template.  If you are using a CUSTOM THEME they might not work at all! -->
 	<!-- If that happens, find something closely resembling it the items in the search operation, and do the necessary -->
-	<!-- edits yourself.  These are the core edits -->
+	<!-- edits yourself.  These are the CORE edits -->
 	<operation error="ignore">
 		<search position="before"><![CDATA[		// Don't show these things for guests.
 		if (!$message['member']['is_guest'])
@@ -216,6 +220,7 @@
 				echo '
 					<li>
 						<fieldset ', $style , '>';
+
 				if (isset($modSettings['awards_aboveavatar_title']))
 					echo '
 							<legend><a href="' . $scripturl . '?action=profile;area=showAwards;u=' . $message['member']['id'] . '" title="' . $txt['awards'] . '">' . $modSettings['awards_aboveavatar_title'] . '</a></legend>';
@@ -251,6 +256,7 @@
 				$awards_above = (empty($awards) ? 0 : $awards);
 				$awards = 0;
 				$award_output = '';
+
 				foreach ($message['member']['awards'] as $award)
 				{
 					if (($award['location'] == 1) && ($awards < $modSettings['awards_in_post']))
@@ -297,6 +303,7 @@
 		{
 			$awards = 0;
 			$award_output = '';
+
 			foreach ($message['member']['awards'] as $award)
 			{
 				if (($award['location'] == 3) && ($awards < $modSettings['awards_in_post']))
