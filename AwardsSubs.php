@@ -155,22 +155,22 @@ function AwardsLoadCategoryAwards($start, $items_per_page, $sort, $cat)
  */
 function AwardsCountMembersAwards($memID)
 {
-	global $smcFunc, $user_info;
+	global $smcFunc, $cur_profile;
 
 	// Count the number of items in the database for create index
 	$request = $smcFunc['db_query']('', '
-		SELECT id_award
+		SELECT id_award, id_group, active
 		FROM {db_prefix}awards_members
 		WHERE (id_member = {int:mem}
-			OR (id_member < 0 AND id_group IN({array_int:groups})))
+				OR (id_member < 0 AND id_group IN ({array_int:groups})))
 			AND active = {int:active}',
 		array(
 			'mem' => $memID,
-			'groups' => $user_info['groups'],
+			'groups' => array_map(intval, $cur_profile['groups']),
 			'active' => 1
 		)
 	);
-	// load/count them this way as they may have been assinged an award individually or via group
+	// load/count them this way as they may have been assigned an award individually or via group
 	while ($row = $smcFunc['db_fetch_assoc']($request))
 		$awards[$row['id_award']] = $row['id_award'];
 	$smcFunc['db_free_result']($request);
@@ -188,7 +188,7 @@ function AwardsCountMembersAwards($memID)
   */
 function AwardsLoadMembersAwards($start, $end, $memID)
 {
-	global $smcFunc, $user_info, $scripturl, $settings, $modSettings, $txt;
+	global $smcFunc, $cur_profile, $scripturl, $settings, $modSettings, $txt;
 
 	// Load the individual and group awards
 	$request = $smcFunc['db_query']('', '
@@ -208,7 +208,7 @@ function AwardsLoadMembersAwards($start, $end, $memID)
 			'start' => $start,
 			'end' => $end,
 			'member' => $memID,
-			'groups' => $user_info['groups'],
+			'groups' =>  array_map(intval, $cur_profile['groups']),
 			'active' => 1
 		)
 	);
