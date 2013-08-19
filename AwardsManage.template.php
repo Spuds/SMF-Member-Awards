@@ -1,4 +1,5 @@
 <?php
+
 // Version: 3.0 AwardsManage.template
 
 function template_main()
@@ -63,7 +64,7 @@ function template_modify()
 									<dd>
 										<select name="id_category" id="id_category">';
 
-	foreach($context['categories'] as $category)
+	foreach ($context['categories'] as $category)
 		echo '
 											<option value="', $category['id'], '"', ($category['id'] == $context['award']['category']) ? ' selected="selected"' : '', '>', $category['name'], '</option>';
 
@@ -83,7 +84,7 @@ function template_modify()
 										<select name="id_type" id="id_type">';
 
 	// our awards type list selection
-	foreach($context['award_types'] as $type)
+	foreach ($context['award_types'] as $type)
 		echo '
 											<option value="', $type['id'], '"', (isset($context['award']['type']) && $type['id'] == $context['award']['type']) ? ' selected="selected"' : '', '>', $type['name'], '</option>';
 
@@ -97,7 +98,7 @@ function template_modify()
 										<span id="awardTrigger_desc" class="smalltext" ></span>';
 
 	// and the descriptions for them, hidden and used by javascript to fill in the awardTrigger_desc span
-	foreach($context['award_types'] as $desc)
+	foreach ($context['award_types'] as $desc)
 		echo '
 										<span id="trigger_desc_', $desc['id'], '" style="display:none">', $desc['desc'], '</span>';
 
@@ -153,7 +154,7 @@ function template_modify()
 										<select name="award_location" id="award_location">';
 
 	// our awards type list selection
-	foreach($context['award_placements'] as $type)
+	foreach ($context['award_placements'] as $type)
 		echo '
 											<option value="', $type['id'], '"', (isset($context['award']['location']) && $type['id'] == $context['award']['location']) ? ' selected="selected"' : '', '>', $type['name'], '</option>';
 
@@ -237,7 +238,7 @@ function template_assign_group()
 	// Loop and show the drop down.
 	foreach ($context['awards'] as $key => $award)
 		echo '
-											<option title="', $award['description'], '" value="', $key, '" ', isset($_REQUEST['a_id']) &&  $_REQUEST['a_id'] == $key ? 'selected="selected"' : '', '>', $award['award_name'], '</option>';
+											<option title="', $award['description'], '" value="', $key, '" ', isset($_REQUEST['a_id']) && $_REQUEST['a_id'] == $key ? 'selected="selected"' : '', '>', $award['award_name'], '</option>';
 
 	echo '
 										</select>
@@ -320,7 +321,7 @@ function template_assign_group()
 											<br class="clear" />
 											<input type="checkbox" id="checkAllGroups" onclick="invertAll(this, this.form, \'who\');" class="input_check" /> <em>', $txt['check_all'], '</em>
 										</dt>
-										<dd>'.$txt['awards_mem_group_desc'].'
+										<dd>' . $txt['awards_mem_group_desc'] . '
 										</dd>
 
 									</dl>
@@ -343,9 +344,9 @@ function template_assign_group()
 	foreach ($context['awards'] as $key => $value)
 	{
 		if ($key < (count($context['awards']) - 1))
-			$script = $script . implode(",",$value) . ',';
+			$script = $script . implode(",", $value) . ',';
 		else
-			$script = $script . implode(",",$value) . "];\n";
+			$script = $script . implode(",", $value) . "];\n";
 	}
 	$script = $script . "</script>";
 
@@ -393,7 +394,7 @@ function template_assign()
 	// Loop and show the drop down.
 	foreach ($context['awards'] as $key => $award)
 		echo '
-											<option title="', $award['description'], '" value="', $key, '" ', isset($_REQUEST['a_id']) &&  $_REQUEST['a_id'] == $key ? 'selected="selected"' : '', '>', $award['award_name'], '</option>';
+											<option title="', $award['description'], '" value="', $key, '" ', isset($_REQUEST['a_id']) && $_REQUEST['a_id'] == $key ? 'selected="selected"' : '', '>', $award['award_name'], '</option>';
 
 	echo '
 										</select>
@@ -449,6 +450,7 @@ function template_assign()
 	echo '
 											</select>
 											<select name="year" tabindex="', $context['tabindex']++, '">';
+
 	for ($i = date('Y') + 5; $i >= date('Y') - 5; $i--)
 		echo '
 												<option value="', $i, '" ', date('Y') == $i ? 'selected="selected"' : '', '>', $i, ' </option>';
@@ -493,9 +495,9 @@ function template_assign()
 	foreach ($context['awards'] as $key => $value)
 	{
 		if ($key < (count($context['awards']) - 1))
-			$script = $script . implode(",",$value) . ',';
+			$script = $script . implode(",", $value) . ',';
 		else
-			$script = $script . implode(",",$value) . "];\n";
+			$script = $script . implode(",", $value) . "];\n";
 	}
 	$script = $script . "</script>";
 
@@ -594,7 +596,7 @@ function template_assign_mass()
 	// Loop and show the drop down.
 	foreach ($context['awards'] as $key => $award)
 		echo '
-										<option title="', $award['description'], '" value="', $key, '" ', isset($_REQUEST['a_id']) &&  $_REQUEST['a_id'] == $key ? 'selected="selected"' : '', '>', $award['award_name'], '</option>';
+										<option title="', $award['description'], '" value="', $key, '" ', isset($_REQUEST['a_id']) && $_REQUEST['a_id'] == $key ? 'selected="selected"' : '', '>', $award['award_name'], '</option>';
 
 	echo '
 									</select>
@@ -676,7 +678,7 @@ function template_assign_mass()
 	{
 		echo '
 									<span class="upperframe"><span></span></span>
-									<div class="roundframe">',$txt['awards_mem_mass_desc'],'</div>
+									<div class="roundframe">', $txt['awards_mem_mass_desc'], '</div>
 									<span class="lowerframe"><span></span></span>';
 	}
 	else
@@ -735,8 +737,8 @@ function template_assign_mass()
 
 									<br class="clear" />';
 
-	// show the submit box
-	echo '
+		// show the submit box
+		echo '
 									<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 									<hr class="hrcolor" />
 									<div class="righttext">
@@ -761,9 +763,9 @@ function template_assign_mass()
 	foreach ($context['awards'] as $key => $value)
 	{
 		if ($key < (count($context['awards']) - 1))
-			$script = $script . implode(",",$value) . ',';
+			$script = $script . implode(",", $value) . ',';
 		else
-			$script = $script . implode(",",$value) . "];\n";
+			$script = $script . implode(",", $value) . "];\n";
 	}
 	$script = $script . "</script>";
 
@@ -777,6 +779,9 @@ function template_assign_mass()
 		// ]]></script>';
 }
 
+/**
+ * View all members that have been assigned an award (admin panel view)
+ */
 function template_view_assigned()
 {
 	global $context;
@@ -794,10 +799,14 @@ function template_view_assigned()
 	<br class="clear" />';
 
 	template_show_list('view_assigned');
+
 	echo '
 	<br class="clear" />';
 }
 
+/**
+ * Template for showing our settings to control the modification
+ */
 function template_settings()
 {
 	global $context, $txt, $scripturl, $modSettings, $settings;
@@ -874,7 +883,7 @@ function template_settings()
 								<select name="awards_aboveavatar_format" id="awards_aboveavatar_format">';
 
 	$select = !empty($modSettings['awards_aboveavatar_format']) ? $modSettings['awards_aboveavatar_format'] : 0;
-	foreach($context['award_formats'] as $format)
+	foreach ($context['award_formats'] as $format)
 		echo '
 									<option value="', $format['id'], '"', ($format['id'] == $select) ? ' selected="selected"' : '', '>', $format['name'], '</option>';
 
@@ -906,7 +915,7 @@ function template_settings()
 								<select name="awards_belowavatar_format" id="awards_belowavatar_format">';
 
 	$select = !empty($modSettings['awards_belowavatar_format']) ? $modSettings['awards_belowavatar_format'] : 0;
-	foreach($context['award_formats'] as $format)
+	foreach ($context['award_formats'] as $format)
 		echo '
 									<option value="', $format['id'], '"', ($format['id'] == $select) ? ' selected="selected"' : '', '>', $format['name'], '</option>';
 
@@ -938,7 +947,7 @@ function template_settings()
 								<select name="awards_signature_format" id="awards_signature_format">';
 
 	$select = !empty($modSettings['awards_signature_format']) ? $modSettings['awards_signature_format'] : 0;
-	foreach($context['award_formats'] as $format)
+	foreach ($context['award_formats'] as $format)
 		echo '
 									<option value="', $format['id'], '"', ($format['id'] == $select) ? ' selected="selected"' : '', '>', $format['name'], '</option>';
 
@@ -959,6 +968,9 @@ function template_settings()
 				';
 }
 
+/**
+ * Template for showing our category editing panel
+ */
 function template_edit_category()
 {
 	global $context, $txt, $scripturl;
@@ -993,6 +1005,9 @@ function template_edit_category()
 				<br class="clear" />';
 }
 
+/**
+ * Show all of the categorys in the system with modificaiton options
+ */
 function template_list_categories()
 {
 	global $context, $txt, $settings, $scripturl;
@@ -1058,6 +1073,9 @@ function template_list_categories()
 				</table>';
 }
 
+/**
+ * View a single category list
+ */
 function template_view_category()
 {
 	global $context, $txt;
@@ -1068,7 +1086,7 @@ function template_view_category()
 			<span class="upperframe"><span></span></span>
 			<div class="roundframe">
 				<div id="welcome">',
-					$txt['awards_error_no_category'], '
+		$txt['awards_error_no_category'], '
 				</div>
 			</div>
 			<span class="lowerframe"><span></span></span>';
@@ -1124,6 +1142,9 @@ function template_view_category()
 	}
 }
 
+/**
+ * Template for viewing the requested awards
+ */
 function template_request_award()
 {
 	global $context, $txt, $scripturl;
@@ -1163,10 +1184,11 @@ function template_request_award()
 						<span class="topslice"><span></span></span>
 						<div class="content" align="center">
 							<img style="padding:0 0 5px 0" src="', $award['img'], '" alt="', $award['award_name'], '" /><br />';
+
 			// Small image as well?
-			if ($award['img'] != $award['miniimg'])
+			if ($award['img'] != $award['small'])
 				echo '
-							<img style="vertical-align:middle" src="', $award['miniimg'], '" alt="', $award['award_name'], '" /> ';
+							<img style="vertical-align:middle" src="', $award['small'], '" alt="', $award['award_name'], '" /> ';
 
 			echo '
 							<strong>', $award['award_name'], '</strong><br />', $award['description'], '
@@ -1201,7 +1223,7 @@ function template_request_award()
 											', $member['pm'], '&nbsp;</span>
 										</td>
 										<td valign="top">
-											', $member['comments'] , '
+											', $member['comments'], '
 										</td>
 									</tr>';
 				$alternate = !$alternate;
