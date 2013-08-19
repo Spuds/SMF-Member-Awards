@@ -14,10 +14,6 @@
 
 /**
  * This is the template for showing a members awards from the profile view
- *
- * @global type $context
- * @global type $txt
- * @global type $settings
  */
 function template_awards()
 {
@@ -110,10 +106,6 @@ function template_awards()
 
 /**
  * Template for showing all members that have a certain award
- *
- * @global type $context
- * @global type $txt
- * @global type $settings
  */
 function template_awards_members()
 {
@@ -129,12 +121,12 @@ function template_awards_members()
 
 		<div class="windowbg">
 			<span class="topslice"><span></span></span>
-			<div class="content" align="center">
+			<div class="content centertext">
 				<img style="padding:0 0 5px 0" src="', $context['award']['img'], '" alt="', $context['award']['award_name'], '" /><br />';
 
-	if ($context['award']['img'] != $context['award']['miniimg'])
+	if ($context['award']['img'] != $context['award']['small'])
 		echo '
-				<img style="vertical-align:middle" src="', $context['award']['miniimg'], '" alt="', $context['award']['award_name'], '" /> ';
+				<img style="vertical-align:middle" src="', $context['award']['small'], '" alt="', $context['award']['award_name'], '" /> ';
 
 	echo '
 				<strong>', $context['award']['award_name'], '</strong><br />', $context['award']['description'], '
@@ -144,18 +136,14 @@ function template_awards_members()
 		<br class="clear" />';
 
 	// Show the list output
-	template_show_list('view_assigned');
+	template_show_list('view_profile_assigned');
+
 	echo '
 		<br class="clear" />';
-
 }
 
 /**
  * Template for showing the awards that a member has
- *
- * @global type $context
- * @global type $txt
- * @global type $settings
  */
 function template_awards_list()
 {
@@ -209,14 +197,16 @@ function template_awards_list()
 				echo '
 						<tr class="windowbg', $which ? '2' : '', '">
 							<td align="center"><img src="', $award['img'], '" alt="', $award['award_name'], '" /></td>
-							<td align="center"><img src="', $award['miniimg'], '" alt="', $award['award_name'], '" /></td>
+							<td align="center"><img src="', $award['small'], '" alt="', $award['award_name'], '" /></td>
 							<td>', $award['award_name'], '</td>
 							<td>', $award['description'], '</td>
 							<td align="center" class="smalltext">
 								<a href="', $award['view_assigned'], '"><img src="', $settings['images_url'], '/awards/user.png" title="', $txt['awards_button_members'], '" alt="" /></a>';
+
 				if (!empty($award['requestable']))
 					echo '
 								<a href="', $award['requestable_link'], '"><img src="', $settings['images_url'], '/awards/award_request.png" title="', $txt['awards_request_award'], '" alt="" /></a>';
+
 				echo '
 							</td>
 						</tr>';
@@ -236,11 +226,6 @@ function template_awards_list()
 
 /**
  * Template for showing a list of requestable awards
- *
- * @global type $context
- * @global type $scripturl
- * @global type $txt
- * @global type $settings
  */
 function template_awards_request()
 {
@@ -256,12 +241,12 @@ function template_awards_request()
 
 		<div class="windowbg">
 			<span class="topslice"><span></span></span>
-			<div class="content" align="center">
+			<div class="content centertext">
 				<img style="padding:0 0 5px 0" src="', $context['award']['img'], '" alt="', $context['award']['award_name'], '" /><br />';
 
-	if ($context['award']['img'] != $context['award']['miniimg'])
+	if ($context['award']['img'] != $context['award']['small'])
 		echo '
-				<img style="vertical-align:middle" src="', $context['award']['miniimg'], '" alt="', $context['award']['award_name'], '" /> ';
+				<img style="vertical-align:middle" src="', $context['award']['small'], '" alt="', $context['award']['award_name'], '" /> ';
 
 	echo '
 				<strong>', $context['award']['award_name'], '</strong><br />', $context['award']['description'], '

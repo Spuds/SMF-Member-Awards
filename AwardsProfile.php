@@ -15,6 +15,11 @@
 if (!defined('SMF'))
 	die('Hacking attempt...');
 
+/**
+ * Show all the awards a member has recieved
+ *
+ * @param type $memID
+ */
 function showAwards($memID)
 {
 	global $context, $txt, $scripturl, $sourcedir;
@@ -81,11 +86,11 @@ function membersAwards()
 
 	// Load this awards details
 	$id = (int) $_REQUEST['a_id'];
-	AwardsLoadAward($id);
+	$context['award'] = AwardsLoadAward($id);
 
-	// build the listoption array to display the data
+	// build the listoption array to display the data, in this case who has this award
 	$listOptions = array(
-		'id' => 'view_assigned',
+		'id' => 'view_profile_assigned',
 		'title' => $txt['awards_showmembers'] . ': ' . $context['award']['award_name'],
 		'items_per_page' => 25,
 		'no_items_label' => $txt['awards_no_assigned_members2'],
@@ -109,7 +114,7 @@ function membersAwards()
 					'value' => $txt['username'],
 				),
 				'data' => array(
-					'db' => 'link',
+					'db' => 'real_name',
 				),
 				'sort' => array(
 					'default' => 'm.real_name ',
@@ -121,7 +126,7 @@ function membersAwards()
 					'value' => $txt['awards_date'],
 				),
 				'data' => array(
-					'db' => 'date',
+					'db' => 'date_received',
 				),
 				'sort' => array(
 					'default' => 'a.date_received DESC',

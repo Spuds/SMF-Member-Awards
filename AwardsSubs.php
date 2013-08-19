@@ -675,7 +675,7 @@ function AwardsLoadMembers($start, $items_per_page, $sort, $id)
 		ORDER BY {raw:sort}
 		LIMIT {int:start}, {int:per_page}',
 		array(
-			'award' => (int) $id,
+			'award' => $id,
 			'active' => 1,
 			'sort' => $sort,
 			'start' => $start,
