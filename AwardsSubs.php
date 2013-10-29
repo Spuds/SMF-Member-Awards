@@ -166,7 +166,7 @@ function AwardsCountMembersAwards($memID)
 			AND active = {int:active}',
 		array(
 			'mem' => $memID,
-			'groups' => array_map(intval, $cur_profile['groups']),
+			'groups' => array_map('intval', $cur_profile['groups']),
 			'active' => 1
 		)
 	);
