@@ -183,7 +183,6 @@ $txt['awards_no_assigned_members2'] = 'There are no members or groups (visible t
 $txt['awards_unassign'] = 'Unassign Award';
 $txt['awards_members_with'] = 'Members with Award';
 $txt['awards_no_badges_member'] = 'You have not received any awards';
-$txt['awards_favorite'] = 'Favorite Award';
 $txt['awards_view_album'] = 'View member\'s awards';
 $txt['awards_count_badges'] = 'This member has a total of <strong>%1$s</strong> award(s).  The award details are below:';
 $txt['awards_confirm_delete_category'] = 'Are you sure you wish to delete this category?';
