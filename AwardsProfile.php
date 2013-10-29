@@ -173,7 +173,7 @@ function listAwards()
 
 	// Array of this members awards to prevent a request for something they have
 	$awardcheck = array();
-	$awards = $user_profile[$user_info['id']]['awards'];
+	$awards = isset($user_profile[$user_info['id']]['awards']) ? $user_profile[$user_info['id']]['awards'] : array();
 	foreach ($awards as $award)
 		$awardcheck[$award['id']] = 1;
 
