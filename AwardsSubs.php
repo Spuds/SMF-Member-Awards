@@ -161,12 +161,12 @@ function AwardsCountMembersAwards($memID)
 	$request = $smcFunc['db_query']('', '
 		SELECT id_award, id_group, active
 		FROM {db_prefix}awards_members
-		WHERE (id_member = {int:mem}
-				OR (id_member < 0 AND id_group IN ({array_int:groups})))
+		WHERE (id_member = {int:mem}' . (!empty($cur_profile['groups']) ? '
+				OR (id_member < 0 AND id_group IN ({array_int:groups}))' : '') . ')
 			AND active = {int:active}',
 		array(
 			'mem' => $memID,
-			'groups' => array_map('intval', $cur_profile['groups']),
+			'groups' => !empty($cur_profile['groups']) ? array_map('intval', $cur_profile['groups']) : '',
 			'active' => 1
 		)
 	);
@@ -199,8 +199,8 @@ function AwardsLoadMembersAwards($start, $end, $memID)
 		FROM {db_prefix}awards AS aw
 			LEFT JOIN {db_prefix}awards_members AS am ON (am.id_award = aw.id_award)
 			LEFT JOIN {db_prefix}awards_categories AS c ON (c.id_category = aw.id_category)
-		WHERE (am.id_member = {int:member}
-			OR (am.id_member < 0 AND am.id_group IN({array_int:groups})))
+		WHERE (am.id_member = {int:member}' . (!empty($cur_profile['groups']) ? '
+			OR (am.id_member < 0 AND am.id_group IN({array_int:groups}))' : '') .')
 			AND am.active = {int:active}
 		ORDER BY am.favorite DESC, c.category_name DESC, aw.award_name DESC
 		LIMIT {int:start}, {int:end}',
@@ -208,7 +208,7 @@ function AwardsLoadMembersAwards($start, $end, $memID)
 			'start' => $start,
 			'end' => $end,
 			'member' => $memID,
-			'groups' =>  array_map(intval, $cur_profile['groups']),
+			'groups' => !empty($cur_profile['groups']) ? array_map('intval', $cur_profile['groups']) : '',
 			'active' => 1
 		)
 	);
