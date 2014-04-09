@@ -197,7 +197,7 @@ function template_awards_list()
 				echo '
 						<tr class="windowbg', $which ? '2' : '', '">
 							<td align="center"><img src="', $award['img'], '" alt="', $award['award_name'], '" /></td>
-							<td align="center"><img src="', $award['small'], '" alt="', $award['award_name'], '" /></td>
+							<td align="center"><img src="', $award['miniimg'], '" alt="', $award['award_name'], '" /></td>
 							<td>', $award['award_name'], '</td>
 							<td>', $award['description'], '</td>
 							<td align="center" class="smalltext">
