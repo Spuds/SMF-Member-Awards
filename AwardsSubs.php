@@ -81,7 +81,7 @@ function AwardsCountCategoryAwards($cat)
 		FROM {db_prefix}awards
 		WHERE id_category = {int:cat}',
 		array(
-			'cat' => $cat,
+			'cat' => (int) $cat,
 		)
 	);
 	list($countAwards) = $smcFunc['db_fetch_row']($request);
@@ -106,7 +106,7 @@ function AwardsLoadCategoryAwards($start, $items_per_page, $sort, $cat)
 	// Select the awards and their categories.
 	$request = $smcFunc['db_query']('', '
 		SELECT
-			a.id_category, a.id_award, a.award_name, a.description, a.time_added, a.filename, a.minifile, a.award_type, a.award_requestable, a.award_assignable,
+			a.id_category, a.id_award, a.award_name, a.description, a.time_added, a.filename, a.minifile, a.award_type, a.award_requestable, a.award_assignable, a.award_trigger,
 			c.category_name
 		FROM {db_prefix}awards AS a
 			LEFT JOIN {db_prefix}awards_categories AS c ON (c.id_category = a.id_category)
@@ -135,6 +135,7 @@ function AwardsLoadCategoryAwards($start, $items_per_page, $sort, $cat)
 			'assignable' => $row['award_assignable'],
 			'filename' => $row['filename'],
 			'minifile' => $row['minifile'],
+			'trigger' => $row['award_trigger'],
 			'img' => dirname($scripturl) . '/' . (empty($modSettings['awards_dir']) ? '' : $modSettings['awards_dir'] . '/') . $row['filename'],
 			'small' => dirname($scripturl) . '/' . (empty($modSettings['awards_dir']) ? '' : $modSettings['awards_dir'] . '/') . $row['minifile'],
 			'edit' => ((allowedTo('manage_awards')) ? $scripturl . '?action=admin;area=awards;sa=modify;a_id=' . $row['id_award'] : ''),
