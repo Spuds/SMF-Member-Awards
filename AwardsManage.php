@@ -128,7 +128,7 @@ function AwardsLoad($new_loaded_ids)
  */
 function AwardsAutoCheck($new_loaded_ids)
 {
-	global $smcFunc;
+	global $smcFunc, $modSettings;
 
 	// See if we already have this in the cache
 	$autoawards = cache_get_data('awards:autoawards', 4 * 3600);
