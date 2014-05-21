@@ -297,7 +297,7 @@ function AwardsModify()
 			if ($editAward == true && ((isset($_FILES['awardFile']) && $_FILES['awardFile']['error'] == 0) || (isset($_FILES['awardFileMini']) && $_FILES['awardFileMini']['error'] == 0)))
 			{
 				// Lets make sure that we delete the file that we are supposed to and not something harmful
-				list ($filename, $minifile) = AwardsLoadFiles($id);
+				list ($filename, $minifile) = AwardLoadFiles($id);
 
 				// Delete the old file(s) first.
 				if ($_FILES['awardFile']['error'] == 0)
@@ -407,7 +407,7 @@ function AwardsDelete()
 	$id = (int) $_GET['a_id'];
 
 	// Select the file name to delete
-	list ($filename, $minifile) = AwardsLoadFiles($id);
+	list ($filename, $minifile) = AwardLoadFiles($id);
 
 	// Now delete the award from the server
 	@unlink($boarddir . '/' . (empty($modSettings['awards_dir']) ? '' : $modSettings['awards_dir'] . '/') . $filename);
@@ -550,7 +550,7 @@ function AwardsAssignMass()
 {
 	global $context, $txt;
 
-	// First step, select the memebrgroups and awards
+	// First step, select the membergroups and awards
 	if (!isset($_REQUEST['step']) || (int) $_REQUEST['step'] < 3)
 	{
 		// Load all the member groups
@@ -624,7 +624,7 @@ function AwardsAssignMass()
  */
 function AwardsViewAssigned()
 {
-	global $sourcedir, $context, $scripturl, $txt, $sourcedir, $modSettings;
+	global $sourcedir, $context, $scripturl, $txt, $modSettings;
 
 	// An award must be selected.
 	$id = (int) $_REQUEST['a_id'];
