@@ -87,7 +87,7 @@ function template_awards()
 							<td>
 								<em>', $txt['months'][$award['time'][1]], ' ', $award['time'][2], ', ', $award['time'][0], '</em>
 							</td>
-							<td>', $award['description'], '</td>
+							<td>', parse_bbc($award['description']), '</td>
 							<td align="center">', $context['allowed_fav'] ? '<a href="' . $award['favorite']['href'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $award['favorite']['img'] . '</a>' : '', '', ($award['favorite']['fav'] == 1 ? ' <img src="' . $settings['images_url'] . '/star.gif" alt="' . $txt['awards_favorite2']. '" />' : ''), '</td>
 						</tr>';
 			}
@@ -129,7 +129,7 @@ function template_awards_members()
 				<img style="vertical-align:middle" src="', $context['award']['small'], '" alt="', $context['award']['award_name'], '" /> ';
 
 	echo '
-				<strong>', $context['award']['award_name'], '</strong><br />', $context['award']['description'], '
+				<strong>', $context['award']['award_name'], '</strong><br />', parse_bbc($context['award']['description']), '
 			</div>
 			<span class="botslice"><span></span></span>
 		</div>
@@ -197,9 +197,9 @@ function template_awards_list()
 				echo '
 						<tr class="windowbg', $which ? '2' : '', '">
 							<td align="center"><img src="', $award['img'], '" alt="', $award['award_name'], '" /></td>
-							<td align="center"><img src="', $award['small'], '" alt="', $award['award_name'], '" /></td>
+							<td align="center"><img src="', $award['miniimg'], '" alt="', $award['award_name'], '" /></td>
 							<td>', $award['award_name'], '</td>
-							<td>', $award['description'], '</td>
+							<td>', parse_bbc($award['description']), '</td>
 							<td align="center" class="smalltext">
 								<a href="', $award['view_assigned'], '"><img src="', $settings['images_url'], '/awards/user.png" title="', $txt['awards_button_members'], '" alt="" /></a>';
 
@@ -249,7 +249,7 @@ function template_awards_request()
 				<img style="vertical-align:middle" src="', $context['award']['small'], '" alt="', $context['award']['award_name'], '" /> ';
 
 	echo '
-				<strong>', $context['award']['award_name'], '</strong><br />', $context['award']['description'], '
+				<strong>', $context['award']['award_name'], '</strong><br />', parse_bbc($context['award']['description']), '
 			</div>
 			<span class="botslice"><span></span></span>
 		</div>

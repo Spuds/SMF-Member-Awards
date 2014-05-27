@@ -792,7 +792,7 @@ function template_view_assigned()
 		<div id="award">
 			<img style="vertical-align:middle;padding:0 5px" src="', $context['award']['img'], '" alt="', $context['award']['award_name'], '" />
 			<img style="vertical-align:middle;padding:0 5px" src="', $context['award']['small'], '" alt="', $context['award']['award_name'], '" />
-			- <strong>', $context['award']['award_name'], '</strong> - ', $context['award']['description'], '
+			- <strong>', $context['award']['award_name'], '</strong> - ', parse_bbc($context['award']['description']), '
 		</div>
 	</div>
 	<span class="lowerframe"><span></span></span>
@@ -1127,7 +1127,7 @@ function template_view_category()
 							<td align="center"><img src="', $award['img'], '" alt="', $award['award_name'], '" /></td>
 							<td align="center"><img src="', $award['small'], '" alt="', $award['award_name'], '" /></td>
 							<td><a href="', $award['edit'], '">', $award['award_name'], '</a></td>
-							<td>', $award['description'], '</td>
+							<td>', parse_bbc($award['description']), '</td>
 						</tr>';
 			}
 		}
@@ -1191,7 +1191,7 @@ function template_request_award()
 							<img style="vertical-align:middle" src="', $award['small'], '" alt="', $award['award_name'], '" /> ';
 
 			echo '
-							<strong>', $award['award_name'], '</strong><br />', $award['description'], '
+							<strong>', $award['award_name'], '</strong><br />', parse_bbc($award['description']), '
 						</div>
 						<span class="botslice"><span></span></span>
 					</div>

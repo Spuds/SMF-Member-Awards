@@ -185,19 +185,21 @@ function AwardsMain()
 						'reverse' => 'award_name DESC',
 					),
 				),
-				'description' => array(
-					'header' => array(
-						'value' => $txt['awards_desc'],
-					),
-					'data' => array(
-						'db' => 'description',
-						'style' => "width: 35%",
-					),
-					'sort' => array(
-						'default' => 'description',
-						'reverse' => 'description DESC',
-					),
-				),
+                'description' => array(
+                    'header' => array(
+                        'value' => $txt['awards_desc'],
+                    ),
+                    'data' => array(
+                        'function' => create_function('$row', '
+							 return parse_bbc($row[\'description\']);'
+                        ),
+                        'style' => "width: 35%",
+                    ),
+                    'sort' => array(
+                        'default' => 'description',
+                        'reverse' => 'description DESC',
+                    ),
+                ),
 				'action' => array(
 					'header' => array(
 						'value' => $txt['awards_actions'],
