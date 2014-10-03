@@ -97,7 +97,7 @@ function template_modify()
 										<br />
 										<span id="awardTrigger_desc" class="smalltext" ></span>';
 
-	// and the descriptions for them, hidden and used by javascript to fill in the awardTrigger_desc span
+	// The descriptions for them, hidden and used by javascript to fill in the awardTrigger_desc span
 	foreach ($context['award_types'] as $desc)
 		echo '
 										<span id="trigger_desc_', $desc['id'], '" style="display:none">', $desc['desc'], '</span>';
@@ -198,7 +198,7 @@ function template_modify()
 
 	if (!empty($context['settings_post_javascript']))
 		echo '
-			<script type="text/javascript"><!-- // --><![CDATA[
+			<script><!-- // --><![CDATA[
 			', $context['settings_post_javascript'], '
 			// ]]></script>';
 }
@@ -351,7 +351,7 @@ function template_assign_group()
 	$script = $script . "</script>";
 
 	echo '
-		<script type="text/javascript"><!-- // --><![CDATA[
+		<script><!-- // --><![CDATA[
 			function showaward()
 			{' . $context['awardsjavasciptarray'] . '
 				document.getElementById(\'awards\').src = \'' . dirname($scripturl) . '/' . $modSettings['awards_dir'] . '/\' + awards[document.forms.assigngroup.award.value][\'filename\'];
@@ -391,7 +391,7 @@ function template_assign()
 									<dt>
 										<select name="award" onchange="showaward();" size="10">';
 
-	// Loop and show the drop down.
+	// Loop and show the award selection drop down.
 	foreach ($context['awards'] as $key => $award)
 		echo '
 											<option title="', $award['description'], '" value="', $key, '" ', isset($_REQUEST['a_id']) && $_REQUEST['a_id'] == $key ? 'selected="selected"' : '', '>', $award['award_name'], '</option>';
@@ -502,9 +502,9 @@ function template_assign()
 	$script = $script . "</script>";
 
 	echo '
-		<script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/awards.js?rc1"></script>
-		<script type="text/javascript" src="', $settings['default_theme_url'], '/scripts/suggest.js?rc1"></script>
-		<script type="text/javascript"><!-- // --><![CDATA[
+		<script src="', $settings['default_theme_url'], '/scripts/awards.js?rc1"></script>
+		<script src="', $settings['default_theme_url'], '/scripts/suggest.js?rc1"></script>
+		<script><!-- // --><![CDATA[
 			var oAwardSend = new smf_AwardSend({
 				sSelf: \'oAwardSend\',
 				sSessionId: \'', $context['session_id'], '\',
@@ -770,7 +770,7 @@ function template_assign_mass()
 	$script = $script . "</script>";
 
 	echo '
-		<script type="text/javascript"><!-- // --><![CDATA[
+		<script><!-- // --><![CDATA[
 			function showaward()
 			{' . $context['awardsjavasciptarray'] . '
 				document.getElementById(\'awards\').src = \'' . dirname($scripturl) . '/' . $modSettings['awards_dir'] . '/\' + awards[document.forms.assigngroup2.award.value][\'filename\'];
