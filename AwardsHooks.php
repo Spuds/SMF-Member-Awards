@@ -144,6 +144,10 @@ function member_awards_menu_buttons(&$buttons)
 {
 	global $txt, $scripturl;
 
+	// Bit of a cheat but known to happen
+	if (empty($txt['awards']))
+		$txt['awards'] = 'Awards';
+
 	// allows members with manage_awards permission to see a menu item since the admin menu is hidden for them
 	$buttons['mlist']['sub_buttons']['awards'] = array(
 		'title' => $txt['awards'],
