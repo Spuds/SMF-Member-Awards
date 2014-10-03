@@ -69,7 +69,7 @@ function template_awards()
 
 			$which = true;
 
-			// ouput the awards for this category
+			// Output the awards for this category
 			foreach ($category['awards'] as $award)
 			{
 				$which = !$which;
@@ -79,22 +79,27 @@ function template_awards()
 								<img src="', $award['img'], '" alt="', $award['award_name'], '" /></a>
 							</td>
 							<td align="center">
-								<a href="', $award['more'], '"><img src="', $award['mini'], '" alt="', $award['award_name'], '" /></a>
+								<a href="', $award['more'], '"><img src="', $award['small'], '" alt="', $award['award_name'], '" /></a>
 							</td>
 							<td>
-								<strong>', $award['award_name'], '</strong>
+								', $award['award_name'], '
 							</td>
 							<td>
-								<em>', $txt['months'][$award['time'][1]], ' ', $award['time'][2], ', ', $award['time'][0], '</em>
+								', $txt['months'][$award['time'][1]], ' ', $award['time'][2], ', ', $award['time'][0], '
 							</td>
-							<td>', $award['description'], '</td>
-							<td align="center">', $context['allowed_fav'] ? '<a href="' . $award['favorite']['href'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $award['favorite']['img'] . '</a>' : '', '', ($award['favorite']['fav'] == 1 ? ' <img src="' . $settings['images_url'] . '/star.gif" alt="' . $txt['awards_favorite2']. '" />' : ''), '</td>
+							<td>',
+								$award['description'], '
+							</td>
+							<td class="centertext">',
+								$context['allowed_fav'] && $award['favorite']['allowed'] ? '<a href="' . $award['favorite']['href'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $award['favorite']['img'] . '</a>' : '',
+								$award['favorite']['fav'] == 1 ? '<img src="' . $settings['images_url'] . '/awards/star.png" alt="' . $txt['awards_favorite']. '" />' : '', '
+							</td>
 						</tr>';
 			}
 
 			echo '
 					</tbody>
-					</table>
+				</table>
 				<br class="clear" />';
 		}
 
@@ -129,7 +134,8 @@ function template_awards_members()
 				<img style="vertical-align:middle" src="', $context['award']['small'], '" alt="', $context['award']['award_name'], '" /> ';
 
 	echo '
-				<strong>', $context['award']['award_name'], '</strong><br />', $context['award']['description'], '
+				<strong>', $context['award']['award_name'], '</strong>
+				<br />', $context['award']['description'], '
 			</div>
 			<span class="botslice"><span></span></span>
 		</div>
@@ -196,16 +202,24 @@ function template_awards_list()
 				$which = !$which;
 				echo '
 						<tr class="windowbg', $which ? '2' : '', '">
-							<td align="center"><img src="', $award['img'], '" alt="', $award['award_name'], '" /></td>
-							<td align="center"><img src="', $award['small'], '" alt="', $award['award_name'], '" /></td>
+							<td align="center">
+								<img src="', $award['img'], '" alt="', $award['award_name'], '" />
+							</td>
+							<td align="center">
+								<img src="', $award['small'], '" alt="', $award['award_name'], '" />
+							</td>
 							<td>', $award['award_name'], '</td>
 							<td>', $award['description'], '</td>
 							<td align="center" class="smalltext">
-								<a href="', $award['view_assigned'], '"><img src="', $settings['images_url'], '/awards/user.png" title="', $txt['awards_button_members'], '" alt="" /></a>';
+								<a href="', $award['view_assigned'], '">
+									<img src="', $settings['images_url'], '/awards/user.png" title="', $txt['awards_button_members'], '" alt="" />
+								</a>';
 
 				if (!empty($award['requestable']))
 					echo '
-								<a href="', $award['requestable_link'], '"><img src="', $settings['images_url'], '/awards/award_request.png" title="', $txt['awards_request_award'], '" alt="" /></a>';
+								<a href="', $award['requestable_link'], '">
+									<img src="', $settings['images_url'], '/awards/award_request.png" title="', $txt['awards_request_award'], '" alt="" />
+								</a>';
 
 				echo '
 							</td>
