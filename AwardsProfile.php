@@ -2,7 +2,7 @@
 
 /**
  * @name      Awards Modification
- * @license   Mozilla Public License version 2.0 http://mozilla.org/MPL/2.0/.
+ * @license   Mozilla Public License version 1.1 http://www.mozilla.org/MPL/1.1/.
  *
  * @version   3.0
  *
@@ -26,15 +26,15 @@ function showAwards($memID)
 
 	require_once($sourcedir . '/AwardsSubs.php');
 
-	// Do they want to make a award thier favorite?
+	// Do they want to make a favorite?
 	if (isset($_GET['makeFavorite']) && allowedTo(array('profile_extra_any', 'profile_extra_own')))
 	{
 		// Check session
 		checkSession('get');
 
 		// Clean
-		$award_id = (int) $_GET['id'];
-		$makefav = $_GET['makeFavorite'] > 0 ? 1 : 0;
+		$award_id = (int) $_GET['in'];
+		$makefav = !empty($_GET['makeFavorite']) ? 1 : 0;
 
 		// Make it a favorite
 		AwardsSetFavorite($memID, $award_id, $makefav);
@@ -60,6 +60,7 @@ function showAwards($memID)
 	// Load the individual and group awards
 	$context['categories'] = AwardsLoadMembersAwards($start, $max_awards, $memID);
 
+	// And off to the template we go
 	$context['page_title'] = $txt['profile'] . ' - ' . $txt['awards_title'];
 	$context['sub_template'] = 'awards';
 	$context['allowed_fav'] = ($context['user']['is_owner'] && allowedTo('profile_view_own')) || allowedTo('profile_extra_any');
@@ -205,16 +206,19 @@ function requestAwards()
 		$id = (int) $_REQUEST['a_id'];
 		$context['award'] = AwardsLoadAward($id);
 
-		// Not requestable, how did we get here?
+		// Not requestable, then how did we get here?
 		if (empty($context['award']['requestable']))
 			fatal_lang_error('awards_error_not_requestable');
 
 		// Dude allready has this one?
 		foreach ($user_profile[$user_info['id']]['awards'] as $award)
+		{
 			if ($award['id'] == $id)
 				fatal_lang_error('awards_error_have_already');
+		}
 
 		// Set the context values
+		$context['award']['description'] = parse_bbc($context['award']['description']);
 		$context['step'] = 1;
 		$context['page_title'] = $txt['awards_request_award'] . ' - ' . $context['award']['award_name'];
 		$context['sub_template'] = 'awards_request';
