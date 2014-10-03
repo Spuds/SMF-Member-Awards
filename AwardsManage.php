@@ -20,7 +20,7 @@ if (!defined('SMF'))
 /**
  * Loads all the awards for the members in the list
  *
- * @param array $new_loaded_ids
+ * @param int[] $new_loaded_ids
  */
 function AwardsLoad($new_loaded_ids)
 {
@@ -55,7 +55,7 @@ function AwardsLoad($new_loaded_ids)
 			$group_awards_details[$row['id_group']] = array(
 				'id' => $row['id_award'],
 				'award_name' => $row['award_name'],
-				'description' => $row['description'],
+				'description' => parse_bbc($row['description']),
 				'more' => '?action=profile;area=membersAwards;a_id=' . $row['id_award'],
 				'href' => '?action=profile;area=showAwards;u=' . $row['id_member'],
 				'minifile' => $row['minifile'],
@@ -72,7 +72,7 @@ function AwardsLoad($new_loaded_ids)
 				'id' => $row['id_award'],
 				'id_group' => $row['id_group'],
 				'award_name' => $row['award_name'],
-				'description' => $row['description'],
+				'description' => parse_bbc($row['description']),
 				'more' => '?action=profile;area=membersAwards;a_id=' . $row['id_award'],
 				'href' => '?action=profile;area=showAwards;u=' . $row['id_member'],
 				'minifile' => $row['minifile'],
@@ -122,9 +122,9 @@ function AwardsLoad($new_loaded_ids)
  * Master auto award function, runs the show
  * Loads all of the defined auto awards and groups them
  * Uses the cache when it can
- * Determine if any members in the list have earned an of the auto awards
+ * Determines if any members in the list have earned an of the auto awards
  *
- * @param type $new_loaded_ids
+ * @param int[] $new_loaded_ids
  */
 function AwardsAutoCheck($new_loaded_ids)
 {
@@ -245,10 +245,10 @@ function AwardsAutoCheck($new_loaded_ids)
  * uses the data set in $user_profile by the various award querys (topic, post, timeon, etc)
  * Returns the member ids, from the supplied list, of any who have reached a threshold
  *
- * @param type $awardids
- * @param type $new_loaded_ids
- * @param type $area
- * @param type $one_to_n
+ * @param int[] $awardids
+ * @param int[] $new_loaded_ids
+ * @param string $area
+ * @param boolean $one_to_n
  */
 function AwardsAutoAssignMembers($awardids, $new_loaded_ids, $area, $one_to_n = false)
 {
@@ -297,9 +297,9 @@ function AwardsAutoAssignMembers($awardids, $new_loaded_ids, $area, $one_to_n = 
  * Does the database work of setting an autoaward to a member
  * Makes sure each member only has 1 of each award
  *
- * @param type $members
- * @param type $award_type
- * @param type $awardids
+ * @param int[] $members
+ * @param string $award_type
+ * @param boolean $awardids
  */
 function AwardsAutoAssign($members, $award_type, $awardids)
 {
@@ -355,8 +355,8 @@ function AwardsAutoAssign($members, $award_type, $awardids)
 /**
  * returns the number of topics started for each member in memberlist
  *
- * @param type $memberlist
- * @param type $ttl
+ * @param int[] $memberlist
+ * @param int $ttl
  */
 function AwardsTopicsStarted($memberlist, $ttl = 300)
 {
@@ -397,7 +397,8 @@ function AwardsTopicsStarted($memberlist, $ttl = 300)
 	{
 		// Number of topics started.
 		$request = $smcFunc['db_query']('', '
-			SELECT COUNT(*) AS num_topics, id_member_started
+			SELECT 
+				COUNT(*) AS num_topics, id_member_started
 			FROM smf_topics
 			WHERE id_member_started IN ({array_int:memberlist})' . (!empty($modSettings['recycle_enable']) && $modSettings['recycle_board'] > 0 ? '
 				AND id_board != {int:recycle_board}' : '') . '
@@ -427,7 +428,7 @@ function AwardsTopicsStarted($memberlist, $ttl = 300)
 /**
  * returns the top X posters in $user_profile
  *
- * @param type $limit
+ * @param int $limit
  */
 function AwardsTopPosters_1_N($limit = 10)
 {
@@ -438,7 +439,8 @@ function AwardsTopPosters_1_N($limit = 10)
 	if (($members = cache_get_data('awards_top_posters', 360)) == null)
 	{
 		$request = $smcFunc['db_query']('', '
-			SELECT id_member, posts
+			SELECT 
+				id_member, posts
 			FROM {db_prefix}members
 			WHERE posts > {int:no_posts}
 			ORDER BY posts DESC
@@ -475,7 +477,7 @@ function AwardsTopPosters_1_N($limit = 10)
 /**
  * returns the top X topic starters in $user_profile
  *
- * @param type $limit
+ * @param int $limit
  */
 function AwardsTopTopicStarter_1_N($limit = 10)
 {
@@ -486,7 +488,8 @@ function AwardsTopTopicStarter_1_N($limit = 10)
 	if (($members = cache_get_data('awards_top_starters', 360)) == null)
 	{
 		$request = $smcFunc['db_query']('', '
-			SELECT id_member_started, COUNT(*) AS hits
+			SELECT 
+				id_member_started, COUNT(*) AS hits
 			FROM {db_prefix}topics' . (!empty($modSettings['recycle_enable']) && $modSettings['recycle_board'] > 0 ? '
 			WHERE id_board != {int:recycle_board}' : '') . '
 			GROUP BY id_member_started
@@ -512,7 +515,8 @@ function AwardsTopTopicStarter_1_N($limit = 10)
 
 	// And now get the top 1-N topic starter.
 	$request = $smcFunc['db_query']('top_topic_starters', '
-		SELECT id_member
+		SELECT 
+			id_member
 		FROM {db_prefix}members
 		WHERE id_member IN ({array_int:member_list})
 		ORDER BY FIND_IN_SET(id_member, {string:top_topic_posters})
@@ -537,7 +541,7 @@ function AwardsTopTopicStarter_1_N($limit = 10)
 /**
  * returns the top X time on line members in $user_profile
  *
- * @param type $limit
+ * @param int $limit
  */
 function AwardsTopTimeon_1_N($limit = 10)
 {
@@ -546,7 +550,8 @@ function AwardsTopTimeon_1_N($limit = 10)
 	// The time on line 1-N list will not change that often, so cache it for a bit
 	$temp = cache_get_data('awards_total_time_members', 600);
 	$request = $smcFunc['db_query']('', '
-		SELECT id_member, total_time_logged_in
+		SELECT 
+			id_member, total_time_logged_in
 		FROM {db_prefix}members' . (!empty($temp) ? '
 		WHERE id_member IN ({array_int:member_list_cached})' : '') . '
 		ORDER BY total_time_logged_in DESC
@@ -580,12 +585,13 @@ function AwardsTopTimeon_1_N($limit = 10)
 /**
  * returns the top X join date based in $user_profile
  *
- * @param type $memberlist
+ * @param int[] $memberlist
  */
 function AwardsSeniority($memberlist)
 {
-	// Load up how long this member has been a member X.x years.months
 	global $user_profile;
+
+	// Load up how long this member has been a member X.x years.months
 	$now = time();
 
 	foreach ($memberlist as $member)
@@ -595,12 +601,13 @@ function AwardsSeniority($memberlist)
 /**
  * returns the karma level for the given list of users
  *
- * @param type $memberlist
+ * @param int[] $memberlist
  */
 function AwardsPopularity($memberlist)
 {
-	// Get members total positive karma, the values are set via loadusersettings for us
 	global $user_profile;
+
+	// Get members total positive karma, the values are set via loadusersettings for us
 	foreach ($memberlist as $member)
 	{
 		$kg = !empty($user_profile[$member]['karma_good']) ? $user_profile[$member]['karma_good'] : 0;
@@ -612,8 +619,8 @@ function AwardsPopularity($memberlist)
 /**
  * utility function to get the x.y years between to dates e.g. 1.5 is 1 year 6 months
  *
- * @param type $time1
- * @param type $time2
+ * @param string $time1
+ * @param string $time2
  */
 function AwardsDateDiff($time1, $time2)
 {
