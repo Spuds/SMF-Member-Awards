@@ -246,7 +246,7 @@ function AwardsMain()
  */
 function AwardsModify()
 {
-	global $smcFunc, $context, $txt, $modSettings, $boarddir;
+	global $smcFunc, $context, $txt, $modSettings, $boarddir, $sourcedir;
 
 	// Check if they are saving the changes
 	if (isset($_POST['award_save']))
@@ -405,7 +405,7 @@ function AwardsModify()
  */
 function AwardsDelete()
 {
-	global $boarddir, $modSettings;
+	global $boarddir, $modSettings, $sourcedir;
 
 	// Check the session
 	checkSession('get');
