@@ -24,6 +24,8 @@
 		<require-file name="AwardsProfile.template.php" destination="$themedir" />
 		<require-file name="AwardsManage.english.php" destination="$languagedir" />
 		<require-file name="AwardsManage.english-utf8.php" destination="$languagedir" />
+		<require-file name="AwardsManage.russian.php" destination="$languagedir" />
+		<require-file name="AwardsManage.russian-utf8.php" destination="$languagedir" />
 		<require-file name="award.gif" destination="$imagesdir" />
 		<require-file name="awards.gif" destination="$imagesdir/admin" />
 		<require-file name="awards.js" destination="$themedir/scripts" />
@@ -46,6 +48,8 @@
 		<remove-file name="$themedir/AwardsProfile.template.php" />
 		<remove-file name="$languagedir/AwardsManage.english.php" />
 		<remove-file name="$languagedir/AwardsManage.english-utf8.php" />
+		<remove-file name="$languagedir/AwardsManage.russian.php" />
+		<remove-file name="$languagedir/AwardsManage.russian-utf8.php" />
 		<remove-file name="$imagesdir/award.gif" />
 		<remove-file name="$imagesdir/admin/awards.gif" />
 		<remove-file name="$themedir/scripts/awards.js" />
