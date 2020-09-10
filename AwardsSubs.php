@@ -40,7 +40,7 @@ function AwardsLoadAward($id = -1)
 	$row = $smcFunc['db_fetch_assoc']($request);
 
 	// Check if that award actually exists
-	if (count($row['id_award']) != 1)
+	if (empty($row['id_award']))
 		fatal_lang_error('awards_error_no_award');
 
 	$award = array(
