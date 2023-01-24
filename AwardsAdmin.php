@@ -206,22 +206,22 @@ function AwardsMain()
 						'class' => 'centertext',
 					),
 					'data' => array(
-						'function' => create_function('$row', '
-							global $txt, $settings;
+                        'function' => function($row){
+                            global $txt, $settings;
 
-							$result = ((allowedTo(\'manage_awards\')) ? \'<a href="\' . $row[\'edit\'] . \'" title="\' . $txt[\'awards_button_edit\'] . \'"><img src="\' . $settings[\'images_url\'] . \'/awards/modify.png" alt="" /></a>
-										<a href="\'  . $row[\'delete\'] . \'" onclick="return confirm(\\\'\' . $txt[\'awards_confirm_delete_award\'] . \'\\\');" title="\' . $txt[\'awards_button_delete\'] . \'"><img src="\' . $settings[\'images_url\'] . \'/awards/delete.png" alt="" /></a>
-										<br />\' : \'\');
+                            $result = ((allowedTo('manage_awards')) ? '<a href="' . $row['edit'] . '" title="' . $txt['awards_button_edit'] . '"><img src="' . $settings['images_url'] . '/awards/modify.png" alt="" /></a>
+										<a href="'  . $row['delete'] . '" onclick="return confirm(\'' . $txt['awards_confirm_delete_award'] . '\');" title="' . $txt['awards_button_delete'] . '"><img src="' . $settings['images_url'] . '/awards/delete.png" alt="" /></a>
+										<br />' : '');
 
-							if (($row[\'award_type\'] <= 1) && (allowedTo(\'manage_awards\') || (allowedTo(\'assign_awards\') && !empty($row[\'assignable\']))))
-								$result .= \'
-										<a href="\' . $row[\'assign\'] . \'" title="\' . $txt[\'awards_button_assign\'] . \'"><img src="\' . $settings[\'images_url\'] . \'/awards/assign.png" alt="" /></a>\';
+                            if (($row['award_type'] <= 1) && (allowedTo('manage_awards') || (allowedTo('assign_awards') && !empty($row['assignable']))))
+                                $result .= '
+										<a href="' . $row['assign'] . '" title="' . $txt['awards_button_assign'] . '"><img src="' . $settings['images_url'] . '/awards/assign.png" alt="" /></a>';
 
-							$result .= \'
-										<a href="\' . $row[\'view_assigned\'] . \'" title="\' . $txt[\'awards_button_members\'] . \'"><img src="\' . $settings[\'images_url\'] . \'/awards/user.png" alt="" /></a>\';
+                            $result .= '
+										<a href="' . $row['view_assigned'] . '" title="' . $txt['awards_button_members'] . '"><img src="' . $settings['images_url'] . '/awards/user.png" alt="" /></a>';
 
-							return $result;'
-						),
+                            return $result;
+                        },
 						'class' => "centertext",
 						'style' => "white-space: nowrap",
 					),
@@ -709,13 +709,16 @@ function AwardsViewAssigned()
 					'value' => $txt['members'],
 				),
 				'data' => array(
-					'function' => create_function('$rowData', '
-						global $scripturl;
+                    'function' => function($rowData){
+                        global $scripturl;
 
-						if ($rowData["id_member"] > 0)
-							return \'<a href="\' . strtr($scripturl, array(\'%\' => \'%%\')) . \'?action=profile;u=\' . $rowData[\'id_member\'] . \'">\' . $rowData[\'member_name\'] . \'</a>\';
-						return $rowData["member_name"];
-					'),
+                        if ($rowData['id_member'] > 0) {
+                            return '<a href="' . strtr($scripturl, array('%' => '%%')
+                                ) . '?action=profile;u=' . $rowData['id_member'] . '">' . $rowData['member_name'] . '</a>';
+                        }
+
+                        return $rowData["member_name"];
+                    }
 				),
 				'sort' => array(
 					'default' => 'm.member_name ',
