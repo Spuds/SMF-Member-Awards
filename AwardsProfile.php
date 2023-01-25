@@ -4,7 +4,7 @@
  * @name      Awards Modification
  * @license   Mozilla Public License version 1.1 http://www.mozilla.org/MPL/1.1/.
  *
- * @version   3.0
+ * @version   3.0.1
  *
  * Original Software by:           Juan "JayBachatero" Hernandez
  * Copyright (c) 2006-2009:        YodaOfDarkness (Fustrate)
@@ -13,12 +13,14 @@
  */
 
 if (!defined('SMF'))
+{
 	die('Hacking attempt...');
+}
 
 /**
- * Show all the awards a member has recieved
+ * Show all the awards a member has received
  *
- * @param type $memID
+ * @param int $memID
  */
 function showAwards($memID)
 {
@@ -68,7 +70,8 @@ function showAwards($memID)
 
 /**
  * Shows all members that have received an award
- * Action from profile when viewing available user awards
+ *
+ * - Action from profile when viewing available user awards
  */
 function membersAwards()
 {
@@ -89,7 +92,7 @@ function membersAwards()
 	$id = (int) $_REQUEST['a_id'];
 	$context['award'] = AwardsLoadAward($id);
 
-	// build the listoption array to display the data, in this case who has this award
+	// Build the listoption array to display the data, in this case who has this award
 	$listOptions = array(
 		'id' => 'view_profile_assigned',
 		'title' => $txt['awards_showmembers'] . ': ' . $context['award']['award_name'],
@@ -172,11 +175,13 @@ function listAwards()
 	$context['page_index'] = constructPageIndex($scripturl . '?action=profile;area=listAwards', $_REQUEST['start'], $countAwards, $maxAwards);
 	$start = isset($_REQUEST['start']) ? (int) $_REQUEST['start'] : 0;
 
-	// Array of this members awards to prevent a request for something they have
+	// Array of their awards to prevent a request for something they have
 	$awardcheck = array();
-	$awards = isset($user_profile[$user_info['id']]['awards']) ? $user_profile[$user_info['id']]['awards'] : array();
+	$awards = $user_profile[$user_info['id']]['awards'] ?? array();
 	foreach ($awards as $award)
+	{
 		$awardcheck[$award['id']] = 1;
+	}
 
 	// Select the awards and their categories.
 	$context['categories'] = AwardsListAll($start, $maxAwards, $awardcheck);
@@ -208,13 +213,17 @@ function requestAwards()
 
 		// Not requestable, then how did we get here?
 		if (empty($context['award']['requestable']))
+		{
 			fatal_lang_error('awards_error_not_requestable');
+		}
 
-		// Dude allready has this one?
+		// Dude already has this one?
 		foreach ($user_profile[$user_info['id']]['awards'] as $award)
 		{
 			if ($award['id'] == $id)
+			{
 				fatal_lang_error('awards_error_have_already');
+			}
 		}
 
 		// Set the context values
@@ -224,10 +233,10 @@ function requestAwards()
 		$context['sub_template'] = 'awards_request';
 	}
 	// step '2', they have actually demanded an award!
-	elseif (isset($_GET['step']) && (int) $_GET['step'] == 2)
+	elseif ((int) $_GET['step'] === 2)
 	{
 		// Check session.
-		checkSession('post');
+		checkSession();
 
 		// Clean those dirty pigs.
 		$id = (int) $_POST['id_award'];
@@ -240,15 +249,21 @@ function requestAwards()
 
 		// Not requestable, how did we get here?
 		if (empty($context['award']['requestable']))
+		{
 			fatal_lang_error('awards_error_not_requestable');
+		}
 
-		// cant ask for what you have
+		// can't ask for what you have
 		foreach ($user_profile[$user_info['id']]['awards'] as $award)
+		{
 			if ($award['id'] == $id)
+			{
 				fatal_lang_error('awards_error_have_already');
+			}
+		}
 
-		// If we made it this far insert /replace it so it can be reviewed.
-		AwardsMakeRequest($id, $date, $comments, true);
+		// If we made it this far insert /replace such that it can be reviewed.
+		AwardsMakeRequest($id, $date, $comments);
 
 		updateSettings(array(
 			'awards_request' => $modSettings['awards_request'],
