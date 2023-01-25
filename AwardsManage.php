@@ -4,7 +4,7 @@
  * @name      Awards Modification
  * @license   Mozilla Public License version 1.1 http://mozilla.org/MPL/1.1/
  *
- * @version   3.0
+ * @version   3.0.1
  *
  * This file handles the loading side of Awards.
  *
@@ -15,7 +15,9 @@
  */
 
 if (!defined('SMF'))
+{
 	die('Hacking attempt...');
+}
 
 /**
  * Loads all the awards for the members in the list
@@ -41,7 +43,7 @@ function AwardsLoad($new_loaded_ids)
 		ORDER BY am.favorite DESC, am.date_received DESC',
 		array(
 			'members' => $new_loaded_ids,
-			'active'=> 1
+			'active' => 1
 		)
 	);
 
@@ -85,7 +87,9 @@ function AwardsLoad($new_loaded_ids)
 
 			// Keep an array of just active awards for this member to make life easier
 			if (!empty($row['active']))
+			{
 				$user_profile[$row['id_member']]['awardlist'][] = $row['id_award'];
+			}
 		}
 	}
 	$smcFunc['db_free_result']($request);
@@ -96,33 +100,36 @@ function AwardsLoad($new_loaded_ids)
 		// check each member to see if they are a member of a group that has a group awards
 		foreach ($new_loaded_ids as $member_id)
 		{
-			// make an array of this users groups
+			// make an array of this user groups
 			$user_profile[$member_id]['groups'] = array($user_profile[$member_id]['id_group'], $user_profile[$member_id]['id_post_group']);
 			if (!empty($user_profile[$member_id]['additional_groups']))
-				$user_profile[$member_id]['groups'] = array_merge($user_profile[$member_id]['groups'],explode(',', $user_profile[$member_id]['additional_groups']));
+			{
+				$user_profile[$member_id]['groups'] = array_merge($user_profile[$member_id]['groups'], explode(',', $user_profile[$member_id]['additional_groups']));
+			}
 
-			// See if any of this members groups match a group award
-			$give_group_awards = array_intersect($user_profile[$member_id]['groups'],$group_awards);
+			// See if any of this member groups match a group award
+			$give_group_awards = array_intersect($user_profile[$member_id]['groups'], $group_awards);
 			if (!empty($give_group_awards))
 			{
 				// Woohoo ... a group award for you *IF* it was not assigned individually, you only get it once ;)
 				foreach ($give_group_awards as $groupaward_id)
 				{
 					if (!isset($user_profile[$member_id]['awards'][$group_awards_details[$groupaward_id]['id']]))
+					{
 						$user_profile[$member_id]['awards'][$groupaward_id] = $group_awards_details[$groupaward_id];
+					}
 				}
 			}
 		}
 	}
-
-	return;
 }
 
 /**
  * Master auto award function, runs the show
- * Loads all of the defined auto awards and groups them
- * Uses the cache when it can
- * Determines if any members in the list have earned an of the auto awards
+ *
+ * - Loads all the defined auto awards and groups them
+ * - Uses the cache when it can
+ * - Determines if any members in the list have earned any of the auto awards
  *
  * @param int[] $new_loaded_ids
  */
@@ -130,16 +137,16 @@ function AwardsAutoCheck($new_loaded_ids)
 {
 	global $smcFunc, $modSettings;
 
-	// See if we already have this in the cache
+	// See if we already have the available auto awards in the cache
 	$autoawards = cache_get_data('awards:autoawards', 4 * 3600);
 	$autoawardsid = cache_get_data('awards:autoawardsid', 4 * 3600);
 	if ($autoawards === null || $autoawardsid === null)
 	{
-		// init
+		// Init
 		$autoawards = array();
 		$autoawardsid = array();
 
-		// Load all the defined auto awards .. uses a filesort,
+		// Load all the defined auto awards (uses a filesort),
 		// but how many auto award definitions are there, <100? php sort instead?
 		// The key is the trigger desc sort, this allows us to use 1 query for that auto award 'type',
 		// all others will be a subset of that
@@ -153,7 +160,7 @@ function AwardsAutoCheck($new_loaded_ids)
 				'type' => 1,
 			)
 		);
-		// build up the auto awards array
+		// Build up the auto awards array
 		while ($row = $smcFunc['db_fetch_assoc']($request))
 		{
 			$autoawards[$row['award_type']][] = $row; // holds all the awards information for each award type
@@ -161,7 +168,7 @@ function AwardsAutoCheck($new_loaded_ids)
 		}
 		$smcFunc['db_free_result']($request);
 
-		// save it for 4 hours, really could be longer since it only changes when a new auto award is added / edited.
+		// Save it for 4 hours, really could be longer since it only changes when a new auto award is added / edited.
 		if (!empty($modSettings['cache_enable']))
 		{
 			cache_put_data('awards:autoawards', $autoawards, 4 * 3600);
@@ -169,8 +176,8 @@ function AwardsAutoCheck($new_loaded_ids)
 		}
 	}
 
-	// Now lets do something with each award type
-	foreach($autoawards as $award_type => $awardids)
+	// Now let's do something with each award type
+	foreach ($autoawards as $award_type => $awardids)
 	{
 		switch ($award_type)
 		{
@@ -180,7 +187,9 @@ function AwardsAutoCheck($new_loaded_ids)
 
 				// If we found new awards to assign, do so
 				if (!empty($members))
+				{
 					AwardsAutoAssign($members, $award_type, $autoawardsid[$award_type]);
+				}
 				break;
 			case 3:
 				// Top posters 1-N
@@ -189,7 +198,9 @@ function AwardsAutoCheck($new_loaded_ids)
 
 				// If we found new awards to assign, do so
 				if (!empty($members))
+				{
 					AwardsAutoAssign($members, $award_type, $autoawardsid[$award_type]);
+				}
 				break;
 			case 4:
 				// Topic count based awards
@@ -198,7 +209,9 @@ function AwardsAutoCheck($new_loaded_ids)
 
 				// If we found new awards to assign, do so
 				if (!empty($members))
+				{
 					AwardsAutoAssign($members, $award_type, $autoawardsid[$award_type]);
+				}
 				break;
 			case 5:
 				// Top topic starters 1-N
@@ -207,7 +220,9 @@ function AwardsAutoCheck($new_loaded_ids)
 
 				// If we found new awards to assign, do so
 				if (!empty($members))
+				{
 					AwardsAutoAssign($members, $award_type, $autoawardsid[$award_type]);
+				}
 				break;
 			case 6:
 				// Most time wasted on the site 1-N,
@@ -216,7 +231,9 @@ function AwardsAutoCheck($new_loaded_ids)
 
 				// If we found new awards to assign, do so
 				if (!empty($members))
+				{
 					AwardsAutoAssign($members, $award_type, $autoawardsid[$award_type]);
+				}
 				break;
 			case 7:
 				// Member join date seniority
@@ -225,7 +242,9 @@ function AwardsAutoCheck($new_loaded_ids)
 
 				// If we found new awards to assign, do so
 				if (!empty($members))
+				{
 					AwardsAutoAssign($members, $award_type, $autoawardsid[$award_type]);
+				}
 				break;
 			case 8:
 				// People like me dammit!
@@ -234,7 +253,9 @@ function AwardsAutoCheck($new_loaded_ids)
 
 				// If we found new awards to assign, do so
 				if (!empty($members))
+				{
 					AwardsAutoAssign($members, $award_type, $autoawardsid[$award_type]);
+				}
 				break;
 		}
 	}
@@ -242,13 +263,14 @@ function AwardsAutoCheck($new_loaded_ids)
 
 /**
  * Given the award limits, the members to check and the area, does the comparison
- * uses the data set in $user_profile by the various award querys (topic, post, timeon, etc)
- * Returns the member ids, from the supplied list, of any who have reached a threshold
+ *
+ * - uses the data set in $user_profile by the various award querys (topic, post, timeon, etc)
+ * - Returns the member ids, from the supplied list, of any who have reached a threshold
  *
  * @param int[] $awardids
  * @param int[] $new_loaded_ids
  * @param string $area
- * @param boolean $one_to_n
+ * @param bool $one_to_n
  */
 function AwardsAutoAssignMembers($awardids, $new_loaded_ids, $area, $one_to_n = false)
 {
@@ -257,13 +279,15 @@ function AwardsAutoAssignMembers($awardids, $new_loaded_ids, $area, $one_to_n = 
 
 	// 1-n awards need to be ascending order, others use the default descending order
 	if ($one_to_n)
+	{
 		$awardids = array_reverse($awardids);
+	}
 
 	// For all the members in this request
-	foreach($new_loaded_ids as $member_id)
+	foreach ($new_loaded_ids as $member_id)
 	{
 		// see if they have enough of '$areas' to hit one of the trigger levels
-		foreach($awardids as $award)
+		foreach ($awardids as $award)
 		{
 			// normal value based awards
 			if (!$one_to_n)
@@ -271,22 +295,24 @@ function AwardsAutoAssignMembers($awardids, $new_loaded_ids, $area, $one_to_n = 
 				if (isset($user_profile[$member_id][$area]) && ($user_profile[$member_id][$area] >= $award['award_trigger']))
 				{
 					// Give this member a cupcake, if they don't already have it, and stop looking for more
-					if (!in_array($award['id_award'],$user_profile[$member_id]['awardlist']))
+					if (!in_array($award['id_award'], $user_profile[$member_id]['awardlist']))
+					{
 						$members[$member_id] = (int) $award['id_award'];
+					}
 					break;
 				}
 			}
 			// 1 to n position based awards
-			else
-			{
-				if (isset($user_profile[$member_id][$area]) && ($user_profile[$member_id][$area] <= $award['award_trigger']))
+			elseif (isset($user_profile[$member_id][$area]) && ($user_profile[$member_id][$area] <= $award['award_trigger']))
 				{
 					// Give this member a hoho, if they don't already have it, and stop looking for more
-					if (!in_array($award['id_award'],$user_profile[$member_id]['awardlist']))
+					if (!in_array($award['id_award'], $user_profile[$member_id]['awardlist']))
+					{
 						$members[$member_id] = (int) $award['id_award'];
+					}
 					break;
 				}
-			}
+
 		}
 	}
 
@@ -295,11 +321,12 @@ function AwardsAutoAssignMembers($awardids, $new_loaded_ids, $area, $one_to_n = 
 
 /**
  * Does the database work of setting an autoaward to a member
- * Makes sure each member only has 1 of each award
+ *
+ * - Makes sure each member only has 1 of each award
  *
  * @param int[] $members
  * @param string $award_type
- * @param boolean $awardids
+ * @param bool $awardids
  */
 function AwardsAutoAssign($members, $award_type, $awardids)
 {
@@ -316,20 +343,21 @@ function AwardsAutoAssign($members, $award_type, $awardids)
 	// Prepare the database values.
 	foreach ($members as $member => $memberaward)
 	{
-		$values[] = array((int) $memberaward, (int) $member, $date_received, (int) $award_type, 1) ;
-	    $users[] = $member;
+		$values[] = array((int) $memberaward, (int) $member, $date_received, (int) $award_type, 1);
+		$users[] = $member;
 
 		// These are all the awardids, for this award type, that this user should no longer have
 		$remove[$member] = array_diff($awardids, array($memberaward));
 
 		// And this will contain just the specific award_ids that he should no longer have
-		$remove[$member] = array_intersect($user_profile[$member]['awardlist'],$remove[$member]);
+		$remove[$member] = array_intersect($user_profile[$member]['awardlist'], $remove[$member]);
 	}
 
 	// First the removals ... Members can only have one active award of each auto 'type'
 	foreach ($members as $member => $dummy)
 	{
 		if (!empty($remove[$member]))
+		{
 			$smcFunc['db_query']('', '
 				DELETE FROM {db_prefix}awards_members
 				WHERE id_award IN ({array_int:award_list})
@@ -339,6 +367,7 @@ function AwardsAutoAssign($members, $award_type, $awardids)
 					'award_list' => $remove[$member],
 				)
 			);
+		}
 	}
 
 	// Now the adds, Insert the award data
@@ -348,12 +377,10 @@ function AwardsAutoAssign($members, $award_type, $awardids)
 		$values,
 		array('id_member', 'id_award')
 	);
-
-	return;
 }
 
 /**
- * returns the number of topics started for each member in memberlist
+ * Returns the number of topics started for each member in memberlist
  *
  * @param int[] $memberlist
  * @param int $ttl
@@ -363,43 +390,47 @@ function AwardsTopicsStarted($memberlist, $ttl = 300)
 	// Load up how many topics this list of users has started.
 	global $modSettings, $user_profile, $smcFunc;
 
-	// init with all members in the query
+	// Init with all members in the query
 	$temp = $memberlist;
 
-	// Lets see if this is cached in our "cache in a cache"tm :P
+	// Let's see if this is cached in our "cache in a cache"tm :P
 	if (($awards_topic_started = cache_get_data('awards:topic_started', $ttl)) != null)
 	{
-		// reset this since we have a cache, we will build it for only the members we need data on
+		// Reset this since we have a cache, we will build it for only the members we need data on
 		$temp = array();
 
-		// we have *some* cache data, see what members we have data for, and if its not stale use it
+		// We have *some* cache data, see what members we have data for, and if its not stale use it
 		foreach ($memberlist as $member)
 		{
 			if (isset($awards_topic_started[$member]['update']))
 			{
 				// See if this member entry, found in the cache is still valid
 				if ($awards_topic_started[$member]['update'] >= (time() - $ttl))
+				{
 					$user_profile[$member]['num_topics'] = $awards_topic_started[$member]['num_topics'];
+				}
 				else
 				{
-					// its a stale entry in the cache, add it to our lookup and drop if from the cache array
+					// Stale entry in the cache, add it to our lookup and drop if from the cache array
 					unset($awards_topic_started[$member]);
 					$temp[] = $member;
 				}
 			}
 			else
+			{
 				$temp[] = $member;
+			}
 		}
 	}
 
-	// if we did not find them all in the cache, or it was stale then do the query
+	// If we did not find them all in the cache, or it was stale then do the query
 	if (!empty($temp))
 	{
 		// Number of topics started.
 		$request = $smcFunc['db_query']('', '
 			SELECT 
 				COUNT(*) AS num_topics, id_member_started
-			FROM smf_topics
+			FROM {db_prefix}topics
 			WHERE id_member_started IN ({array_int:memberlist})' . (!empty($modSettings['recycle_enable']) && $modSettings['recycle_board'] > 0 ? '
 				AND id_board != {int:recycle_board}' : '') . '
 			GROUP BY id_member_started',
@@ -409,7 +440,7 @@ function AwardsTopicsStarted($memberlist, $ttl = 300)
 			)
 		);
 
-		// load them in to user_profile
+		// Load them in to user_profile
 		while ($row = $smcFunc['db_fetch_assoc']($request))
 		{
 			$user_profile[$row['id_member_started']]['num_topics'] = $row['num_topics'];
@@ -421,12 +452,12 @@ function AwardsTopicsStarted($memberlist, $ttl = 300)
 		$smcFunc['db_free_result']($request);
 	}
 
-	// put this back in the cache
+	// Put this back in the cache
 	cache_put_data('awards:topic_started', $awards_topic_started, $ttl);
 }
 
 /**
- * returns the top X posters in $user_profile
+ * Returns the top X posters in $user_profile
  *
  * @param int $limit
  */
@@ -459,7 +490,6 @@ function AwardsTopPosters_1_N($limit = 10)
 			$members[$row['id_member']] = $poster_number;
 		}
 
-		// close up
 		$smcFunc['db_free_result']($request);
 
 		// save this one for the next few mins ....
@@ -467,15 +497,19 @@ function AwardsTopPosters_1_N($limit = 10)
 	}
 
 	if (empty($members))
+	{
 		$members = array(0 => 0);
+	}
 
-	// Load them up so we can see if the kids have won a new toy
+	// Load them up, so we can see if the kids have won a new toy
 	foreach ($members as $id_member => $poster_number)
+	{
 		$user_profile[$id_member]['top_posters'] = $poster_number;
+	}
 }
 
 /**
- * returns the top X topic starters in $user_profile
+ * Returns the top X topic starters in $user_profile
  *
  * @param int $limit
  */
@@ -502,7 +536,9 @@ function AwardsTopTopicStarter_1_N($limit = 10)
 		);
 		$members = array();
 		while ($row = $smcFunc['db_fetch_assoc']($request))
+		{
 			$members[$row['id_member_started']] = $row['hits'];
+		}
 		$smcFunc['db_free_result']($request);
 
 		// save this one for the next few mins ....
@@ -511,7 +547,9 @@ function AwardsTopTopicStarter_1_N($limit = 10)
 
 	// Need to have something ....
 	if (empty($members))
+	{
 		$members = array(0 => 0);
+	}
 
 	// And now get the top 1-N topic starter.
 	$request = $smcFunc['db_query']('top_topic_starters', '
@@ -527,8 +565,7 @@ function AwardsTopTopicStarter_1_N($limit = 10)
 			'limit' => $limit
 		)
 	);
-
-	// Make them available for use to use in user_profile
+	// Make them available for use in user_profile
 	$topic_number = 0;
 	while ($row = $smcFunc['db_fetch_assoc']($request))
 	{
@@ -539,7 +576,7 @@ function AwardsTopTopicStarter_1_N($limit = 10)
 }
 
 /**
- * returns the top X time on line members in $user_profile
+ * Returns the top X time on line members in $user_profile
  *
  * @param int $limit
  */
@@ -562,7 +599,7 @@ function AwardsTopTimeon_1_N($limit = 10)
 		)
 	);
 
-	// init
+	// Init
 	$time_number = 0;
 	$temp2 = array();
 
@@ -571,19 +608,23 @@ function AwardsTopTimeon_1_N($limit = 10)
 	{
 		$temp2[] = (int) $row_members['id_member'];
 		if ($time_number++ >= $limit)
+		{
 			continue;
+		}
 
-		$user_profile[ $row_members['id_member']]['top_time'] = $time_number;
+		$user_profile[$row_members['id_member']]['top_time'] = $time_number;
 	}
 	$smcFunc['db_free_result']($request);
 
 	// Cache the ones we found for a bit, just so we don't have to look again.
 	if ($temp !== $temp2)
+	{
 		cache_put_data('awards_total_time_members', $temp2, 600);
+	}
 }
 
 /**
- * returns the top X join date based in $user_profile
+ * Returns the top X join date based in $user_profile
  *
  * @param int[] $memberlist
  */
@@ -595,11 +636,13 @@ function AwardsSeniority($memberlist)
 	$now = time();
 
 	foreach ($memberlist as $member)
-		$user_profile[$member]['join_length'] = AwardsDateDiff($user_profile[$member]['date_registered'],$now);
+	{
+		$user_profile[$member]['join_length'] = AwardsDateDiff($user_profile[$member]['date_registered'], $now);
+	}
 }
 
 /**
- * returns the karma level for the given list of users
+ * Returns the karma level for the given list of users
  *
  * @param int[] $memberlist
  */
@@ -617,38 +660,16 @@ function AwardsPopularity($memberlist)
 }
 
 /**
- * utility function to get the x.y years between to dates e.g. 1.5 is 1 year 6 months
+ * Utility function to get the x.y years between to dates e.g. 1.5 is 1 year 6 months
  *
  * @param string $time1
  * @param string $time2
  */
 function AwardsDateDiff($time1, $time2)
 {
-	// To try and account for leap years, and php4, we do all this
-	$intervals = array('year','month'); // add day if you need it ;)
-	$diffs = array();
-	$times = array();
+	$date1 = new DateTime(date('d-M-Y', $time1));
+	$date2 = new DateTime(date('d-M-Y', $time2));
+	$diff = $date1->diff($date2);
 
-	// Loop thru all intervals
-	foreach ($intervals as $interval)
-	{
-		$diffs[$interval] = 0;
-
-		// Create a temp time from time1 for this 'interval'
-		$ttime = strtotime('+1 ' . $interval, $time1);
-
-		// Loop until temp time is smaller than time2
-		while ($time2 >= $ttime)
-		{
-			$time1 = $ttime;
-			$diffs[$interval]++;
-			$ttime = strtotime('+1 ' . $interval, $time1);
-		}
-	}
-
-	// build our return array of year, month
-	foreach ($diffs as $interval => $value)
-		$times[$interval] = !empty($value) ? $value : 0;
-
-	return $times['year'] + $times['month']/12;
+	return $diff->y + $diff->m;
 }
