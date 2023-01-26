@@ -1,0 +1,109 @@
+/* full frame around the award group */
+.award_poster_1 {
+	margin: 4px 0 8px 0;
+	padding: 4px 8px 2px;
+	text-align: left;
+	border: 1px solid #CCCCCC;
+}
+
+.award_top legend, .award_bottom legend {
+	text-align: left;
+}
+
+/* Top bar only on the award group */
+.award_poster_2 {
+	margin: 0 2px 8px 2px;
+	padding: 4px 8px 2px;
+	text-align: left;
+	border: none;
+	border-top: 1px solid #CCCCCC;
+	border-radius: 0;
+}
+
+/* No frame */
+.award_poster_3 {
+	padding: 0 8px;
+	border: 1px solid transparent;
+}
+
+/* Make them behave */
+.award_poster_3, .award_poster_2, .award_poster_1 {
+	text-align: center;
+}
+
+/* full frame around the award group */
+.award_signature_1 {
+	padding: 2px 2px 2px 5px;
+	border: 1px solid #CCCCCC;
+}
+
+/* top line above the award group */
+.award_signature_2 {
+	padding: 2px 2px 2px 5px;
+	border: 1px solid transparent;
+	border-top: 1px solid #CCCCCC;
+}
+
+/* frameless */
+.award_signature_3 {
+	padding: 0 0;
+	border: 1px solid transparent;
+}
+
+.table_grid a img.icon {
+	vertical-align: text-bottom;
+}
+
+#awardselect select, #profile_boards {
+	min-width: 100%;
+	height: auto;
+	min-height: 0;
+	max-height: none;
+}
+
+#awardselect dt, #awardselect dd {
+	width: 100%;
+}
+
+dl.settings dt a img.award_icon_help {
+	padding-bottom: 2px;
+	vertical-align: middle;
+}
+
+#awardselect {
+	overflow-x: hidden;
+}
+
+.award_mini_image {
+	max-width: 65px;
+}
+
+.award_regular_image {
+	max-width: 140px;
+}
+
+#award_assigned {
+	display: flex;
+	align-items: center;
+	justify-content: center
+}
+
+#award_assigned img {
+	max-width: 100%;
+	padding: 0 5px;
+	vertical-align: middle;
+}
+
+#awardsfull, #awardssmall {
+	max-width: 95%;
+}
+
+#award_assigned > div {
+	width: 45%;
+	padding: 0 1.5em;
+}
+
+#admin_content fieldset {
+	border-width: 1px 0 0 0;
+	padding: 5px;
+}

@@ -1,11 +1,10 @@
 <?xml version="1.0"?>
-<!DOCTYPE package-info SYSTEM "http://www.simplemachines.org/xml/package-info">
-<package-info xmlns="http://www.simplemachines.org/xml/package-info" xmlns:smf="http://www.simplemachines.org/">
+<!DOCTYPE package-info SYSTEM "https://www.simplemachines.org/xml/package-info">
+<package-info xmlns="https://www.simplemachines.org/xml/package-info" xmlns:smf="https://www.simplemachines.org/">
 	<id>spuds:member_awards</id>
 	<name>Member Awards</name>
-	<version>3.0</version>
+	<version>3.0.1</version>
 	<type>modification</type>
-
 	<install for="2.0 - 2.0.99">
 		<readme type="file" parsebbc="true">readme.txt</readme>
 		<code>add_remove_hooks.php</code>
@@ -29,6 +28,7 @@
 		<require-file name="award.gif" destination="$imagesdir" />
 		<require-file name="awards.gif" destination="$imagesdir/admin" />
 		<require-file name="awards.js" destination="$themedir/scripts" />
+		<require-file name="awards.css" destination="$themedir/css" />
 		<require-dir name="awards" destination="$imagesdir" />
 		<redirect url="index.php?action=admin;area=awards;sa=main" timeout="5000">redirect.txt</redirect>
 	</install>
@@ -53,6 +53,7 @@
 		<remove-file name="$imagesdir/award.gif" />
 		<remove-file name="$imagesdir/admin/awards.gif" />
 		<remove-file name="$themedir/scripts/awards.js" />
+		<remove-file name="$themedir/css/awards.css" />
 		<remove-dir name="$imagesdir/awards" />
 	</uninstall>
 </package-info>
