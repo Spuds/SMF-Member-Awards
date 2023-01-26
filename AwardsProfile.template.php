@@ -4,7 +4,7 @@
  * @name      Awards Modification
  * @license   Mozilla Public License version 1.1 http://www.mozilla.org/MPL/1.1/.
  *
- * @version   3.0 Alpha
+ * @version   3.0.1
  *
  * Original Software by:           Juan "JayBachatero" Hernandez
  * Copyright (c) 2006-2009:        YodaOfDarkness (Fustrate)
@@ -22,31 +22,35 @@ function template_awards()
 	echo '
 					<div class="cat_bar">
 						<h3 class="catbg">
-							' ,$txt['awards'], '
+							', $txt['awards'], '
 						</h3>
 					</div>';
 
 	// Show the amount of awards that a member has
 	if (!empty($context['count_awards']))
+	{
 		echo '
 					<p class="description">',
 						sprintf($txt['awards_count_badges'], $context['count_awards']), '
 					</p>';
+	}
 
 	// Check if this member has any awards
 	if (empty($context['categories']))
+	{
 		echo '
 					<span class="upperframe"><span></span></span>
 					<div class="roundframe">
 						<div id="noawardsforyou">',
-							$txt['awards_no_badges_member'], '
+							$context['user']['is_owner'] ? $txt['awards_no_awards_member'] : sprintf($txt['awards_no_awards_this_member'], $context['member']['name']), '
 						</div>
 					</div>
 					<span class="lowerframe"><span></span></span>';
+	}
 	else
 	{
-		// there be awards !!, output them by category for viewing
-		foreach($context['categories'] as $category)
+		// There be awards !!, output them by category for viewing
+		foreach ($context['categories'] as $category)
 		{
 			echo '
 						<div class="cat_bar">
@@ -57,12 +61,12 @@ function template_awards()
 						<table class="table_grid" width="100%">
 						<thead>
 							<tr class="catbg">
-								<th scope="col" class="first_th smalltext" width="15%">', $txt['awards_image'], '</th>
-								<th scope="col" class="smalltext" width="15%">', $txt['awards_mini'], '</th>
-								<th scope="col" class="smalltext" width="15%">', $txt['awards_name'], '</th>
-								<th scope="col" class="smalltext" width="15%">', $txt['awards_date'], '</th>
-								<th scope="col" class="smalltext" width="35%">', $txt['awards_details'], '</th>
-								<th scope="col" class="last_th smalltext" align="center" width="5%">', $txt['awards_favorite2'], '</th>
+								<th scope="col" class="first_th smalltext" style="width:17%">', $txt['awards_image'], '</th>
+								<th scope="col" class="smalltext" style="width:8%">', $txt['awards_mini'], '</th>
+								<th scope="col" class="smalltext" style="width:20%">', $txt['awards_name'], '</th>
+								<th scope="col" class="smalltext" style="width:17%">', $txt['awards_date'], '</th>
+								<th scope="col" class="smalltext">', $txt['awards_details'], '</th>
+								<th scope="col" class="last_th smalltext" style="vertical-align:middle;width:5%">', $txt['awards_favorite2'], '</th>
 							</tr>
 						</thead>
 						<tbody>';
@@ -74,12 +78,16 @@ function template_awards()
 			{
 				$which = !$which;
 				echo '
-						<tr class="windowbg', $which ? '2' : '', '">
-							<td align="center"><a href="', $award['more'], '">
-								<img src="', $award['img'], '" alt="', $award['award_name'], '" /></a>
+						<tr class="windowbg', $which ? '2' : '', $award['favorite']['fav'] == 1 ? ' favorite' : '', '">
+							<td style="vertical-align:middle">
+								<a href="', $award['more'], '">
+									<img src="', $award['img'], '" alt="', $award['award_name'], '" />
+								</a>
 							</td>
-							<td align="center">
-								<a href="', $award['more'], '"><img src="', $award['small'], '" alt="', $award['award_name'], '" /></a>
+							<td style="vertical-align:middle">
+								<a href="', $award['more'], '">
+									<img src="', $award['small'], '" alt="', $award['award_name'], '" />
+								</a>
 							</td>
 							<td>
 								', $award['award_name'], '
@@ -91,8 +99,12 @@ function template_awards()
 								$award['description'], '
 							</td>
 							<td class="centertext">',
-								$context['allowed_fav'] && $award['favorite']['allowed'] ? '<a href="' . $award['favorite']['href'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $award['favorite']['img'] . '</a>' : '',
-								$award['favorite']['fav'] == 1 ? '<img src="' . $settings['images_url'] . '/awards/star.png" alt="' . $txt['awards_favorite']. '" />' : '', '
+								$award['favorite']['fav'] == 1
+									? '<img src="' . $settings['images_url'] . '/awards/star.png" alt="' . $txt['awards_favorite'] . '" />'
+									: '',
+								$context['allowed_fav'] && $award['favorite']['allowed']
+									? '<a href="' . $award['favorite']['href'] . ';' . $context['session_var'] . '=' . $context['session_id'] . '">' . $award['favorite']['img'] . '</a>'
+									: '', '
 							</td>
 						</tr>';
 			}
@@ -130,8 +142,10 @@ function template_awards_members()
 				<img style="padding:0 0 5px 0" src="', $context['award']['img'], '" alt="', $context['award']['award_name'], '" /><br />';
 
 	if ($context['award']['img'] != $context['award']['small'])
+	{
 		echo '
 				<img style="vertical-align:middle" src="', $context['award']['small'], '" alt="', $context['award']['award_name'], '" /> ';
+	}
 
 	echo '
 				<strong>', $context['award']['award_name'], '</strong>
@@ -149,7 +163,7 @@ function template_awards_members()
 }
 
 /**
- * Template for showing the awards that a member has
+ * Template for showing available awards
  */
 function template_awards_list()
 {
@@ -165,17 +179,19 @@ function template_awards_list()
 
 	// Check if there are any awards
 	if (empty($context['categories']))
+	{
 		echo '
 				<span class="upperframe"><span></span></span>
 				<div class="roundframe">
 					<div id="nostinkinbadges">',
-						$txt['awards_error_no_badges'], '
+		$txt['awards_error_no_badges'], '
 					</div>
 				</div>
 				<span class="lowerframe"><span></span></span>';
+	}
 	else
 	{
-		foreach($context['categories'] as $key => $category)
+		foreach ($context['categories'] as $key => $category)
 		{
 			echo '
 					<div class="title_bar">
@@ -202,24 +218,26 @@ function template_awards_list()
 				$which = !$which;
 				echo '
 						<tr class="windowbg', $which ? '2' : '', '">
-							<td align="center">
+							<td style="vertical-align:middle">
 								<img src="', $award['img'], '" alt="', $award['award_name'], '" />
 							</td>
-							<td align="center">
+							<td style="vertical-align:middle">
 								<img src="', $award['small'], '" alt="', $award['award_name'], '" />
 							</td>
 							<td>', $award['award_name'], '</td>
 							<td>', $award['description'], '</td>
-							<td align="center" class="smalltext">
+							<td style="vertical-align:middle" class="smalltext">
 								<a href="', $award['view_assigned'], '">
 									<img src="', $settings['images_url'], '/awards/user.png" title="', $txt['awards_button_members'], '" alt="" />
 								</a>';
 
 				if (!empty($award['requestable']))
+				{
 					echo '
 								<a href="', $award['requestable_link'], '">
 									<img src="', $settings['images_url'], '/awards/award_request.png" title="', $txt['awards_request_award'], '" alt="" />
 								</a>';
+				}
 
 				echo '
 							</td>
@@ -259,8 +277,10 @@ function template_awards_request()
 				<img style="padding:0 0 5px 0" src="', $context['award']['img'], '" alt="', $context['award']['award_name'], '" /><br />';
 
 	if ($context['award']['img'] != $context['award']['small'])
+	{
 		echo '
 				<img style="vertical-align:middle" src="', $context['award']['small'], '" alt="', $context['award']['award_name'], '" /> ';
+	}
 
 	echo '
 				<strong>', $context['award']['award_name'], '</strong><br />', $context['award']['description'], '
@@ -278,13 +298,13 @@ function template_awards_request()
 			<table width="100%" class="table_grid">
 				<thead>
 					<tr class="titlebg">
-						<th scope="col" class="first_th smalltext" >', $txt['awards_request_comments'], '</th>
-						<th scope="col" class="last_th smalltext" ></th>
+						<th scope="col" class="first_th smalltext">', $txt['awards_request_comments'], '</th>
+						<th scope="col" class="last_th smalltext"></th>
 					</tr>
 				</thead>
 				<tbody>
 					<tr class="windowbg2">
-						<td colspan="2" align="center">
+						<td colspan="2" style="vertical-align:middle">
 							<div style="margin-bottom: 2ex;">
 								<textarea cols="75" rows="7" style="', $context['browser']['is_ie8'] ? 'max-width: 100%; min-width: 100%' : 'width: 100%', '; height: 100px;" name="comments" tabindex="', $context['tabindex']++, '"></textarea><br />
 							</div>
