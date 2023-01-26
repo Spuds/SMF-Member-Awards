@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @name      Awards Modification
+ * @package   Awards Modification
  * @license   Mozilla Public License version 1.1 http://www.mozilla.org/MPL/1.1/.
  *
  * @version   3.0.1
@@ -47,7 +47,7 @@ function showAwards($memID)
 
 	// Load language & template
 	loadLanguage('AwardsManage');
-	loadTemplate('AwardsProfile');
+	loadTemplate('AwardsProfile', 'awards');
 
 	// Count the number of items in the database for create index
 	$context['count_awards'] = AwardsCountMembersAwards($memID);
@@ -56,8 +56,8 @@ function showAwards($memID)
 	$max_awards = 25;
 
 	// Construct the page index
-	$context['page_index'] = constructPageIndex($scripturl . '?action=profile;area=showAwards;u=' . $memID, $_REQUEST['start'], $context['count_awards'], $max_awards);
 	$start = isset($_REQUEST['start']) ? (int) $_REQUEST['start'] : 0;
+	$context['page_index'] = constructPageIndex($scripturl . '?action=profile;area=showAwards;u=' . $memID, $_REQUEST['start'], $context['count_awards'], $max_awards);
 
 	// Load the individual and group awards
 	$context['categories'] = AwardsLoadMembersAwards($start, $max_awards, $memID);
@@ -82,7 +82,7 @@ function membersAwards()
 
 	// Load language & template
 	loadLanguage('AwardsManage');
-	loadTemplate('AwardsProfile');
+	loadTemplate('AwardsProfile', 'awards');
 
 	// Load in our helper functions
 	require_once($sourcedir . '/AwardsSubs.php');
@@ -162,7 +162,7 @@ function listAwards()
 	global $context, $txt, $scripturl, $sourcedir, $user_info, $user_profile;
 
 	loadLanguage('AwardsManage');
-	loadTemplate('AwardsProfile');
+	loadTemplate('AwardsProfile', 'awards');
 	require_once($sourcedir . '/AwardsSubs.php');
 
 	// Number of awards in the system
@@ -199,7 +199,7 @@ function requestAwards()
 
 	// Load language
 	loadLanguage('AwardsManage');
-	loadTemplate('AwardsProfile');
+	loadTemplate('AwardsProfile', 'awards');
 
 	// Load in our helper functions
 	require_once($sourcedir . '/AwardsSubs.php');
@@ -247,7 +247,7 @@ function requestAwards()
 		// let's see if the award exists, silly hackers
 		$context['award'] = AwardsLoadAward($id);
 
-		// Not requestable, how did we get here?
+		// Not requestable? how did we get here?
 		if (empty($context['award']['requestable']))
 		{
 			fatal_lang_error('awards_error_not_requestable');
