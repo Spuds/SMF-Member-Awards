@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @name      Awards Modification
+ * @package   Awards Modification
  * @license   Mozilla Public License version 1.1 http://www.mozilla.org/MPL/1.1/.
  *
  * @version   3.0.1
@@ -304,7 +304,7 @@ function AwardsLoadRequestedAwards()
 {
 	global $scripturl, $modSettings, $settings, $smcFunc;
 
-	// Select all the requestable awards so we have the award specifics
+	// Select all the requestable awards, so we have the award specifics
 	$request = $smcFunc['db_query']('', '
 		SELECT 
 			a.id_award, a.award_name, a.filename, a.minifile, a.description
@@ -696,6 +696,7 @@ function AwardsLoadGroupMembers()
 }
 
 /**
+ * Callback for createlist
  *
  * - List all members and groups who have recived an award
  *
@@ -1369,7 +1370,8 @@ function AwardsUpload($id_award)
 		@chmod($miniName, 0755);
 	}
 	// No mini just the regular for it instead
-	elseif ($_FILES['awardFile']['error'] != 4)	{
+	elseif ($_FILES['awardFile']['error'] != 4)
+	{
 		copy($newName, $miniName);
 	}
 

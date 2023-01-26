@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @name      Awards Modification
+ * @package   Awards Modification
  * @license   Mozilla Public License version 1.1 http://mozilla.org/MPL/1.1/
  *
  * @version   3.0.1
@@ -275,6 +275,7 @@ function AwardsAutoCheck($new_loaded_ids)
 function AwardsAutoAssignMembers($awardids, $new_loaded_ids, $area, $one_to_n = false)
 {
 	global $user_profile;
+
 	$members = array();
 
 	// 1-n awards need to be ascending order, others use the default descending order
@@ -312,7 +313,6 @@ function AwardsAutoAssignMembers($awardids, $new_loaded_ids, $area, $one_to_n = 
 					}
 					break;
 				}
-
 		}
 	}
 
@@ -481,7 +481,6 @@ function AwardsTopPosters_1_N($limit = 10)
 				'limit' => $limit
 			)
 		);
-
 		$poster_number = 0;
 		$members = array();
 		while ($row = $smcFunc['db_fetch_assoc']($request))
@@ -489,7 +488,6 @@ function AwardsTopPosters_1_N($limit = 10)
 			$poster_number++;
 			$members[$row['id_member']] = $poster_number;
 		}
-
 		$smcFunc['db_free_result']($request);
 
 		// save this one for the next few mins ....
@@ -598,11 +596,9 @@ function AwardsTopTimeon_1_N($limit = 10)
 			'limit' => $limit
 		)
 	);
-
 	// Init
 	$time_number = 0;
 	$temp2 = array();
-
 	// Make them available for use to use in user_profile
 	while ($row_members = $smcFunc['db_fetch_assoc']($request))
 	{
