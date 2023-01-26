@@ -183,7 +183,7 @@
 		<add><![CDATA[
 
 				// Awards!
-				if (!empty($modSettings['awards_enabled'))
+				if (!empty($modSettings['awards_enabled']))
 				echo '
 										<li><a href="', $scripturl, '?action=profile;area=showAwards;u=', $message['member']['id'], '" title="', $txt['awards'], '">', ($settings['use_image_buttons'] ? '<img src="' . $settings['images_url'] . '/award.gif" alt="' . $txt['awards'] . '" title="' . $txt['awards'] . '" border="0" />' : $txt['awards']), '</a></li>';]]></add>
 	</operation>

@@ -15,6 +15,7 @@ $txt['awards_description_settings'] = 'Set the overall options for the awards sy
 $txt['awards_description_viewassigned'] = 'View all members with an award';
 $txt['awards_description_categories'] = 'Viewing all categories in the award system';
 $txt['awards_description_editcategory'] = 'Edit an existing category name';
+$txt['awards_description_addcategory'] = 'Add a new awards category';
 $txt['awards_description_deletecategory'] = 'Remove a category from the system';
 $txt['awards_description_viewcategory'] = 'Viewing a category and all awards in that category';
 $txt['awards_description_requests'] = 'This is where you approve or deny member requests for awards';
@@ -130,6 +131,7 @@ $txt['awards_manage_categories'] = 'Manage Categories';
 $txt['awards_list_categories'] = 'Categories';
 $txt['awards_num_in_category'] = 'Awards in Category';
 $txt['awards_viewing_category'] = 'Viewing Category';
+$txt['awards_category_help'] = 'Edit the awards category';
 
 // Settings page
 $txt['awards_basic_settings'] = 'Set the Award Modification Options';
