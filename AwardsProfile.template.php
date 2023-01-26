@@ -79,12 +79,12 @@ function template_awards()
 				$which = !$which;
 				echo '
 						<tr class="windowbg', $which ? '2' : '', $award['favorite']['fav'] == 1 ? ' favorite' : '', '">
-							<td style="vertical-align:middle">
+							<td style="vertical-align:middle" class="centertext">
 								<a href="', $award['more'], '">
 									<img src="', $award['img'], '" alt="', $award['award_name'], '" />
 								</a>
 							</td>
-							<td style="vertical-align:middle">
+							<td style="vertical-align:middle" class="centertext">
 								<a href="', $award['more'], '">
 									<img src="', $award['small'], '" alt="', $award['award_name'], '" />
 								</a>
@@ -141,10 +141,10 @@ function template_awards_members()
 			<div class="content centertext">
 				<img style="padding:0 0 5px 0" src="', $context['award']['img'], '" alt="', $context['award']['award_name'], '" /><br />';
 
-	if ($context['award']['img'] != $context['award']['small'])
+	if ($context['award']['img'] !== $context['award']['small'])
 	{
 		echo '
-				<img style="vertical-align:middle" src="', $context['award']['small'], '" alt="', $context['award']['award_name'], '" /> ';
+				<img style="vertical-align:middle" class="centertext" src="', $context['award']['small'], '" alt="', $context['award']['award_name'], '" /> ';
 	}
 
 	echo '
@@ -218,10 +218,10 @@ function template_awards_list()
 				$which = !$which;
 				echo '
 						<tr class="windowbg', $which ? '2' : '', '">
-							<td style="vertical-align:middle">
+							<td style="vertical-align:middle" class="centertext">
 								<img src="', $award['img'], '" alt="', $award['award_name'], '" />
 							</td>
-							<td style="vertical-align:middle">
+							<td style="vertical-align:middle" class="centertext">
 								<img src="', $award['small'], '" alt="', $award['award_name'], '" />
 							</td>
 							<td>', $award['award_name'], '</td>
@@ -276,10 +276,10 @@ function template_awards_request()
 			<div class="content centertext">
 				<img style="padding:0 0 5px 0" src="', $context['award']['img'], '" alt="', $context['award']['award_name'], '" /><br />';
 
-	if ($context['award']['img'] != $context['award']['small'])
+	if ($context['award']['img'] !== $context['award']['small'])
 	{
 		echo '
-				<img style="vertical-align:middle" src="', $context['award']['small'], '" alt="', $context['award']['award_name'], '" /> ';
+				<img style="vertical-align:middle" class="centertext" src="', $context['award']['small'], '" alt="', $context['award']['award_name'], '" /> ';
 	}
 
 	echo '
