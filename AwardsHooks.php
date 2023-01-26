@@ -15,7 +15,9 @@
  */
 
 if (!defined('SMF'))
+{
 	die('Hacking attempt...');
+}
 
 /**
  * Profile Menu Hook, integrate_profile_areas, called from profile.php
@@ -26,11 +28,20 @@ if (!defined('SMF'))
  */
 function member_awards_profile_areas(&$profile_areas)
 {
-	global $txt, $user_info;
+	global $txt, $user_info, $modSettings;
 
 	// No need to show these profile option to guests, perhaps a view_awards permissions should be added?
 	if ($user_info['is_guest'])
+	{
 		return;
+	}
+
+	// If Member Awards is disabled, we don't go any further
+	if (empty($modSettings['awards_enabled']))
+	{
+		if (!$user_info['is_admin'] && !isAllowedTo('manage_awards'))
+			return;
+	}
 
 	member_awards_array_insert($profile_areas, 'info', array(
 		'member_awards' => array(
@@ -80,7 +91,8 @@ function member_awards_profile_areas(&$profile_areas)
 /**
  * Admin hook, integrate_admin_areas, called from Admin.php
  * adds the admin menu and all award sub actions as a sub menu
- * hidden to all but admin, accessable via manage_award permission
+ * hidden to all but admin, accessible via manage_award permission
+ *
  * @param array $admin_areas
  */
 function member_awards_admin_areas(&$admin_areas)
@@ -97,16 +109,16 @@ function member_awards_admin_areas(&$admin_areas)
 		'file' => 'AwardsAdmin.php',
 		'function' => 'Awards',
 		'icon' => 'awards.gif',
-		'permission' => array('manage_awards','assign_awards'),
+		'permission' => array('manage_awards', 'assign_awards'),
 		'subsections' => array(
-			'main' => array($txt['awards_main'],array('assign_awards','manage_awards')),
-			'categories' => array($txt['awards_categories'],'manage_awards'),
+			'main' => array($txt['awards_main'], array('assign_awards', 'manage_awards')),
+			'categories' => array($txt['awards_categories'], 'manage_awards'),
 			'modify' => array(isset($_REQUEST['a_id']) ? $txt['awards_modify'] : $txt['awards_add'], 'manage_awards'),
-			'assign' => array($txt['awards_assign'],array('assign_awards','manage_awards')),
-			'assigngroup' => array($txt['awards_assign_membergroup'],'manage_awards'),
-			'assignmass' => array($txt['awards_assign_mass'],'manage_awards'),
-			'requests' => array($txt['awards_requests'] . (empty($modSettings['awards_request']) ? '' : ' (<b>' . $modSettings['awards_request'] . '</b>)'),array('assign_awards','manage_awards')),
-			'settings' => array($txt['awards_settings'],'manage_awards'),
+			'assign' => array($txt['awards_assign'], array('assign_awards', 'manage_awards')),
+			'assigngroup' => array($txt['awards_assign_membergroup'], 'manage_awards'),
+			'assignmass' => array($txt['awards_assign_mass'], 'manage_awards'),
+			'requests' => array($txt['awards_requests'] . (empty($modSettings['awards_request']) ? '' : ' (<b>' . $modSettings['awards_request'] . '</b>)'), array('assign_awards', 'manage_awards')),
+			'settings' => array($txt['awards_settings'], 'manage_awards'),
 		)
 	);
 }
@@ -146,7 +158,9 @@ function member_awards_menu_buttons(&$buttons)
 
 	// Bit of a cheat but known to happen
 	if (empty($txt['awards']))
+	{
 		$txt['awards'] = 'Awards';
+	}
 
 	// allows members with manage_awards permission to see a menu item since the admin menu is hidden for them
 	$buttons['mlist']['sub_buttons']['awards'] = array(
@@ -173,15 +187,22 @@ function member_awards_array_insert(&$input, $key, $insert, $where = 'before', $
 	if ($position === false)
 	{
 		$input = array_merge($input, $insert);
+
 		return;
 	}
 
 	if ($where === 'after')
-		$position += 1;
+	{
+		++$position;
+	}
 
 	// Insert as first
 	if ($position === 0)
+	{
 		$input = array_merge($insert, $input);
+	}
 	else
+	{
 		$input = array_merge(array_slice($input, 0, $position), $insert, array_slice($input, $position));
+	}
 }
