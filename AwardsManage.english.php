@@ -177,6 +177,8 @@ $txt['awards_name'] = 'Award Name';
 $txt['awards_favorite2'] = 'Favorite';
 $txt['awards_details'] = 'Award Details';
 $txt['awards_view_album'] = 'Show Awards';
+$txt['awards_make_favorite'] = 'Add as Favorite';
+$txt['awards_remove_favorite'] = 'Remove as Favorite';
 
 // Others
 $txt['awards_showmembers'] = 'Showing Members with the Award';

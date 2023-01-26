@@ -244,7 +244,7 @@ function AwardsLoadMembersAwards($start, $end, $memID)
 			'favorite' => array(
 				'fav' => $row['favorite'],
 				'href' => $scripturl . '?action=profile;area=showAwards;in=' . $row['id_award'] . ';makeFavorite=' . ($row['favorite'] == 1 ? '0' : '1') . (isset($_REQUEST['u']) ? ';u=' . $_REQUEST['u'] : ''),
-				'img' => '<img src="' . $settings['images_url'] . '/awards/' . ($row['favorite'] == 1 ? 'delete' : 'add') . '.png" alt="' . $txt['awards_favorite2'] . '" title="' . $txt['awards_favorite2'] . '" />',
+				'img' => '<img src="' . $settings['images_url'] . '/awards/' . ($row['favorite'] == 1 ? 'delete' : 'add') . '.png" alt="' . $txt['awards_favorite2'] . '" title="' . ($row['favorite'] == 1 ? $txt['awards_remove_favorite'] : $txt['awards_make_favorite']) . '" />',
 				'allowed' => empty($row['id_group']),
 			),
 			'filename' => $row['filename'],
