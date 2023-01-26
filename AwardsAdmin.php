@@ -1,7 +1,7 @@
 <?php
 
 /**
- * @name      Awards Modification
+ * @package   Awards Modification
  * @license   Mozilla Public License version 1.1 http://www.mozilla.org/MPL/1.1/.
  *
  * @version   3.0.1
@@ -109,7 +109,8 @@ function Awards()
 
 /**
  * Main page for the admin panel
- * Loads the awards and categories that have been added
+ *
+ * - Loads all the awards and categories that have been added to the system
  */
 function AwardsMain()
 {
@@ -156,10 +157,11 @@ function AwardsMain()
 					'header' => array(
 						'value' => $txt['awards_image'],
 						'class' => 'centertext',
+						'style' => 'width:8%',
 					),
 					'data' => array(
 						'sprintf' => array(
-							'format' => '<img src="%1$s" alt="%2$s" />',
+							'format' => '<img class="award_regular_image" src="%1$s" alt="%2$s" />',
 							'params' => array(
 								'img' => false,
 								'award_name' => false,
@@ -172,11 +174,12 @@ function AwardsMain()
 				'small' => array(
 					'header' => array(
 						'value' => $txt['awards_mini'],
-						'class' => "centertext",
+						'class' => 'centertext',
+						'style' => 'width:8%',
 					),
 					'data' => array(
 						'sprintf' => array(
-							'format' => '<img src="%1$s" alt="%2$s" />',
+							'format' => '<img class="award_mini_image" src="%1$s" alt="%2$s" />',
 							'params' => array(
 								'small' => false,
 								'award_name' => false,
@@ -205,7 +208,6 @@ function AwardsMain()
 					),
 					'data' => array(
 						'db' => 'description',
-						'style' => "width: 35%",
 					),
 					'sort' => array(
 						'default' => 'description',
@@ -221,10 +223,10 @@ function AwardsMain()
 						'function' => function($row) use ($txt, $settings) {
 							$result = (allowedTo('manage_awards') ? '
 								<a href="' . $row['edit'] . '" title="' . $txt['awards_button_edit'] . '">
-									<img src="' . $settings['images_url'] . '/awards/modify.png" alt="" />
+									<img src="' . $settings['images_url'] . '/awards/modify.png" alt="_" />
 								</a>
 								<a href="'  . $row['delete'] . '" onclick="return confirm(\'' . $txt['awards_confirm_delete_award'] . '\');" title="' . $txt['awards_button_delete'] . '">
-									<img src="' . $settings['images_url'] . '/awards/delete.png" alt="" />
+									<img src="' . $settings['images_url'] . '/awards/delete.png" alt="X" />
 								</a>
 								<br />' : '');
 
@@ -550,7 +552,7 @@ function AwardsAssign()
 	$context['award_post_javascript'] = $context['award_post_javascript'] ?? '';
 	$context['award_post_javascript'] .= '
 		<script src="' . $settings['default_theme_url'] . '/scripts/suggest.js?fin20"></script>
-		<script src="' . $settings['default_theme_url'] . '/scripts/awards.js?fin30"></script>
+		<script src="' . $settings['default_theme_url'] . '/scripts/awards.js?fin301"></script>
 		<script>
 			var oAwardSend = new smf_AwardSend({
 				sSelf: \'oAwardSend\',
@@ -578,14 +580,14 @@ function AwardsAssign()
 }
 
 /**
-	 * This is where you add an award to a membergroup
-	 *
+ * This is where you add an award to a membergroup
+ *
  * Step 1
  *   - Select the award that you want to assign
- *   - Uses json-encode to build the form so the correct image displays with the award
+ *     - Select the groups that you want to assign them to
  *
  * - Step 2
- *   - Select the members that you want to give this award to.
+ *   - Preps and checks the data
  *   - Enter the date that the award was given.
  */
 function AwardsAssignMemberGroup()
@@ -649,6 +651,7 @@ function AwardsAssignMemberGroup()
 		'description' => $txt['awards_description_assigngroup'],
 	);
 
+	// Add some JS for the UI experience
 	$context['award_post_javascript'] = $context['award_post_javascript'] ?? '';
 	$context['award_post_javascript'] .= '
 	<script>
@@ -786,6 +789,9 @@ function AwardsViewAssigned()
 		fatal_lang_error('awards_error_no_award');
 	}
 
+	// Load in our helper functions
+	require_once($sourcedir . '/AwardsSubs.php');
+
 	// Removing the award from some members?
 	if (isset($_POST['unassign']))
 	{
@@ -807,6 +813,7 @@ function AwardsViewAssigned()
 
 	// Load the awards info for this award
 	$context['award'] = AwardsLoadAward($id);
+	$context['award']['description'] = parse_bbc($context['award']['description']);
 
 	// Build the list option array to display the data
 	$listOptions = array(
@@ -920,7 +927,7 @@ function AwardsViewAssigned()
 /**
  * This is where you handle the settings for the mod
  *
- * - awardsDir is the directly in which the badges are saved.
+ * - awardsDir is the directory in which the badges are saved.
  */
 function AwardsSettings()
 {
@@ -938,7 +945,7 @@ function AwardsSettings()
 		// Strip any slashes from the awards dir
 		$_POST['awards_dir'] = str_replace(array('\\', '/'), '', $_POST['awards_dir']);
 
-		// Try to create a new dir if it doesn't exists.
+		// Try to create a new dir if it doesn't exist.
 		if (!is_dir($boarddir . '/' . $_POST['awards_dir']) && trim($_POST['awards_dir']) !== '')
 		{
 			if (!mkdir($concurrentDirectory = $boarddir . '/' . $_POST['awards_dir'], 0755) && !is_dir($concurrentDirectory))
