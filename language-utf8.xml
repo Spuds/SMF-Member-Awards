@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
-<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
-<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
-<id>spuds:ILA</id>
-	
+<!DOCTYPE modification SYSTEM "https://www.simplemachines.org/xml/modification">
+<modification xmlns="https://www.simplemachines.org/xml/modification" xmlns:smf="https://www.simplemachines.org/">
+<id>spuds:member_awards</id>
+
 <file name="$languagedir/Modifications.english-utf8.php" error="skip">
 	<operation>
 		<search position="end" />
 		<add><![CDATA[
-		
+
 ### Awards
 // Used by: Awards Errors
 $txt['cannot_manage_awards'] = 'You aren\'t allowed to manage awards.';
@@ -50,7 +50,7 @@ $txt['viewingAwards'] = 'Viewing Award:';
 	<operation>
 		<search position="end" />
 		<add><![CDATA[
-		
+
 ### Awards
 // Used by: Awards Errors
 $txt['cannot_manage_awards'] = 'Вам не разрешено управлять наградами.';

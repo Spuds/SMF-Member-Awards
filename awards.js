@@ -29,11 +29,11 @@ smf_AwardSend.prototype.init = function()
 		aListItems: this.opt.aToRecipients
 	});
 	this.oToAutoSuggest.registerCallback('onBeforeAddItem', this.opt.sSelf + '.callbackAddItem');
-}
+};
 
 // Prevent items to be added twice or to both the 'To'.
 smf_AwardSend.prototype.callbackAddItem = function(oAutoSuggestInstance, sSuggestId)
 {
 	this.oToAutoSuggest.deleteAddedItem(sSuggestId);
 	return true;
-}
+};

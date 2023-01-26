@@ -10,18 +10,27 @@
 * This file is a simplified database installer. It does what it is suppoed to.    *
 **********************************************************************************/
 
+/**
+ * @name      Member Awards
+ * @copyright Spuds
+ * @license   MPL 1.1 http://mozilla.org/MPL/1.1/
+ *
+ * @version 3.0
+ *
+ */
+
 // If we have found SSI.php and we are outside of SMF, then we are running standalone.
-if (file_exists(dirname(__FILE__) . '/SSI.php') && !defined('SMF'))
-	require_once(dirname(__FILE__) . '/SSI.php');
+if (file_exists(__DIR__ . '/SSI.php') && !defined('SMF'))
+	require_once(__DIR__ . '/SSI.php');
 elseif (!defined('SMF'))
 	die('<b>Error:</b> Cannot install - please verify you put this file in the same place as SMF\'s SSI.php.');
 
-if ((SMF == 'SSI') && !$user_info['is_admin'])
+if ((SMF === 'SSI') && !$user_info['is_admin'])
 	die('Admin priveleges required.');
 
-if (SMF == 'SSI')
+if (SMF === 'SSI')
 	db_extend('packages');
-	
+
 global $modSettings, $smcFunc, $db_prefix;
 
 // Settings to create new mod settings...
@@ -37,50 +46,50 @@ $mod_settings = array(
 	'awards_requests' => 0,
 );
 
-// Define our tables 
+// Define our tables
 $tables = array();
 $tables[] = array(
 	'table_name' => 'awards_members',
 	'columns' => array(
 		array(
-			'name' => 'uniq_id', 
-			'type' => 'mediumint', 
+			'name' => 'uniq_id',
+			'type' => 'mediumint',
 			'size' => 8,
-			'null' => false, 
+			'null' => false,
 			'auto' => true
 		),
 		array(
-			'name' => 'id_award', 
-			'type' => 'mediumint', 
-			'size' => 8, 
-			'null' => false, 
+			'name' => 'id_award',
+			'type' => 'mediumint',
+			'size' => 8,
+			'null' => false,
 			'default' => 0
 		),
 		array(
-			'name' => 'id_member', 
-			'type' => 'mediumint', 
-			'size' => 8, 
-			'null' => false, 
+			'name' => 'id_member',
+			'type' => 'mediumint',
+			'size' => 8,
+			'null' => false,
 			'default' => 0
 		),
 		array(
-			'name' => 'id_group', 
-			'type' => 'int', 
-			'size' => 8, 
-			'null' => false, 
+			'name' => 'id_group',
+			'type' => 'int',
+			'size' => 8,
+			'null' => false,
 			'default' => 0
 		),
 		array(
-			'name' => 'date_received', 
-			'type' => 'date', 
-			'null' => false, 
+			'name' => 'date_received',
+			'type' => 'date',
+			'null' => false,
 			'default' => '0001-01-01'
 		),
 		array(
-			'name' => 'favorite', 
-			'type' => 'tinyint', 
-			'size' => 1, 
-			'null' => false, 
+			'name' => 'favorite',
+			'type' => 'tinyint',
+			'size' => 1,
+			'null' => false,
 			'default' => 0
 		),
 		array(
@@ -91,29 +100,29 @@ $tables[] = array(
 			'default' => 0
 		),
 		array(
-			'name' => 'active', 
-			'type' => 'tinyint', 
-			'size' => 1, 
-			'null' => false, 
+			'name' => 'active',
+			'type' => 'tinyint',
+			'size' => 1,
+			'null' => false,
 			'default' => 0
 		),
 		array(
-			'name' => 'comments', 
-			'type' => 'text', 
+			'name' => 'comments',
+			'type' => 'text',
 			'null' => false
 		)
 	),
 	'indexes' => array(
 		array(
-			'type' => 'unique', 
+			'type' => 'unique',
 			'columns' => array( 'id_member', 'id_award')
 		),
 		array(
-			'type' => 'index', 
+			'type' => 'index',
 			'columns' => array('id_member')
 		),
 		array(
-			'type' => 'primary', 
+			'type' => 'primary',
 			'columns' => array('uniq_id')
 		),
 	),
@@ -128,27 +137,27 @@ $tables[] = array(
 		array(
 			'name' => 'id_award',
 			'type' => 'mediumint',
-			'size' => 5, 
-			'null' => false, 
+			'size' => 5,
+			'null' => false,
 			'auto' => true
 		),
 		array(
-			'name' => 'award_name', 
-			'type' => 'varchar', 
-			'size' => 80, 
+			'name' => 'award_name',
+			'type' => 'varchar',
+			'size' => 80,
 			'null' => false
 		),
 		array(
-			'name' => 'description', 
-			'type' => 'varchar', 
-			'size' => 256, 
+			'name' => 'description',
+			'type' => 'varchar',
+			'size' => 256,
 			'null' => false
 		),
 		array(
-			'name' => 'time_added', 
-			'type' => 'int', 
-			'size' => 10, 
-			'null' => false, 
+			'name' => 'time_added',
+			'type' => 'int',
+			'size' => 10,
+			'null' => false,
 			'default' => 0
 		),
 		array(
@@ -157,15 +166,15 @@ $tables[] = array(
 			'null' => false
 		),
 		array(
-			'name' => 'minifile', 
-			'type' => 'tinytext', 
+			'name' => 'minifile',
+			'type' => 'tinytext',
 			'null' => false
 		),
 		array(
 			'name' => 'award_trigger',
 			'type' => 'mediumint',
-			'size' => 5, 
-			'null' => false, 
+			'size' => 5,
+			'null' => false,
 			'default' => 0
 		),
 		array(
@@ -183,24 +192,24 @@ $tables[] = array(
 			'default' => 0
 		),
 		array(
-			'name' => 'id_category', 
-			'type' => 'tinyint', 
-			'size' => 4, 
-			'null' => false, 
+			'name' => 'id_category',
+			'type' => 'tinyint',
+			'size' => 4,
+			'null' => false,
 			'default' => 1
 		),
 		array(
-			'name' => 'award_requestable', 
-			'type' => 'tinyint', 
-			'size' => 1, 
-			'null' => false, 
+			'name' => 'award_requestable',
+			'type' => 'tinyint',
+			'size' => 1,
+			'null' => false,
 			'default' => 0
 		),
 		array(
-			'name' => 'award_assignable', 
-			'type' => 'tinyint', 
-			'size' => 1, 
-			'null' => false, 
+			'name' => 'award_assignable',
+			'type' => 'tinyint',
+			'size' => 1,
+			'null' => false,
 			'default' => 0
 		),
 	),
@@ -227,26 +236,26 @@ $tables[] = array(
 	'table_name' => 'awards_categories',
 	'columns' => array(
 		array(
-			'name' => 'id_category', 
-			'type' => 'mediumint', 
-			'size' => 8, 
-			'null' => false, 
+			'name' => 'id_category',
+			'type' => 'mediumint',
+			'size' => 8,
+			'null' => false,
 			'auto' => true
 		),
 		array(
-			'name' => 'category_name', 
-			'type' => 'varchar', 
-			'size' => 255, 
+			'name' => 'category_name',
+			'type' => 'varchar',
+			'size' => 255,
 			'null' => false
 		),
 	),
 	'indexes' => array(
 		array(
-			'type' => 'primary', 
+			'type' => 'primary',
 			'columns' => array('id_category')
 		),
 		array(
-			'type' => 'index', 
+			'type' => 'index',
 			'columns' => array('category_name')
 		)
 	),
@@ -262,13 +271,13 @@ $columns = array();
 $current_tables = $smcFunc['db_list_tables'](false, '%awards_%');
 $real_prefix = preg_match('~^(`?)(.+?)\\1\\.(.*?)$~', $db_prefix, $match) === 1 ? $match[3] : $db_prefix;
 
-// Loop through each defined table and do whats needed, update existing or add as new
+// Loop through each defined table and do what's needed, update existing or add as new
 foreach ($tables as $table)
 {
 	// Does the table exist?
 	if (in_array($real_prefix . $table['table_name'], array_map('strtolower', $current_tables)))
 	{
-		foreach ($table['columns'] as $column) 
+		foreach ($table['columns'] as $column)
 			$smcFunc['db_add_column']($db_prefix . $table['table_name'], $column);
 
 		foreach ($table['indexes'] as $index)
@@ -308,6 +317,5 @@ foreach ($mod_settings as $new_setting => $new_value)
 }
 
 // Done
-if(SMF == 'SSI')
+if (SMF === 'SSI')
 	echo 'Database changes are complete!';
-?>

@@ -1,13 +1,13 @@
 <?xml version="1.0"?>
-<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
-<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
-<id>spuds:HS4SMF</id>
-	
+<!DOCTYPE modification SYSTEM "https://www.simplemachines.org/xml/modification">
+<modification xmlns="https://www.simplemachines.org/xml/modification" xmlns:smf="https://www.simplemachines.org/">
+<id>spuds:member_awards</id>
+
 <file name="$languagedir/Modifications.english.php">
 	<operation>
 		<search position="end" />
 		<add><![CDATA[
-		
+
 ### Awards
 // Used by: Awards Errors
 $txt['cannot_manage_awards'] = 'You aren\'t allowed to manage awards.';
@@ -46,44 +46,44 @@ $txt['viewingAwards'] = 'Viewing Award:';
 	</operation>
 </file>
 
-<file name="$languagedir/Modifications.russian.php">
+<file name="$languagedir/Modifications.russian.php" error="skip">
 	<operation>
 		<search position="end" />
 		<add><![CDATA[
-		
+
 ### Awards
 // Used by: Awards Errors
-$txt['cannot_manage_awards'] = 'Вам не разрешено управлять наградами.';
+$txt['cannot_manage_awards'] = 'пїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.';
 
 // Used by: Awards Help
-$helptxt['awards'] = 'В данном разделе вы можете управлять наградами, изменять их настройки, назначать их и разделять по категориям.';
+$helptxt['awards'] = 'пїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ.';
 
 // Used by: Awards ManagePermissions
-$txt['permissionname_manage_awards'] = 'Управление наградами';
-$txt['permissionhelp_manage_awards'] = 'Это позволит пользователям добавлять, изменять и вручать новые награды';
-$txt['permissionname_assign_awards'] = 'Вручение наград';
-$txt['permissionhelp_assign_awards'] = 'Это позволит пользователям вручать награды';
+$txt['permissionname_manage_awards'] = 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ';
+$txt['permissionhelp_manage_awards'] = 'пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ, пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ';
+$txt['permissionname_assign_awards'] = 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ';
+$txt['permissionhelp_assign_awards'] = 'пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ';
 
 // Used by: Awards Multiple Areas
-$txt['awards'] = 'Награды';
-$txt['awards_desc'] = 'Описание награды';
-$txt['awards_view_album'] = 'Просмотр альбом наград пользователя';
-$txt['awards_main'] = 'Список наград';
-$txt['awards_modify'] = 'Добавить/Изменить';
-$txt['awards_add'] = 'Добавить награду';
-$txt['awards_actions'] = 'Действия';
-$txt['awards_categories'] = 'Категории';
-$txt['awards_settings'] = 'Настройки';
-$txt['awards_assign'] = 'Вручение наград';
-$txt['awards_assign_membergroup'] = 'Групповое вручение';
-$txt['awards_assign_mass'] = 'Пакетное вручение';
-$txt['awards_requests'] = 'Запросы';
-$txt['whoallow_awards'] = 'Управление <a href="' . $scripturl . '?action=awards">наградами</a>.';
+$txt['awards'] = 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅ';
+$txt['awards_desc'] = 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ';
+$txt['awards_view_album'] = 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ';
+$txt['awards_main'] = 'пїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ';
+$txt['awards_modify'] = 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ/пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ';
+$txt['awards_add'] = 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ';
+$txt['awards_actions'] = 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ';
+$txt['awards_categories'] = 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ';
+$txt['awards_settings'] = 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ';
+$txt['awards_assign'] = 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅ';
+$txt['awards_assign_membergroup'] = 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ';
+$txt['awards_assign_mass'] = 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ';
+$txt['awards_requests'] = 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅ';
+$txt['whoallow_awards'] = 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ <a href="' . $scripturl . '?action=awards">пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ</a>.';
 
 // Used by: Awards Profile
-$txt['showAwards'] = 'Мои награды';
-$txt['listAwards'] = 'Доступные награды';
-$txt['viewingAwards'] = 'Просмотр награды:';
+$txt['showAwards'] = 'пїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ';
+$txt['listAwards'] = 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ';
+$txt['viewingAwards'] = 'пїЅпїЅпїЅпїЅпїЅпїЅпїЅпїЅ пїЅпїЅпїЅпїЅпїЅпїЅпїЅ:';
 ### End Awards
 ]]></add>
 	</operation>
