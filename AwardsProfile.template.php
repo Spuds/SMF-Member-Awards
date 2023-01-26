@@ -58,7 +58,7 @@ function template_awards()
 								<img class="icon" src="' . $settings['images_url'] . '/awards/category.png" alt="" />&nbsp;', $txt['awards_category'], ': ', $category['name'], '
 							</h3>
 						</div>
-						<table class="table_grid" width="100%">
+						<table class="table_grid" style="width:100%">
 						<thead>
 							<tr class="catbg">
 								<th scope="col" class="first_th smalltext" style="width:17%">', $txt['awards_image'], '</th>
@@ -199,14 +199,14 @@ function template_awards_list()
 							<img class="icon" src="' . $settings['images_url'] . '/awards/category.png" alt="" />&nbsp;', '<a href="', $category['view'], '">', $txt['awards_category'], ': ', $category['name'], '</a>
 						</h3>
 					</div>
-					<table class="table_grid" width="100%">
+					<table class="table_grid" style="width:100%">
 					<thead>
 						<tr class="catbg">
-							<th scope="col" class="first_th smalltext" width="15%">', $txt['awards_image'], '</th>
-							<th scope="col" class="smalltext" width="15%">', $txt['awards_mini'], '</th>
-							<th scope="col" class="smalltext" width="25%">', $txt['awards_name'], '</th>
-							<th scope="col" class="smalltext" width="40%">', $txt['awards_details'], '</th>
-							<th scope="col" class="last_th smalltext" width="5%">', $txt['awards_actions'], '</th>
+							<th scope="col" class="first_th smalltext" style="width:15%">', $txt['awards_image'], '</th>
+							<th scope="col" class="smalltext" style="width:15%">', $txt['awards_mini'], '</th>
+							<th scope="col" class="smalltext" style="width:25%">', $txt['awards_name'], '</th>
+							<th scope="col" class="smalltext" style="width:40%">', $txt['awards_details'], '</th>
+							<th scope="col" class="last_th smalltext" style="width:5%">', $txt['awards_actions'], '</th>
 						</tr>
 					</thead>
 					<tbody>';
@@ -295,7 +295,7 @@ function template_awards_request()
 
 	// Enter a reason why you want this award.
 	echo '
-			<table width="100%" class="table_grid">
+			<table style="width:100%" class="table_grid">
 				<thead>
 					<tr class="titlebg">
 						<th scope="col" class="first_th smalltext">', $txt['awards_request_comments'], '</th>

@@ -31,20 +31,20 @@
 	text-align: center;
 }
 
-/* full frame around the award group */
+/* full frame around the signature award group */
 .award_signature_1 {
 	padding: 2px 2px 2px 5px;
 	border: 1px solid #CCCCCC;
 }
 
-/* top line above the award group */
+/* top line above the signature award group */
 .award_signature_2 {
 	padding: 2px 2px 2px 5px;
 	border: 1px solid transparent;
 	border-top: 1px solid #CCCCCC;
 }
 
-/* frameless */
+/* frameless signature */
 .award_signature_3 {
 	padding: 0 0;
 	border: 1px solid transparent;
@@ -103,7 +103,15 @@ dl.settings dt a img.award_icon_help {
 	padding: 0 1.5em;
 }
 
-#admin_content fieldset {
-	border-width: 1px 0 0 0;
+fieldset.acp_awards {
 	padding: 5px;
+	border-width: 1px 0 0 0;
+}
+
+table.awards_table {
+	width: 100%;
+	padding: 5px;
+	border-spacing: 0;
+	border: none;
+	text-align: center;
 }

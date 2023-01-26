@@ -57,7 +57,7 @@ function template_modify()
 					<div class="windowbg2">
 						<span class="topslice"><span></span></span>
 						<div class="content">
-							<fieldset>
+							<fieldset class="acp_awards">
 								<legend>', $txt['awards_add_name'], '</legend>
 								<dl class="settings">
 									<dt>
@@ -92,7 +92,7 @@ function template_modify()
 								</dl>
 							</fieldset>
 
-							<fieldset>
+							<fieldset class="acp_awards">
 								<legend>', $txt['awards_add_type'], '</legend>
 								<dl class="settings">
 									<dt>
@@ -132,7 +132,7 @@ function template_modify()
 								</dl>
 							</fieldset>
 
-							<fieldset>
+							<fieldset class="acp_awards">
 								<legend>', $txt['awards_add_image'], '</legend>
 								<dl class="settings">
 									<dt>
@@ -192,7 +192,7 @@ function template_modify()
 
 	// Special options, like the award is requestable or assignable
 	echo '
-							<fieldset>
+							<fieldset class="acp_awards">
 								<legend>', $txt['awards_extras'], '</legend>
 								<dl class="settings">
 									<dt>
@@ -417,7 +417,7 @@ function template_assign()
 							<div class="content">
 								<dl class="settings">
 									<dt>
-										<select name="award" onchange="showaward();" size="10">
+										<select name="award" onchange="showaward();" size="12">
 											<option value="" disabled selected style="display:none;">Label</option>';
 
 	// Loop and show the award selection drop-down.
@@ -600,10 +600,10 @@ function template_assign_mass()
 						<div class="content">
 							<dl id="awardselect" class="settings">
 								<dt>
-									<select name="award" onchange="showaward();" size="10">
+									<select name="award" onchange="showaward();" size="12">
 										<option value="" disabled selected style="display:none;">Label</option>';
 
-	// Loop and show the drop down.
+	// Loop and show the drop-down.
 	foreach ($context['awards'] as $key => $award)
 	{
 		echo '
@@ -706,7 +706,7 @@ function template_assign_mass()
 		$counter = 0;
 
 		echo '
-									<table width="100%" cellpadding="5" cellspacing="0" border="0" align="center" class="tborder">';
+									<table class="awards_table tborder">';
 
 		foreach ($context['members'] as $key => $member)
 		{
@@ -847,7 +847,7 @@ function template_settings()
 
 					<br class="clear" />
 					<form action="', $scripturl, '?action=admin;area=awards;sa=settings;saved=1" method="post" name="badge" id="badge" accept-charset="', $context['character_set'], '" enctype="multipart/form-data" >
-						<fieldset>
+						<fieldset class="acp_awards">
 						<legend>', $txt['awards_basic_settings'], '</legend>
 						<span class="upperframe"><span></span></span>
 						<div class="roundframe">
@@ -888,7 +888,7 @@ function template_settings()
 						<span class="lowerframe"><span></span></span>
 						</fieldset>
 
-						<fieldset>
+						<fieldset class="acp_awards">
 						<legend>', $txt['awards_aboveavatar_style'], '</legend>
 						<span class="upperframe"><span></span></span>
 						<div class="roundframe">
@@ -922,7 +922,7 @@ function template_settings()
 						<span class="lowerframe"><span></span></span>
 						</fieldset>
 
-						<fieldset>
+						<fieldset class="acp_awards">
 						<legend>', $txt['awards_belowavatar_style'], '</legend>
 						<span class="upperframe"><span></span></span>
 						<div class="roundframe">
@@ -956,7 +956,7 @@ function template_settings()
 						<span class="lowerframe"><span></span></span>
 						</fieldset>
 
-						<fieldset>
+						<fieldset class="acp_awards">
 						<legend>', $txt['awards_signature_style'], '</legend>
 						<span class="upperframe"><span></span></span>
 						<div class="roundframe">
@@ -995,8 +995,7 @@ function template_settings()
 							<input type="hidden" name="', $context['session_var'], '" value="', $context['session_id'], '" />
 							<input type="submit" class="button_submit" name="save_settings" value="', $txt['save'], '" accesskey="s" />
 						</div>
-					</form>
-				';
+					</form>';
 }
 
 /**
@@ -1049,11 +1048,11 @@ function template_list_categories()
 						<img class="icon" src="' . $settings['images_url'] . '/awards/category.png" alt="" />&nbsp;', $txt['awards_list_categories'], '
 					</h3>
 				</div>
-				<table class="table_grid" width="100%">
+				<table class="table_grid" style="width:100%;">
 				<thead>
 					<tr class="catbg">
 						<th scope="col" class="first_th smalltext">', $txt['awards_actions'], '</th>
-						<th scope="col" align="left" class="smalltext">', $txt['awards_category_name'], '</th>
+						<th scope="col" class="lefttext smalltext">', $txt['awards_category_name'], '</th>
 						<th scope="col" class="last_th smalltext">', $txt['awards_num_in_category'], '</th>
 					</tr>
 				</thead>
@@ -1079,7 +1078,7 @@ function template_list_categories()
 						<td style="width:20%" class="lefttext">
 							<a href="', $cat['edit'], '" title="', $txt['awards_button_edit'], '">[', $txt['awards_button_edit'], ']&nbsp;<img align="top" src="', $settings['images_url'], '/awards/modify.png" alt="" /></a> ', ($cat['id'] != 1) ? '
 							<a href="' . $cat['delete'] . '" onclick="return confirm(\'' . $txt['awards_confirm_delete_category'] . '\');" title="' . $txt['awards_button_delete'] . '">
-								[' . $txt['awards_button_delete'] . ']&nbsp;<img align="top" src="' . $settings['images_url'] . '/awards/delete.png" alt="" />
+								[' . $txt['awards_button_delete'] . ']&nbsp;<img style="vertical-align:top;" src="' . $settings['images_url'] . '/awards/delete.png" alt="" />
 							</a>' : '', '
 						</td>
 						<td style="width:60%" class="lefttext">
@@ -1093,7 +1092,7 @@ function template_list_categories()
 
 		echo '
 					<tr class="catbg">
-						<td align="right" colspan="3">
+						<td class="righttext" colspan="3">
 							<form class="floatright" accept-charset="ISO-8859-1" method="post" action="', $scripturl, '?action=admin;area=awards;sa=editcategory">
 								<input id="add_category" class="button_submit" type="submit" value="', $txt['awards_add_category'], '" name="add_category" />
 							</form>
@@ -1133,7 +1132,7 @@ function template_view_category()
 						', $context['category'], '
 					</h3>
 				</div>
-				<table class="table_grid" width="100%">
+				<table class="table_grid" style="width:100%;">
 					<thead>
 						<tr class="catbg">
 							<th scope="col" class="first_th smalltext">', $txt['awards_image'], '</th>
@@ -1160,9 +1159,15 @@ function template_view_category()
 				$which = !$which;
 				echo '
 						<tr class="windowbg', $which ? '2' : '', '">
-							<td align="center"><img src="', $award['img'], '" alt="', $award['award_name'], '" /></td>
-							<td align="center"><img src="', $award['small'], '" alt="', $award['award_name'], '" /></td>
-							<td><a href="', $award['edit'], '">', $award['award_name'], '</a></td>
+							<td class="centertext">
+								<img src="', $award['img'], '" alt="', $award['award_name'], '" />
+							</td>
+							<td class="centertext">
+								<img src="', $award['small'], '" alt="', $award['award_name'], '" />
+							</td>
+							<td>
+								<a href="', $award['edit'], '">', $award['award_name'], '</a>
+							</td>
 							<td>', $award['description'], '</td>
 						</tr>';
 			}
@@ -1217,7 +1222,7 @@ function template_request_award()
 			echo '
 					<div class="windowbg">
 						<span class="topslice"><span></span></span>
-						<div class="content" align="center">
+						<div class="content" class="centertext">
 							<img style="padding:0 0 5px 0" src="', $award['img'], '" alt="', $award['award_name'], '" /><br />';
 
 			// Small image as well?
@@ -1239,12 +1244,12 @@ function template_request_award()
 
 			// Now output the table of members who requested this award
 			echo '
-							<table width="100%" class="table_grid">
+							<table style="width:100%;" class="table_grid">
 								<thead>
 									<tr class="titlebg">
-										<th scope="col" class="first_th smalltext" width="5%"><input type="checkbox" id="checkAllMembers', $award['id'], '" checked="checked" onclick="invertAll(this, this.form, \'requests[', $award['id'], ']\');" class="check" /></th>
-										<th scope="col" class="smalltext" width="25%">', $txt['who_member'], '</th>
-										<th scope="col" class="last_th smalltext" width="70%">', $txt['awards_comments'], '</th>
+										<th scope="col" class="first_th smalltext" style="width:5%;"><input type="checkbox" id="checkAllMembers', $award['id'], '" checked="checked" onclick="invertAll(this, this.form, \'requests[', $award['id'], ']\');" class="check" /></th>
+										<th scope="col" class="smalltext" style="width:25%;">', $txt['who_member'], '</th>
+										<th scope="col" class="last_th smalltext" style="width:70%;">', $txt['awards_comments'], '</th>
 									</tr>
 								</thead>
 								<tbody>';
@@ -1257,7 +1262,7 @@ function template_request_award()
 										<td style="vertical-align:middle" class="centertext">
 											<input type="checkbox" name="requests[', $award['id'], '][', $id, ']" value="', $id, '" checked="checked" class="check" />
 										</td>
-										<td valign="top">
+										<td style="vertical-align: top">
 											', $member['link'], '<span class="floatright">
 											', $member['pm'], '&nbsp;</span>
 										</td>
