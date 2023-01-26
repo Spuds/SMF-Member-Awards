@@ -2,6 +2,8 @@
 
 // Tabs
 $txt['awards_title'] = 'Awards';
+$txt['awards_enabled'] = 'Enable Awards';
+$txt['awards_enabled_desc'] = 'This is the master setting that enables the awards for the site.';
 $txt['awards_description_main'] = 'This is the main panel for the awards system, from here you can add, edit, delete and assign awards.';
 $txt['awards_description_assign'] = 'Select and award and then select members to assign the award.  Multiple members may be selected.';
 $txt['awards_description_assigngroup'] = 'Select a membergroup to assign an award, all members of the group will receive the award.';
