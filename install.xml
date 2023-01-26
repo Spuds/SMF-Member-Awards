@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
-<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<!DOCTYPE modification SYSTEM "https://www.simplemachines.org/xml/modification">
+<modification xmlns="https://www.simplemachines.org/xml/modification" xmlns:smf="https://www.simplemachines.org/">
 	<id>spuds:member_awards</id>
 	<version>3.0</version>
 
@@ -37,10 +37,11 @@
 			<add><![CDATA[
 
 		// I'm sorry, but I've got to stick this award somewhere ...
-		if ($modSettings['awards_in_post'] > 0 && !empty($new_loaded_ids))
+		if ($modSettings['awards_in_post'] > 0 && !empty($new_loaded_ids) && !empty($modSettings['awards_enabled']))
 		{
 			global $sourcedir;
 			require_once($sourcedir . '/AwardsManage.php');
+			loadTemplate(false, 'awards');
 			AwardsLoad($new_loaded_ids);
 			AwardsAutoCheck($new_loaded_ids);
 		}]]></add>
