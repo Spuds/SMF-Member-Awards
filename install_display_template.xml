@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
-<!DOCTYPE modification SYSTEM "http://www.simplemachines.org/xml/modification">
-<modification xmlns="http://www.simplemachines.org/xml/modification" xmlns:smf="http://www.simplemachines.org/">
+<!DOCTYPE modification SYSTEM "https://www.simplemachines.org/xml/modification">
+<modification xmlns="https://www.simplemachines.org/xml/modification" xmlns:smf="https://www.simplemachines.org/">
 	<id>spuds:member_awards</id>
 	<version>3.0</version>
 
@@ -21,7 +21,7 @@
 		<add><![CDATA[
 
 			// Show their above profile awards, like badges and stuff
-			if (!empty($message['member']['awards']) && $modSettings['awards_in_post'] > 0)
+			if (!empty($message['member']['awards']) && $modSettings['awards_in_post'] > 0 && !empty($modSettings['awards_enabled']))
 			{
 				$awards = 0;
 				$award_output = '';
@@ -31,33 +31,37 @@
 					if (($award['location'] == 2) && ($awards < $modSettings['awards_in_post']))
 					{
 						$award_output .= '
-								<a href="' . $scripturl . $award['more'] . '"><img src="' . dirname($scripturl) . $award['img'] . '" alt="' . $award['description'] . '" title="' . $award['description'] . '" /></a> ';
+								<a href="' . $scripturl . $award['more'] . '">
+									<img src="' . dirname($scripturl) . $award['img'] . '" alt="' . $award['description'] . '" title="' . $award['description'] . '" />
+								</a> ';
 						$awards++;
 					}
 				}
-				
+
 				// If we found awards to output in this location ...
 				if (!empty($awards))
 				{
-					$style = (empty($modSettings['awards_aboveavatar_format']) || $modSettings['awards_aboveavatar_format'] == 1) ? 'style="border:1px;border-style:solid; border-color:#CCC;padding:2px 2px 2px 5px;margin-right:15px;"'
-					: ($modSettings['awards_aboveavatar_format'] == 2 ? 'style="border-top:1px;border-bottom:0;border-right:0;border-left:0;border-style:solid;border-color:#CCC;padding:2px 2px 2px 5px;margin-right:15px;"'
-					: 'style="border:0px;border-style:solid; border-color:#CCC; padding:0 0;"');
-					
+					$style = (empty($modSettings['awards_aboveavatar_format']) || $modSettings['awards_aboveavatar_format'] == 1)
+						? 'award_top award_poster_1'
+						: ($modSettings['awards_aboveavatar_format'] == 2
+							? 'award_top award_poster_2"' : 'award_top award_poster_3');
+
 					echo '
 						<li>
-							<fieldset ', $style , '>';
+							<fieldset class="', $style , '">';
 
 					if (isset($modSettings['awards_aboveavatar_title']))
 						echo '
 								<legend><a href="' . $scripturl . '?action=profile;area=showAwards;u=' . $message['member']['id'] . '" title="' . $txt['awards'] . '">' . $modSettings['awards_aboveavatar_title'] . '</a></legend>';
 
 					echo $award_output;
-					
+
 					echo '
 							</fieldset>
 						</li>';
 				}
-			}]]></add>
+			}
+]]></add>
 	</operation>
 
 	<operation error="ignore">
@@ -76,9 +80,8 @@
 ]]></search>
 		<add><![CDATA[
 			// Show their below profile awards?
-			if (!empty($message['member']['awards']) && $modSettings['awards_in_post'] > 0)
+			if (!empty($message['member']['awards']) && $modSettings['awards_in_post'] > 0 && !empty($modSettings['awards_enabled']))
 			{
-				$awards_above = (empty($awards) ? 0 : $awards);
 				$awards = 0;
 				$award_output = '';
 
@@ -87,28 +90,31 @@
 					if (($award['location'] == 1) && ($awards < $modSettings['awards_in_post']))
 					{
 						$award_output .= '
-								<a href="' . $scripturl . $award['more'] . '"><img src="' . dirname($scripturl) . $award['img'] . '" alt="' . $award['description'] . '" title="' . $award['description'] . '" /></a> ';
+								<a href="' . $scripturl . $award['more'] . '">
+									<img src="' . dirname($scripturl) . $award['img'] . '" alt="' . $award['description'] . '" title="' . $award['description'] . '" />
+								</a> ';
 						$awards++;
 					}
 				}
-				
+
 				// If we found some to output here, then show them
 				if (!empty($awards))
 				{
-					$style = (empty($modSettings['awards_belowavatar_format']) || $modSettings['awards_belowavatar_format'] == 1) ? 'style="border:1px;border-style:solid; border-color:#CCC;padding:2px 2px 2px 5px;margin-right:15px;"'
-					: ($modSettings['awards_belowavatar_format'] == 2 ? 'style="border-top:1px;border-bottom:0;border-right:0;border-left:0;border-style:solid;border-color:#CCC;padding:2px 2px 2px 5px;margin-right:15px;"'
-					: 'style="border:0px;border-style:solid; border-color:#CCC; padding: 0 0;"');
-					
+					$style = (empty($modSettings['awards_belowavatar_format']) || $modSettings['awards_belowavatar_format'] == 1)
+						? 'award_bottom award_poster_1'
+						: ($modSettings['awards_belowavatar_format'] == 2
+							? 'award_bottom award_poster_2"' : 'award_bottom award_poster_3');
+
 					echo '
 						<li>
-							<fieldset ', $style, '>';
+							<fieldset class="', $style, '">';
 
 					if (isset($modSettings['awards_belowavatar_title']))
 						echo '
 								<legend><a href="' . $scripturl . '?action=profile;area=showAwards;u=' . $message['member']['id'] . '" title="' . $txt['awards'] . '">' . $modSettings['awards_belowavatar_title'] . '</a></legend>';
 
 					echo $award_output;
-					
+
 					echo '
 							</fieldset>
 						</li>';
@@ -123,8 +129,9 @@
 			echo '
 							<div class="signature" id="msg_', $message['id'], '_signature">', $message['member']['signature'], '</div>';]]></search>
 			<add><![CDATA[
+
 		// Show their signature awards?
-		if (!empty($message['member']['awards']) && $modSettings['awards_in_post'] > 0)
+		if (!empty($message['member']['awards']) && $modSettings['awards_in_post'] > 0 && !empty($modSettings['awards_enabled']))
 		{
 			$awards = 0;
 			$award_output = '';
@@ -134,28 +141,31 @@
 				if (($award['location'] == 3) && ($awards < $modSettings['awards_in_post']))
 				{
 					$award_output .= '
-									<a href="' . $scripturl . $award['more'] . '"><img src="' . dirname($scripturl) . $award['img'] . '" alt="' . $award['description'] . '" title="' . $award['description'] . '" /></a> ';
+									<a href="' . $scripturl . $award['more'] . '">
+										<img src="' . dirname($scripturl) . $award['img'] . '" alt="' . $award['description'] . '" title="' . $award['description'] . '" />
+									</a> ';
 					$awards++;
 				}
 			}
-			
+
 			// If we found some to output here, then show them
 			if (!empty($awards))
 			{
-				$style = (empty($modSettings['awards_signature_format']) || $modSettings['awards_signature_format'] == 1) ? 'style="border:1px;border-style:solid; border-color:#CCC;padding:2px 2px 2px 5px;margin-right:15px;"'
-				: ($modSettings['awards_signature_format'] == 2 ? 'style="border-top:1px;border-bottom:0;border-right:0;border-left:0;border-style:solid;border-color:#CCC;padding:2px 2px 2px 5px;margin-right:15px;"'
-				: 'style="border:0px;border-style:solid; border-color:#CCC; padding: 0 0;"');
-				
+				$style = (empty($modSettings['awards_signature_format']) || $modSettings['awards_signature_format'] == 1)
+					? 'award_signature_1'
+					: ($modSettings['awards_signature_format'] == 2
+						? 'award_signature_2"' : 'award_signature_3');
+
 				echo '
 							<div class="signature">
-								<fieldset ', $style, '>';
-							
+								<fieldset class="', $style, '">';
+
 				if (isset($modSettings['awards_signature_title']))
 					echo '
 									<legend><a href="' . $scripturl . '?action=profile;area=showAwards;u=' . $message['member']['id'] . '" title="' . $txt['awards'] . '">' . $modSettings['awards_signature_title'] . '</a></legend>';
 
 				echo $award_output;
-				
+
 				echo '
 								</fieldset>
 							</div>';
@@ -173,13 +183,12 @@
 		<add><![CDATA[
 
 				// Awards!
+				if (!empty($modSettings['awards_enabled'))
 				echo '
-								<li><a href="', $scripturl, '?action=profile;area=showAwards;u=', $message['member']['id'], '" title="', $txt['awards'], '">', ($settings['use_image_buttons'] ? '<img src="' . $settings['images_url'] . '/award.gif" alt="' . $txt['awards'] . '" title="' . $txt['awards'] . '" border="0" />' : $txt['awards']), '</a></li>';]]></add>
+										<li><a href="', $scripturl, '?action=profile;area=showAwards;u=', $message['member']['id'], '" title="', $txt['awards'], '">', ($settings['use_image_buttons'] ? '<img src="' . $settings['images_url'] . '/award.gif" alt="' . $txt['awards'] . '" title="' . $txt['awards'] . '" border="0" />' : $txt['awards']), '</a></li>';]]></add>
 	</operation>
 </file>
 
-
-	
 <file name="$themedir/Display.template.php">
 	<!-- These are the edits to the CORE display template.  If you are using a CUSTOM THEME they might not work at all! -->
 	<!-- If that happens, find something closely resembling it the items in the search operation, and do the necessary -->
@@ -196,37 +205,41 @@
 						<li>', $message['member']['group_stars'], '</li>';]]></search>
 		<add><![CDATA[							
 		// Show their above profile awards, like badges and stuff
-		if (!empty($message['member']['awards']) && $modSettings['awards_in_post'] > 0)
+		if (!empty($message['member']['awards']) && $modSettings['awards_in_post'] > 0 && !empty($modSettings['awards_enabled']))
 		{
 			$awards = 0;
 			$award_output = '';
+
 			foreach ($message['member']['awards'] as $award)
 			{
 				if (($award['location'] == 2) && ($awards < $modSettings['awards_in_post']))
 				{
 					$award_output .= '
-							<a href="' . $scripturl . $award['more'] . '"><img src="' . dirname($scripturl) . $award['img'] . '" alt="' . $award['description'] . '" title="' . $award['description'] . '" /></a> ';
+							<a href="' . $scripturl . $award['more'] . '">
+								<img src="' . dirname($scripturl) . $award['img'] . '" alt="' . $award['description'] . '" title="' . $award['description'] . '" />
+							</a> ';
 					$awards++;
 				}
 			}
-			
+
 			// If we found awards to output in this location ...
 			if (!empty($awards))
 			{
-				$style = (empty($modSettings['awards_aboveavatar_format']) || $modSettings['awards_aboveavatar_format'] == 1) ? 'style="border:1px;border-style:solid; border-color:#CCC;padding:2px 2px 2px 5px;margin-right:15px;"'
-				: ($modSettings['awards_aboveavatar_format'] == 2 ? 'style="border-top:1px;border-bottom:0;border-right:0;border-left:0;border-style:solid;border-color:#CCC;padding:2px 2px 2px 5px;margin-right:15px;"'
-				: 'style="border:0px;border-style:solid; border-color:#CCC; padding:0 0;"');
-				
+				$style = (empty($modSettings['awards_aboveavatar_format']) || $modSettings['awards_aboveavatar_format'] == 1)
+					? 'award_top award_poster_1'
+					: ($modSettings['awards_aboveavatar_format'] == 2
+						? 'award_top award_poster_2"' : 'award_top award_poster_3');
+
 				echo '
 					<li>
-						<fieldset ', $style , '>';
+						<fieldset class="', $style , '">';
 
 				if (isset($modSettings['awards_aboveavatar_title']))
 					echo '
 							<legend><a href="' . $scripturl . '?action=profile;area=showAwards;u=' . $message['member']['id'] . '" title="' . $txt['awards'] . '">' . $modSettings['awards_aboveavatar_title'] . '</a></legend>';
 
 				echo $award_output;
-				
+
 				echo '
 						</fieldset>
 					</li>';
@@ -251,9 +264,8 @@
 ]]></search>
 		<add><![CDATA[
 			// Show their below profile awards?
-			if (!empty($message['member']['awards']) && $modSettings['awards_in_post'] > 0)
+			if (!empty($message['member']['awards']) && $modSettings['awards_in_post'] > 0 && !empty($modSettings['awards_enabled']))
 			{
-				$awards_above = (empty($awards) ? 0 : $awards);
 				$awards = 0;
 				$award_output = '';
 
@@ -262,28 +274,31 @@
 					if (($award['location'] == 1) && ($awards < $modSettings['awards_in_post']))
 					{
 						$award_output .= '
-								<a href="' . $scripturl . $award['more'] . '"><img src="' . dirname($scripturl) . $award['img'] . '" alt="' . $award['description'] . '" title="' . $award['description'] . '" /></a> ';
+								<a href="' . $scripturl . $award['more'] . '">
+									<img src="' . dirname($scripturl) . $award['img'] . '" alt="' . $award['description'] . '" title="' . $award['description'] . '" />
+								</a> ';
 						$awards++;
 					}
 				}
-				
+
 				// If we found some to output here, then show them
 				if (!empty($awards))
 				{
-					$style = (empty($modSettings['awards_belowavatar_format']) || $modSettings['awards_belowavatar_format'] == 1) ? 'style="border:1px;border-style:solid; border-color:#CCC;padding:2px 2px 2px 5px;margin-right:15px;"'
-					: ($modSettings['awards_belowavatar_format'] == 2 ? 'style="border-top:1px;border-bottom:0;border-right:0;border-left:0;border-style:solid;border-color:#CCC;padding:2px 2px 2px 5px;margin-right:15px;"'
-					: 'style="border:0px;border-style:solid; border-color:#CCC; padding: 0 0;"');
-					
+					$style = (empty($modSettings['awards_belowavatar_format']) || $modSettings['awards_belowavatar_format'] == 1)
+						? 'award_bottom award_poster_1'
+						: ($modSettings['awards_belowavatar_format'] == 2
+							? 'award_bottom award_poster_2"' : 'award_bottom award_poster_3');
+
 					echo '
 						<li>
-							<fieldset ', $style, '>';
+							<fieldset class="', $style, '">';
 
 					if (isset($modSettings['awards_belowavatar_title']))
 						echo '
 								<legend><a href="' . $scripturl . '?action=profile;area=showAwards;u=' . $message['member']['id'] . '" title="' . $txt['awards'] . '">' . $modSettings['awards_belowavatar_title'] . '</a></legend>';
 
 					echo $award_output;
-					
+
 					echo '
 							</fieldset>
 						</li>';
@@ -299,7 +314,7 @@
 					<div class="signature" id="msg_', $message['id'], '_signature">', $message['member']['signature'], '</div>';]]></search>
 			<add><![CDATA[
 		// Show their signature awards?
-		if (!empty($message['member']['awards']) && $modSettings['awards_in_post'] > 0)
+		if (!empty($message['member']['awards']) && $modSettings['awards_in_post'] > 0 && !empty($modSettings['awards_enabled']))
 		{
 			$awards = 0;
 			$award_output = '';
@@ -309,28 +324,31 @@
 				if (($award['location'] == 3) && ($awards < $modSettings['awards_in_post']))
 				{
 					$award_output .= '
-									<a href="' . $scripturl . $award['more'] . '"><img src="' . dirname($scripturl) . $award['img'] . '" alt="' . $award['description'] . '" title="' . $award['description'] . '" /></a> ';
+									<a href="' . $scripturl . $award['more'] . '">
+										<img src="' . dirname($scripturl) . $award['img'] . '" alt="' . $award['description'] . '" title="' . $award['description'] . '" />
+									</a> ';
 					$awards++;
 				}
 			}
-			
+
 			// If we found some to output here, then show them
 			if (!empty($awards))
 			{
-				$style = (empty($modSettings['awards_signature_format']) || $modSettings['awards_signature_format'] == 1) ? 'style="border:1px;border-style:solid; border-color:#CCC;padding:2px 2px 2px 5px;margin-right:15px;"'
-				: ($modSettings['awards_signature_format'] == 2 ? 'style="border-top:1px;border-bottom:0;border-right:0;border-left:0;border-style:solid;border-color:#CCC;padding:2px 2px 2px 5px;margin-right:15px;"'
-				: 'style="border:0px;border-style:solid; border-color:#CCC; padding: 0 0;"');
-				
+				$style = (empty($modSettings['awards_signature_format']) || $modSettings['awards_signature_format'] == 1)
+					? 'award_signature_1'
+					: ($modSettings['awards_signature_format'] == 2
+						? 'award_signature_2"' : 'award_signature_3');
+
 				echo '
 							<div class="signature">
-								<fieldset ', $style, '>';
-							
+								<fieldset class="', $style, '">';
+
 				if (isset($modSettings['awards_signature_title']))
 					echo '
 									<legend><a href="' . $scripturl . '?action=profile;area=showAwards;u=' . $message['member']['id'] . '" title="' . $txt['awards'] . '">' . $modSettings['awards_signature_title'] . '</a></legend>';
 
 				echo $award_output;
-				
+
 				echo '
 								</fieldset>
 							</div>';
