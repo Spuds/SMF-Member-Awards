@@ -1,7 +1,7 @@
 <?php
 
 /**
- * This file is a simplified hook installer. It does what it is suppoed to.
+ * This file is a simplified hook installer
  */
 
 // If we have found SSI.php and we are outside of SMF, then we are running standalone.
@@ -18,7 +18,8 @@ $hook_functions = array(
 	'integrate_admin_areas' => 'member_awards_admin_areas',
 	'integrate_profile_areas' => 'member_awards_profile_areas',
 	'integrate_load_permissions' => 'member_awards_load_permissions',
-	'integrate_menu_buttons' => 'member_awards_menu_buttons'
+	'integrate_menu_buttons' => 'member_awards_menu_buttons',
+	'integrate_user_info' => 'member_awards_load_user_info',
 );
 
 // Adding or removing them?

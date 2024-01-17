@@ -1,42 +1,47 @@
 <?php
 /**********************************************************************************
-* add_settings.php                                                                *
-***********************************************************************************
-***********************************************************************************
-* This program is distributed in the hope that it is and will be useful, but      *
-* WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
-* or FITNESS FOR A PARTICULAR PURPOSE.                                            *
-*                                                                                 *
-* This file is a simplified database installer. It does what it is suppoed to.    *
-**********************************************************************************/
+ * add_settings.php                                                                *
+ ***********************************************************************************
+ ***********************************************************************************
+ * This program is distributed in the hope that it is and will be useful, but      *
+ * WITHOUT ANY WARRANTIES; without even any implied warranty of MERCHANTABILITY    *
+ * or FITNESS FOR A PARTICULAR PURPOSE.                                            *
+ *                                                                                 *
+ * This file is a simplified database installer. It does what it is suppoed to.    *
+ **********************************************************************************/
 
 /**
  * @name      Member Awards
  * @copyright Spuds
  * @license   MPL 1.1 http://mozilla.org/MPL/1.1/
- *
- * @version 3.0
- *
  */
 
 // If we have found SSI.php and we are outside of SMF, then we are running standalone.
 if (file_exists(__DIR__ . '/SSI.php') && !defined('SMF'))
+{
 	require_once(__DIR__ . '/SSI.php');
+}
 elseif (!defined('SMF'))
+{
 	die('<b>Error:</b> Cannot install - please verify you put this file in the same place as SMF\'s SSI.php.');
+}
 
 if ((SMF === 'SSI') && !$user_info['is_admin'])
-	die('Admin priveleges required.');
+{
+	die('Admin privileges required.');
+}
 
 if (SMF === 'SSI')
+{
 	db_extend('packages');
+}
 
 global $modSettings, $smcFunc, $db_prefix;
 
 // Settings to create new mod settings...
 $mod_settings = array(
 	'awards_dir' => 'awards',
-	'awards_favorites' =>  1,
+	'awards_favorites' => 1,
 	'awards_in_post' => 1,
 	'awards_avatar_format' => 1,
 	'awards_signature_format' => 1,
@@ -95,7 +100,7 @@ $tables[] = array(
 		array(
 			'name' => 'award_type',
 			'type' => 'tinyint',
-			'size' =>  2,
+			'size' => 2,
 			'null' => false,
 			'default' => 0
 		),
@@ -115,7 +120,7 @@ $tables[] = array(
 	'indexes' => array(
 		array(
 			'type' => 'unique',
-			'columns' => array( 'id_member', 'id_award')
+			'columns' => array('id_member', 'id_award')
 		),
 		array(
 			'type' => 'index',
@@ -180,14 +185,14 @@ $tables[] = array(
 		array(
 			'name' => 'award_type',
 			'type' => 'tinyint',
-			'size' =>  2,
+			'size' => 2,
 			'null' => false,
 			'default' => 0
 		),
 		array(
 			'name' => 'award_location',
 			'type' => 'tinyint',
-			'size' =>  1,
+			'size' => 1,
 			'null' => false,
 			'default' => 0
 		),
@@ -220,7 +225,7 @@ $tables[] = array(
 		),
 		array(
 			'type' => 'index',
-			'columns' => array('award_type','award_trigger')
+			'columns' => array('award_type', 'award_trigger')
 		),
 		array(
 			'type' => 'index',
@@ -278,13 +283,19 @@ foreach ($tables as $table)
 	if (in_array($real_prefix . $table['table_name'], array_map('strtolower', $current_tables)))
 	{
 		foreach ($table['columns'] as $column)
+		{
 			$smcFunc['db_add_column']($db_prefix . $table['table_name'], $column);
+		}
 
 		foreach ($table['indexes'] as $index)
+		{
 			$smcFunc['db_add_index']($db_prefix . $table['table_name'], $index, array(), 'ignore');
+		}
 	}
 	else
+	{
 		$smcFunc['db_create_table']($db_prefix . $table['table_name'], $table['columns'], $table['indexes'], $table['parameters'], $table['if_exists'], $table['error']);
+	}
 }
 
 // And for good measure, lets add a default category
@@ -307,15 +318,21 @@ $rows[] = array(
 
 // Add rows to any existing tables
 foreach ($rows as $row)
+{
 	$smcFunc['db_insert']($row['method'], $row['table_name'], $row['columns'], $row['data'], $row['keys']);
+}
 
 // Update/add mod settings if applicable
 foreach ($mod_settings as $new_setting => $new_value)
 {
 	if (!isset($modSettings[$new_setting]))
+	{
 		updateSettings(array($new_setting => $new_value));
+	}
 }
 
 // Done
 if (SMF === 'SSI')
+{
 	echo 'Database changes are complete!';
+}

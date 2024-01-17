@@ -4,7 +4,7 @@
  * @name      Awards Modification
  * @license   Mozilla Public License version 1.1 http://www.mozilla.org/MPL/1.1/.
  *
- * @version   3.0.1
+ * @version   3.1.0
  *
  * Original Software by:           Juan "JayBachatero" Hernandez
  * Copyright (c) 2006-2009:        YodaOfDarkness (Fustrate)

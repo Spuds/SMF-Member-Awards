@@ -3,42 +3,29 @@
 <package-info xmlns="https://www.simplemachines.org/xml/package-info" xmlns:smf="https://www.simplemachines.org/">
 	<id>spuds:member_awards</id>
 	<name>Member Awards</name>
-	<version>3.0.1</version>
+	<version>3.1.0</version>
 	<type>modification</type>
-	<install for="2.0 - 2.0.99">
+	<install for="2.1 - 2.1.99">
 		<readme type="file" parsebbc="true">readme.txt</readme>
 		<code>add_remove_hooks.php</code>
 		<database>add_settings.php</database>
+
 		<modification format="xml" type="file">install.xml</modification>
 		<modification format="xml" type="file">install_display_template.xml</modification>
-		<modification format="xml" type="file">language.xml</modification>
-		<modification format="xml" type="file">language-utf8.xml</modification>
+
 		<create-dir name="awards" destination="$boarddir" />
-		<require-file name="AwardsManage.php" destination="$sourcedir" />
-		<require-file name="AwardsAdmin.php" destination="$sourcedir" />
-		<require-file name="AwardsHooks.php" destination="$sourcedir" />
-		<require-file name="AwardsProfile.php" destination="$sourcedir" />
-		<require-file name="AwardsSubs.php" destination="$sourcedir" />
-		<require-file name="AwardsManage.template.php" destination="$themedir" />
-		<require-file name="AwardsProfile.template.php" destination="$themedir" />
-		<require-file name="AwardsManage.english.php" destination="$languagedir" />
-		<require-file name="AwardsManage.english-utf8.php" destination="$languagedir" />
-		<require-file name="AwardsManage.russian.php" destination="$languagedir" />
-		<require-file name="AwardsManage.russian-utf8.php" destination="$languagedir" />
-		<require-file name="award.gif" destination="$imagesdir" />
-		<require-file name="awards.gif" destination="$imagesdir/admin" />
-		<require-file name="awards.js" destination="$themedir/scripts" />
-		<require-file name="awards.css" destination="$themedir/css" />
-		<require-dir name="awards" destination="$imagesdir" />
+
+		<require-dir name="Sources" destination="$boarddir" />
+		<require-dir name="Themes" destination="$boarddir" />
+
 		<redirect url="index.php?action=admin;area=awards;sa=main" timeout="5000">redirect.txt</redirect>
 	</install>
 
-	<uninstall for="2.0 - 2.0.99">
+	<uninstall for="2.1 - 2.1.99">
 		<code>add_remove_hooks.php</code>
 		<modification format="xml" type="file" reverse="true">install.xml</modification>
 		<modification format="xml" type="file" reverse="true">install_display_template.xml</modification>
-		<modification format="xml" type="file" reverse="true">language.xml</modification>
-		<modification format="xml" type="file" reverse="true">language-utf8.xml</modification>
+
 		<remove-file name="$sourcedir/AwardsManage.php" />
 		<remove-file name="$sourcedir/AwardsAdmin.php" />
 		<remove-file name="$sourcedir/AwardsHooks.php" />
@@ -47,13 +34,12 @@
 		<remove-file name="$themedir/AwardsManage.template.php" />
 		<remove-file name="$themedir/AwardsProfile.template.php" />
 		<remove-file name="$languagedir/AwardsManage.english.php" />
-		<remove-file name="$languagedir/AwardsManage.english-utf8.php" />
 		<remove-file name="$languagedir/AwardsManage.russian.php" />
-		<remove-file name="$languagedir/AwardsManage.russian-utf8.php" />
 		<remove-file name="$imagesdir/award.gif" />
 		<remove-file name="$imagesdir/admin/awards.gif" />
 		<remove-file name="$themedir/scripts/awards.js" />
 		<remove-file name="$themedir/css/awards.css" />
+
 		<remove-dir name="$imagesdir/awards" />
 	</uninstall>
 </package-info>

@@ -1,6 +1,6 @@
 [hr]
 [center]
-[size=16pt][b]Member Awards v3.0.x[/b][/size]
+[size=16pt][b]Member Awards[/b][/size]
 [/center]
 [hr]
 
@@ -23,7 +23,3 @@ A system where members can be given awards to display in their profile and posts
 [li]Those with correct permissions can edit the image and information assigned to that image, as well as completely delete it.[/li]
 [li]And more![/li]
 [/list]
-
-[b][size=14pt]Languages[/b]
-o English
-o English UTF-8

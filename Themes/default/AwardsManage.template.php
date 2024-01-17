@@ -9,7 +9,7 @@
  * Copyright (c) 2006-2009:        YodaOfDarkness (Fustrate)
  * Copyright (c) 2010:             Jason "JBlaze" Clemons
  *
- * @version 3.0.1
+ * @version 3.1.0
  *
  */
 

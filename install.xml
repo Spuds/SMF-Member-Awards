@@ -2,7 +2,7 @@
 <!DOCTYPE modification SYSTEM "https://www.simplemachines.org/xml/modification">
 <modification xmlns="https://www.simplemachines.org/xml/modification" xmlns:smf="https://www.simplemachines.org/">
 	<id>spuds:member_awards</id>
-	<version>3.0</version>
+	<version>3.1.0</version>
 
 	<file name="$sourcedir/Admin.php">
 		<operation>
@@ -14,13 +14,6 @@
 	</file>
 
 	<file name="$sourcedir/Load.php">
-		<operation>
-			<search position="before"><![CDATA[
-		'permissions' => array(),]]></search>
-			<add><![CDATA[
-		'awards' => isset($user_settings['awards']) ? $user_settings['awards'] : array(),]]></add>
-		</operation>
-
 		<operation>
 			<search position="before"><![CDATA[
 			$user_profile[$row['id_member']] = $row;]]></search>
@@ -40,6 +33,7 @@
 		if ($modSettings['awards_in_post'] > 0 && !empty($new_loaded_ids) && !empty($modSettings['awards_enabled']))
 		{
 			global $sourcedir;
+
 			require_once($sourcedir . '/AwardsManage.php');
 			loadTemplate(false, 'awards');
 			AwardsLoad($new_loaded_ids);
@@ -49,9 +43,9 @@
 
 		<operation>
 			<search position="before"><![CDATA[
-		'local_time' => timeformat(time() + ($profile['time_offset'] - $user_info['time_offset']) * 3600, false),]]></search>
+			'local_time' => timeformat(time(), false, $profile['timezone']),]]></search>
 			<add><![CDATA[
-		'awards' => &$profile['awards'],]]></add>
+			'awards' => &$profile['awards'],]]></add>
 		</operation>
 	</file>
 

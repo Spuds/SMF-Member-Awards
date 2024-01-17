@@ -4,7 +4,7 @@
  * @package   Awards Modification
  * @license   Mozilla Public License version 1.1 http://www.mozilla.org/MPL/1.1/.
  *
- * @version   3.0
+ * @version   3.1.0
  *
  * This file handles the admin side of Awards.
  *
@@ -13,11 +13,6 @@
  * Copyright (c) 2010:             Jason "JBlaze" Clemons
  *
  */
-
-if (!defined('SMF'))
-{
-	die('Hacking attempt...');
-}
 
 /**
  * Profile Menu Hook, integrate_profile_areas, called from profile.php
@@ -42,6 +37,8 @@ function member_awards_profile_areas(&$profile_areas)
 		if (!$user_info['is_admin'] && !isAllowedTo('manage_awards'))
 			return;
 	}
+
+	loadLanguage('Awards');
 
 	member_awards_array_insert($profile_areas, 'info', array(
 		'member_awards' => array(
@@ -99,6 +96,8 @@ function member_awards_admin_areas(&$admin_areas)
 {
 	global $txt, $modSettings;
 
+	loadLanguage('Awards');
+
 	// allow members with this permission to access the menu :P
 	$admin_areas['members']['permission'][] = 'manage_awards';
 	$admin_areas['members']['permission'][] = 'assign_awards';
@@ -146,21 +145,18 @@ function member_awards_load_permissions(&$permissionGroups, &$permissionList, &$
 
 /**
  * Menu Button hook, integrate_menu_buttons, called from subs.php
- * used to add top menu buttons
- * adds awards menu item below members button
- * visable to anyone with manage_awards permission
  *
- * @param type $buttons
+ * - used to add top menu buttons
+ * - adds awards menu item below members button
+ * - visible to anyone with manage_awards permission
+ *
+ * @param array $buttons
  */
 function member_awards_menu_buttons(&$buttons)
 {
 	global $txt, $scripturl;
 
-	// Bit of a cheat but known to happen
-	if (empty($txt['awards']))
-	{
-		$txt['awards'] = 'Awards';
-	}
+	loadLanguage('Awards');
 
 	// allows members with manage_awards permission to see a menu item since the admin menu is hidden for them
 	$buttons['mlist']['sub_buttons']['awards'] = array(
@@ -205,4 +201,16 @@ function member_awards_array_insert(&$input, $key, $insert, $where = 'before', $
 	{
 		$input = array_merge(array_slice($input, 0, $position), $insert, array_slice($input, $position));
 	}
+}
+
+/**
+ * Adds awards information to the user info array.
+ *
+ * @return void
+ */
+function member_awards_load_user_info()
+{
+	global $user_info, $user_settings;
+
+	$user_info['awards'] = $user_settings['awards'] ?? array();
 }

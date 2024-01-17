@@ -4,7 +4,7 @@
  * @package   Awards Modification
  * @license   Mozilla Public License version 1.1 http://mozilla.org/MPL/1.1/
  *
- * @version   3.0.1
+ * @version   3.1.0
  *
  * This file handles the loading side of Awards.
  *
@@ -13,11 +13,6 @@
  * Copyright (c) 2010:             Jason "JBlaze" Clemons
  *
  */
-
-if (!defined('SMF'))
-{
-	die('Hacking attempt...');
-}
 
 /**
  * Loads all the awards for the members in the list

@@ -1,7 +1,7 @@
-## Member Awards v3.0.x
+## Member Awards
 
 ### License
-o This Modifications Source Code is subject to the terms of the Mozilla Public License version 1.1 (the "License"). You can obtain a copy of the License at [http://mozilla.org/MPL/1.1/.](http://mozilla.org/MPL/1.1/)  
+o This Modifications Source Code is subject to the terms of the Mozilla Public License version 1.1 (the "License"). You can obtain a copy of the License at [https://mozilla.org/MPL/1.1/.](http://mozilla.org/MPL/1.1/)  
   
 ### Introduction  
 A system where members can be given awards to display in their profile and posts.  
